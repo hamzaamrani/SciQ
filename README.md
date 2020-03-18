@@ -7,16 +7,16 @@ The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 ## High-level architecture
 ![](images/HighLevelSchema.png)
 
-##REST API handle:
+### REST API handle:
     * Sign-in
     * Sign-up
     * User's expression history
     
-##OCR API handle:
+### OCR API handle:
     * Delivering of the image getted from the user to the OCR model
     * Return the output of the model as ASCIIMath
     
-##PARSER handle:
+### PARSER handle:
     * Convert from ASCIIMath string to LateX
     
 
