@@ -5,6 +5,5 @@ The insertion of the formulas could happen through the use of a predefined text-
 The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 
 ## High-level architecture
-The following describe our high level application architecture 
 ![](images/HighLevelSchema.png)
 
