@@ -1,8 +1,9 @@
-from ..database import db
+from server import db
 from . import user_blueprint
 from .decorators import decorator
 from flask import request, jsonify
-from ..models.models import User, UserSchema
+from server.models.models import User, UserSchema
+import os
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -12,7 +13,8 @@ users_schema = UserSchema(many=True)
 def create_user():
     username = request.json['username']
     password = request.json['password']
-    user = User(username=username, password=password)
+    token = request.json['token']
+    user = User(username=username, password=password, token=token)
     db.session.add(user)
     db.session.commit()
     return user_schema.jsonify(user)

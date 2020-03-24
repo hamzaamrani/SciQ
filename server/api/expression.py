@@ -1,8 +1,8 @@
-from ..database import db
+from server import db
 from . import expression_blueprint
 from .decorators import decorator
 from flask import request, jsonify
-from ..models.models import Expression, ExpressionSchema
+from server.models.models import Expression, ExpressionSchema
 
 expression_schema = ExpressionSchema()
 expressions_schema = ExpressionSchema(many=True)

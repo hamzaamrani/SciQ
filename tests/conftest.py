@@ -1,12 +1,9 @@
 import pytest
-from config import ConfigTest
-from server import create_app
-from server.database import db
+from server import create_app, db
 
 @pytest.fixture
 def app():
-    app = create_app()
-    app.config.from_object(ConfigTest)
+    app = create_app('testing')
     with app.app_context():   
         db.create_all()
         yield app
