@@ -15,7 +15,4 @@ To perform db creation/migration is necessary to execute follwing commands:
 * `flask db migrate`
 * `flask db upgrade`
 
-To cleaning existing data and create new tables perform:
-* `flask reset-db`
-
 `flask --help` to show all possible command with description
