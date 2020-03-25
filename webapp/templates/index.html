@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ Home Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+
+    <!-- Include Bootstrap stuff-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        function getLoginData() {
+            var username, password;
+            // Get the value of the input field with id="numb"
+            username = document.getElementById("Username").value;
+            password = document.getElementById("password").value;
+            document.getElementById("contact_us").innerHTML = username;
+        }
+    </script>
+
+</head>
+
+<!-- BODY-->
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="#"><img src="{{ url_for('static', filename='images/logo_upper_left.png') }}" /> </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Home</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#try_section"> <strong> Get started </strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <header class="page-header header container-fluid" id="try_section">
+        <div class="overlay">
+            <div class="description">
+                <h1>Welcome to SciQ!</h1>
+                <p id="info" style="color: white;">The smart solver</p>
+                <button type="button" href=#loginModal class="btn btn-outline-success btn-lg" data-toggle="modal" data-target="#loginModal"> <strong>LOGIN!</strong> </button>
+            </div>
+        </div>
+
+        <!-- LOGIN Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+            <div class="modal-dialog modal-login">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Log In</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="loginData" action="." method="POST">
+                            <div class=".form-control">
+                                <label for="Username"> Username </label>
+                                <input type="text" class="form-control" placeholder="Enter username" id="Username" name="Username" required="required">
+                            </div>
+
+                            <div class=".form-control">
+                                <label for="password">Password</label>
+                                <a href="#" class="pull-right text-muted">
+                                    <small>Forgot?</small>
+                                </a>
+                                <input type="password" class="form-control" required id="password" name="password" placeholder="Enter password" required="required">
+                                <div class="mt-2">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox">Remember me
+                                    </label>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-outline-success text-center mt-10">Log in</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer ">
+                        <h8 class="top-inline ">Or <a data-toggle="modal" href="#signUpModal" data-target="#signUpModal" data-dismiss="modal">Sign up</a> and start using SciQ!</h8>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- SIGNUP Modal -->
+        <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModal" aria-hidden="true">
+            <div class="modal-dialog modal-login">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="signUpTitle">Sign Up</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="signUpData" action="." method="POST">
+                            <div class=".form-control">
+                                <label for="emailAddress" class="font-weight-bold">Email address</label>
+                                <input type="email" class="form-control" id="emailAddress" placeholder="name@example.com" required>
+                            </div>
+
+                            <div class=".form-control">
+                                <label for="password" class="font-weight-bold">Password</label>
+                                <input type="password" class="form-control" id="password1" placeholder="Enter password" required>
+                            </div>
+
+                            <div class=".form-control">
+                                <label for="password" class="font-weight-bold">Repeat password</label>
+                                <input type="password" class="form-control" id="password2" placeholder="Re-enter password" required>
+                            </div>
+                            <div class="text-center mt-2">
+                                <button type="submit" class="btn btn-outline-success top-buffer">Register!</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <footer class="page-footer" id="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold">Additional Information</h6>
+                    <p>Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.</p>
+                    <p>The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.</p>
+                    <p>The resolution of the formulas happen through the use of Wolphram|Alpha's API.</p>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold">Contact</h6>
+                    <p>Università degli studi di Milano Bicocca
+                        <br/>info[at]SciQ.com
+                        <br/>c.carta4[at]campus[dot]unimib[dot]it
+                        <br/>s.ventura6[at]campus[dot]unimib[dot]it
+                        <br/>h.amrani[at]campus[dot]unimib[dot]it
+                        <br/>f.belotti8[at]campus[dot]unimib[dot]it
+                        <br/>g.scarpellini[at]campus[dot]unimib[dot]it
+                    </p>
+                </div>
+            </div>
+            <div class="footer-copyright text-center">© 2020 Copyright: MyWebsite.com</div>
+    </footer>
+</body>
+
+
+
+</html>
