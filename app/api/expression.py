@@ -1,14 +1,13 @@
-from server import db
+from app import db
 from . import expression_blueprint
-from .decorators import decorator
 from flask import request, jsonify
-from server.models.models import Expression, ExpressionSchema
+from app.models.models import Expression, ExpressionSchema
 
 expression_schema = ExpressionSchema()
 expressions_schema = ExpressionSchema(many=True)
 
 # create expression for a user
-@expression_blueprint.route('/expression/<int:user_id>', methods=['POST'])
+@expression_blueprint.route('/<int:user_id>', methods=['POST'])
 def create_expression(user_id):
     username = request.json['expression']
     password = request.json['result']
@@ -20,14 +19,14 @@ def create_expression(user_id):
     return expression_schema.jsonify(expression)
 
 # get all expressions of a user
-@expression_blueprint.route('/expression/<int:user_id>', methods=['GET'])
+@expression_blueprint.route('/<int:user_id>', methods=['GET'])
 def get_all_expression(user_id):
     expressions = Expression.query.get(user_id)
     result = expressions_schema.dump(expressions)
     return jsonify(result)
 
 # delete an expression of a user
-@expression_blueprint.route('/expression/<int:user_id>', methods=['DELETE'])
+@expression_blueprint.route('/<int:user_id>', methods=['DELETE'])
 def delete_expression(user_id):
     user = User.query.get(user_id)
     db.session.delete(user)

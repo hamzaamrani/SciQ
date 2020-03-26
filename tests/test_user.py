@@ -1,12 +1,13 @@
-from server import db
-from server.models.models import User
-import json
+from app import db
+from app.models.models import User
+
 
 def create_user(username, password, token):
-    user = User(username, password, token)
+    user = User(username=username, password=password, token=token)
     db.session.add(user)
     db.session.commit()
     return user
+
 
 def test_add_user(app):
     user_created = create_user("test1", "password1", "12345")
@@ -22,15 +23,17 @@ def test_delete_user(app):
     assert len(users) == 1
     user = User.query.get(1)
     db.session.delete(user)
-    db.session.commit()  
+    db.session.commit()
     users = User.query.all()
     assert len(users) == 0
+
 
 def test_get_all_user(app):
     _ = create_user("test1", "password1", "12345")
     _ = create_user("test2", "password2", "12325465")
     users = User.query.all()
     assert len(users) == 2
+
 
 def test_get_user(app):
     _ = create_user("test1", "password1", "12345")
