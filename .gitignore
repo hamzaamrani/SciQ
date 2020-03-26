@@ -1,4 +1,4 @@
 *.*pyc
 settings.json
 test.sqlite
-migrations/*
+mysql-data/
