@@ -1,3 +1,4 @@
+# autopep8 --in-place --aggressive --aggressive waAPI.py
 # Wolfram|Alpha Show Steps API Reference:
 # https://products.wolframalpha.com/show-steps-api/documentation/
 
@@ -5,6 +6,9 @@ import requests
 import urllib.parse
 import json
 import base64
+import xmltodict
+import urllib.request
+import pickle
 
 API_URL = 'https://api.wolframalpha.com/v2/query'
 API_SIGNUP_PAGE = 'https://developer.wolframalpha.com'
@@ -62,11 +66,11 @@ class waAPI(object):
             return 'Sorry, I did not get your question.'
         else:
             url = '%s?input=%s&podstate%s&output=%s&appid=%s' % (API_URL, urllib.parse.quote(
-                query), 'Result__Step-by-step+solution', response_format, key)
-            r = requests.get(url)
-            print(r)
-            print("\n\n")
-            return r.json()
+                query), 'Result__Step-by-step+solution', 'xml', key)
+
+            r = urllib.request.urlopen(url)
+            result = xmltodict.parse(r, dict_constructor=dict)['queryresult']
+            return result
 
 
 class Expression(object):
@@ -82,41 +86,78 @@ class Expression(object):
 
         """
 
-        data = results['queryresult']
-        pods = data['pods']
-
         self.query = query
-        self.execution_time = data['timing']
-        self.type = pods[0]['scanner']
+        self.execution_time = None
         self.plots = []
-        for i in range(len(pods[1]['subpods'])):
-            base64_img = base64.b64encode(requests.get(
-                pods[1]['subpods'][i]['img']['src']).content)
-            self.plots.append(base64_img)
         self.alternate_forms = []
-        for i in range(len(pods[2]['subpods'])):
-            self.alternate_forms.append(pods[2]['subpods'][i]['plaintext'])
         self.solutions = []
-        for i in range(len(pods[4]['subpods'])):
-            self.solutions.append(pods[4]['subpods'][i]['plaintext'])
+        #self.steps = []
+
+        self.execution_time = results['@timing']
+
+        for pod in results['pod']:
+            print(pod['@id'])
+            if pod['@id'].find("Plot") >= 0:
+                if isinstance(pod['subpod'], list):
+                    for subpod in pod['subpod']:
+                        src_plot = subpod['img']['@src']
+                        self.plots.append(
+                            base64.b64encode(
+                                requests.get(src_plot).content))
+                else:
+                    src_plot = pod['subpod']['img']['@src']
+                    self.plots.append(
+                        base64.b64encode(
+                            requests.get(src_plot).content))
+
+            if pod['@id'].find("AlternateForm") >= 0:
+                if isinstance(pod['subpod'], list):
+                    for subpod in pod['subpod']:
+                        self.alternate_forms.append(subpod['plaintext'])
+                else:
+                    self.alternate_forms.append(pod['subpod']['plaintext'])
+
+            if pod['@id'].find("Solution") >= 0:
+                if isinstance(pod['subpod'], list):
+                    for subpod in pod['subpod']:
+                        self.solutions.append(subpod['plaintext'])
+                else:
+                    self.solutions.append(pod['subpod']['plaintext'])
+
+    def print_expression(self):
+        """
+        Print content of the expression.
+
+        """
+        print("\nExpression info")
+        print("Query: ", self.query)
+        print("Execution time: ", self.execution_time)
+        print("Plots (base64): ", len(self.plots))
+        print("Alternate forms: ", self.alternate_forms)
+        print("Solutions: ", self.solutions)
 
 
 if __name__ == "__main__":
-    api = waAPI(KEY)
+    '''
+    Query examples:
+        int e^x^2 dx
+        x^3 + x^2 y + x y^2 + y^3
+        (x^2-1)/(x^2+1)
+        cos(arcsin(x)/2)
+        
+    '''
+    query = 'cos(arcsin(x)/2)'
 
-    query = 'x^2+8(x-1)+89*e=7'
+    api = waAPI(KEY)
     results = api.full_results(query=query)
 
-    #print(json.dumps(results, indent=2))
+    # filehandler = open("pick","wb")
+    # pickle.dump(results,filehandler)
+    # filehandler.close()
 
-    # with open('example4.json') as f:
-    #     results = json.load(f)
+    # file = open("pick",'rb')
+    # results = pickle.load(file)
+    # file.close()
 
     obj = Expression(query, results)
-
-    print(obj.query)
-    print(obj.execution_time)
-    print(obj.type)
-    print(obj.plots)
-    print(obj.alternate_forms)
-    print(obj.solutions)
+    obj.print_expression()
