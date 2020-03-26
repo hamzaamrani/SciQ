@@ -7,269 +7,371 @@ logging.basicConfig(level=logging.DEBUG)
     Replace regex: $1"\"$2\"": "$2",
 """
 
-def alias_string(mapping: dict, init=False):
+
+def alias_string(mapping: dict, init=False, prefix=""):
     mapping = list(mapping.items())
-    s = "|" if init else "" + mapping[0][0] + " -> " + mapping[0][1]
+    s = "|" if init else "" + \
+        mapping[0][0] + " -> " + \
+        (prefix + "_" if prefix != "" else "") + mapping[0][1]
     for k, v in mapping[1:]:
-        s = s + "\n\t| " + k + " -> " + v
+        s = s + "\n\t| " + k + " -> " + \
+            (prefix + "_" if prefix != "" else "") + v
     return s
 
 
 binary_functions = {
-    "\"frac\"": "frac",
+    "\"frac\"": "latex_frac",
     "\"root\"": "root",
-    "\"stackrel\"": "stackrel",
+    "\"stackrel\"": "latex_stackrel",
     "\"overset\"": "overset",
     "\"underset\"": "underset",
     "\"color\"": "color",
 }
 
 unary_functions = {
-    "\"sqrt\"": "sqrt",
-    "\"text\"": "textrm",
-    "\"dot\"": "dot",
+    "\"sqrt\"": "latex_sqrt",
+    "\"text\"": "latex_textrm",
     "\"abs\"": "abs",
     "\"floor\"": "floor",
     "\"ceil\"": "ceil",
     "\"norm\"": "norm",
-    "\"ubrace\"": "ubrace",
+    "\"ubrace\"": "latex_underbrace",
+    "\"underbrace\"": "latex_underbrace",
     "\"obrace\"": "obrace",
+    "\"overbrace\"": "latex_overbrace",
     "\"cancel\"": "cancel",
-    "\"bb\"": "boldsymbol",
-    "\"bbb\"": "mathbb",
-    "\"cc\"": "mathcal",
-    "\"tt\"": "texttt",
-    "\"fr\"": "mathfrak",
-    "\"sf\"": "textsf",
+    "\"bb\"": "latex_boldsymbol",
+    "\"bbb\"": "latex_mathbb",
+    "\"cc\"": "latex_mathcal",
+    "\"tt\"": "latex_texttt",
+    "\"fr\"": "latex_mathfrak",
+    "\"sf\"": "latex_textsf",
+    "\"ul\"": "latex_underline",
+    "\"underline\"": "latex_underline",
+    "\"bar\"": "latex_overline",
+    "\"overline\"": "latex_overline",
+    "\"hat\"": "latex_hat",
+    "\"vec\"": "latex_vec",
+    "\"dot\"": "latex_dot",
+    "\"ddot\"": "latex_ddot",
 }
 
 operation_symbols = {
-    "\"+\"": "op_plus",
-    "\"*\"": "op_cdot",
-    "\"-\"": "op_minus",
-    "\"cdot\"": "op_cdot",
-    "\"**\"": "op_ast",
-    "\"ast\"": "op_ast",
-    "\"***\"": "op_star",
-    "\"star\"": "op_star",
-    "\"//\"": "op_frac",
-    "\"\\\\\"": "op_backslash_setminus",
-    "\"backslash_setminus\"": "op_backslash_setminus",
-    "\"xx\"": "op_xx",
-    "\"times\"": "op_times",
-    "\"-:\"": "op_div",
-    "\"div\"": "op_div",
-    "\"|><\"": "op_ltimes",
-    "\"ltimes\"": "op_ltimes",
-    "\"><|\"": "op_rtimes",
-    "\"rtimes\"": "op_rtimes",
-    "\"|><|\"": "op_bowtie",
-    "\"bowtie\"": "op_bowtie",
-    "\"@\"": "op_circ",
-    "\"circ\"": "op_circ",
-    "\"o+\"": "op_oplus",
-    "\"oplus\"": "op_oplus",
-    "\"ox\"": "op_otimes",
-    "\"otimes\"": "op_otimes",
-    "\"o.\"": "op_odot",
-    "\"odot\"": "op_odot",
-    "\"sum\"": "op_sum",
-    "\"prod\"": "op_prod",
-    "\"^^\"": "op_wedge",
-    "\"wedge\"": "op_wedge",
-    "\"^^^\"": "op_bigwedge",
-    "\"bidwedge\"": "op_bidwedge",
-    "\"vv\"": "op_vee",
-    "\"vee\"": "op_vee",
-    "\"vvv\"": "op_bigvee",
-    "\"bigvee\"": "op_bigvee",
-    "\"nn\"": "op_cap",
-    "\"cap\"": "op_cap",
-    "\"nnn\"": "op_bigcap",
-    "\"bigcap\"": "op_bigcap",
-    "\"uu\"": "op_cup",
-    "\"cup\"": "op_cup",
-    "\"uuu\"": "op_bigcup",
-    "\"bigcup\"": "op_bigcup",
+    "\"+\"": "plus",
+    "\"*\"": "cdot",
+    "\"-\"": "minus",
+    "\"cdot\"": "latex_cdot",
+    "\"**\"": "latex_ast",
+    "\"ast\"": "latex_ast",
+    "\"***\"": "latex_star",
+    "\"star\"": "latex_star",
+    "\"//\"": "frac",
+    "\"\\\\\"": "latex_backslash_setminus",
+    "\"backslash_setminus\"": "latex_backslash_setminus",
+    "\"xx\"": "latex_times",
+    "\"times\"": "latex_times",
+    "\"-:\"": "latex_div",
+    "\"div\"": "latex_div",
+    "\"|><\"": "latex_ltimes",
+    "\"ltimes\"": "latex_ltimes",
+    "\"><|\"": "latex_rtimes",
+    "\"rtimes\"": "latex_rtimes",
+    "\"|><|\"": "latex_bowtie",
+    "\"bowtie\"": "latex_bowtie",
+    "\"@\"": "latex_circ",
+    "\"circ\"": "latex_circ",
+    "\"o+\"": "latex_oplus",
+    "\"oplus\"": "latex_oplus",
+    "\"ox\"": "latex_otimes",
+    "\"otimes\"": "latex_otimes",
+    "\"o.\"": "latex_odot",
+    "\"odot\"": "latex_odot",
+    "\"sum\"": "latex_sum",
+    "\"prod\"": "latex_prod",
+    "\"^^\"": "latex_wedge",
+    "\"wedge\"": "latex_wedge",
+    "\"^^^\"": "latex_bigwedge",
+    "\"bidwedge\"": "latex_bidwedge",
+    "\"vv\"": "latex_vee",
+    "\"vee\"": "latex_vee",
+    "\"vvv\"": "latex_bigvee",
+    "\"bigvee\"": "latex_bigvee",
+    "\"nn\"": "latex_cap",
+    "\"cap\"": "latex_cap",
+    "\"nnn\"": "latex_bigcap",
+    "\"bigcap\"": "latex_bigcap",
+    "\"uu\"": "latex_cup",
+    "\"cup\"": "latex_cup",
+    "\"uuu\"": "latex_bigcup",
+    "\"bigcup\"": "latex_bigcup",
 }
 
 logical_symbols = {
-    "\"and\"": "logical_and",
-    "\"or\"": "logical_or",
-    "\"not\"": "logical_not",
-    "\"neg\"": "logical_neg",
-    "\"=>\"": "logical_implies",
-    "\"implies\"": "logical_implies",
-    "\"if\"": "logical_if",
-    "\"<=>\"": "logical_iff",
-    "\"iff\"": "logical_iff",
-    "\"AA\"": "logical_forall",
-    "\"forall\"": "logical_forall",
-    "\"EE\"": "logical_exists",
-    "\"exists\"": "logical_exists",
-    "\"_|_\"": "logical_bot",
-    "\"bot\"": "logical_bot",
-    "\"TT\"": "logical_top",
-    "\"top\"": "logical_top",
-    "\"|--\"": "logical_vdash",
-    "\"vdash\"": "logical_vdash",
-    "\"|==\"": "logical_models",
-    "\"models\"": "logical_models",
+    "\"and\"": "and",
+    "\"or\"": "or",
+    "\"not\"": "latex_neg",
+    "\"neg\"": "latex_neg",
+    "\"=>\"": "latex_implies",
+    "\"implies\"": "latex_implies",
+    "\"if\"": "if",
+    "\"<=>\"": "latex_iff",
+    "\"iff\"": "latex_iff",
+    "\"AA\"": "latex_forall",
+    "\"forall\"": "latex_forall",
+    "\"EE\"": "latex_exists",
+    "\"exists\"": "latex_exists",
+    "\"_|_\"": "latex_bot",
+    "\"bot\"": "latex_bot",
+    "\"TT\"": "latex_top",
+    "\"top\"": "latex_top",
+    "\"|--\"": "latex_vdash",
+    "\"vdash\"": "latex_vdash",
+    "\"|==\"": "latex_models",
+    "\"models\"": "latex_models",
 }
 
 relation_symbols = {
-    "\"=\"": "rel_equal",
-    "\"!=\"": "rel_ne",
-    "\"ne\"": "rel_ne",
-    "\"<\"": "rel_lt",
-    "\"lt\"": "rel_lt",
-    "\">\"": "rel_gt",
-    "\"gt\"": "rel_gt",
-    "\"<=\"": "rel_le",
-    "\"le\"": "rel_le",
-    "\">=\"": "rel_ge",
-    "\"ge\"": "rel_ge",
-    "\"-<\"": "rel_prec",
-    "\"prec\"": "rel_prec",
-    "\"-<=\"": "rel_preceq",
-    "\"preceq\"": "rel_preceq",
-    "\">-\"": "rel_succ",
-    "\"succ\"": "rel_succ",
-    "\">-=\"": "rel_succeq",
-    "\"succeq\"": "rel_succeq",
-    "\"in\"": "rel_in",
-    "\"in\"": "rel_in",
-    "\"!in\"": "rel_notin",
-    "\"notin\"": "rel_notin",
-    "\"sub subset\"": "rel_sub_subset",
-    "\"sup	supset\"": "rel_sup_supset",
-    "\"sube\"": "rel_subseteq",
-    "\"subseteq\"": "rel_subseteq",
-    "\"supe\"": "rel_supseteq",
-    "\"supseteq\"": "rel_supseteq",
-    "\"-=\"": "rel_equiv",
-    "\"equiv\"": "rel_equiv",
-    "\"~=\"": "rel_cong",
-    "\"cong\"": "rel_cong",
-    "\"~~\"": "rel_approx",
-    "\"approx\"": "rel_approx",
-    "\"prop\"": "rel_propto",
-    "\"propto\"": "rel_propto",
+    "\"=\"": "equal",
+    "\"!=\"": "latex_ne",
+    "\"ne\"": "latex_ne",
+    "\"<\"": "latex_lt",
+    "\"lt\"": "latex_lt",
+    "\">\"": "latex_gt",
+    "\"gt\"": "latex_gt",
+    "\"<=\"": "latex_le",
+    "\"le\"": "latex_le",
+    "\">=\"": "latex_ge",
+    "\"ge\"": "latex_ge",
+    "\"-<\"": "latex_prec",
+    "\"prec\"": "latex_prec",
+    "\"-<=\"": "latex_preceq",
+    "\"preceq\"": "latex_preceq",
+    "\">-\"": "latex_succ",
+    "\"succ\"": "latex_succ",
+    "\">-=\"": "latex_succeq",
+    "\"succeq\"": "latex_succeq",
+    "\"in\"": "latex_in",
+    "\"!in\"": "latex_notin",
+    "\"notin\"": "latex_notin",
+    "\"sub\"": "latex_subset",
+    "\"subset\"": "latex_subset",
+    "\"sup\"": "latex_supset",
+    "\"supset\"": "latex_supset",
+    "\"sube\"": "latex_subseteq",
+    "\"subseteq\"": "latex_subseteq",
+    "\"supe\"": "latex_supseteq",
+    "\"supseteq\"": "latex_supseteq",
+    "\"-=\"": "latex_equiv",
+    "\"equiv\"": "latex_equiv",
+    "\"~=\"": "latex_cong",
+    "\"cong\"": "latex_cong",
+    "\"~~\"": "latex_approx",
+    "\"approx\"": "latex_approx",
+    "\"prop\"": "latex_propto",
+    "\"propto\"": "latex_propto",
 }
 
 function_symbols = {
-    "\"sin\"": "func_sin",
-    "\"cos\"": "func_cos",
-    "\"tan\"": "func_tan",
-    "\"sec\"": "func_sec",
-    "\"csc\"": "func_csc",
-    "\"cot\"": "func_cot",
-    "\"arcsin\"": "func_arcsin",
-    "\"arccos\"": "func_arccos",
-    "\"arctan\"": "func_arctan",
-    "\"sinh\"": "func_sinh",
-    "\"cosh\"": "func_cosh",
-    "\"tanh\"": "func_tanh",
-    "\"sech\"": "func_sech",
-    "\"csch\"": "func_csch",
-    "\"coth\"": "func_coth",
-    "\"exp\"": "func_exp",
-    "\"log\"": "func_log",
-    "\"ln\"": "func_ln",
-    "\"det\"": "func_det",
-    "\"dim\"": "func_dim",
-    "\"mod\"": "func_mod",
-    "\"gcd\"": "func_gcd",
-    "\"lcm\"": "func_lcm",
-    "\"lub\"": "func_lub",
-    "\"glb\"": "func_glb",
-    "\"min\"": "func_min",
-    "\"max\"": "func_max",
-    "\"f\"": "func_f",
-    "\"g\"": "func_g"
+    "\"sin\"": "latex_sin",
+    "\"cos\"": "latex_cos",
+    "\"tan\"": "latex_tan",
+    "\"sec\"": "latex_sec",
+    "\"csc\"": "latex_csc",
+    "\"cot\"": "latex_cot",
+    "\"arcsin\"": "latex_arcsin",
+    "\"arccos\"": "latex_arccos",
+    "\"arctan\"": "latex_arctan",
+    "\"sinh\"": "latex_sinh",
+    "\"cosh\"": "latex_cosh",
+    "\"tanh\"": "latex_tanh",
+    "\"sech\"": "latex_sech",
+    "\"csch\"": "latex_csch",
+    "\"coth\"": "latex_coth",
+    "\"exp\"": "latex_exp",
+    "\"log\"": "latex_log",
+    "\"ln\"": "latex_ln",
+    "\"det\"": "latex_det",
+    "\"dim\"": "latex_dim",
+    "\"mod\"": "latex_mod",
+    "\"gcd\"": "latex_gcd",
+    "\"lcm\"": "latex_lcm",
+    "\"lub\"": "latex_lub",
+    "\"glb\"": "latex_glb",
+    "\"min\"": "latex_min",
+    "\"max\"": "latex_max",
+    "\"f\"": "f",
+    "\"g\"": "g"
 }
 
 greek_letters = {
-    "\"alpha\"": "alpha",
-    "\"beta\"": "beta",
-    "\"gamma\"": "gamma",
-    "\"Gamma\"": "upper_gamma",
-    "\"delta\"": "delta",
-    "\"Delta\"": "upper_delta",
-    "\"epsilon\"": "epsilon",
-    "\"varepsilon\"": "varepsilon",
-    "\"zeta\"": "zeta",
-    "\"eta\"": "eta",
-    "\"theta\"": "theta",
-    "\"Theta\"": "upper_theta",
-    "\"vartheta\"": "vartheta",
-    "\"iota\"": "iota",
-    "\"kappa\"": "kappa",
-    "\"lambda\"": "lambda",
-    "\"Lambda\"": "upper_lambda",
-    "\"mu\"": "mu",
-    "\"nu\"": "nu",
-    "\"xi\"": "xi",
-    "\"Xi\"": "upper_xi",
-    "\"pi\"": "pi",
-    "\"Pi\"": "upper_pi",
-    "\"rho\"": "rho",
-    "\"sigma\"": "sigma",
-    "\"Sigma\"": "upper_sigma",
-    "\"tau\"": "tau",
-    "\"upsilon\"": "upsilon",
-    "\"phi\"": "phi",
-    "\"Phi\"": "upper_phi",
-    "\"varphi\"": "varphi",
-    "\"chi\"": "chi",
-    "\"psi\"": "psi",
-    "\"Psi\"": "upper_psi",
-    "\"omega\"": "omega",
-    "\"Omega\"": "upper_omega"
+    "\"alpha\"": "latex_alpha",
+    "\"beta\"": "latex_beta",
+    "\"gamma\"": "latex_gamma",
+    "\"Gamma\"": "latex_upper_gamma",
+    "\"delta\"": "latex_delta",
+    "\"Delta\"": "latex_upper_delta",
+    "\"epsilon\"": "latex_epsilon",
+    "\"varepsilon\"": "latex_varepsilon",
+    "\"zeta\"": "latex_zeta",
+    "\"eta\"": "latex_eta",
+    "\"theta\"": "latex_theta",
+    "\"Theta\"": "latex_upper_theta",
+    "\"vartheta\"": "latex_vartheta",
+    "\"iota\"": "latex_iota",
+    "\"kappa\"": "latex_kappa",
+    "\"lambda\"": "latex_lambda",
+    "\"Lambda\"": "latex_upper_lambda",
+    "\"mu\"": "latex_mu",
+    "\"nu\"": "latex_nu",
+    "\"xi\"": "latex_xi",
+    "\"Xi\"": "latex_upper_xi",
+    "\"pi\"": "latex_pi",
+    "\"Pi\"": "latex_upper_pi",
+    "\"rho\"": "latex_rho",
+    "\"sigma\"": "latex_sigma",
+    "\"Sigma\"": "latex_upper_sigma",
+    "\"tau\"": "latex_tau",
+    "\"upsilon\"": "latex_upsilon",
+    "\"phi\"": "latex_phi",
+    "\"Phi\"": "latex_upper_phi",
+    "\"varphi\"": "latex_varphi",
+    "\"chi\"": "latex_chi",
+    "\"psi\"": "latex_psi",
+    "\"Psi\"": "latex_upper_psi",
+    "\"omega\"": "latex_omega",
+    "\"Omega\"": "latex_upper_omega"
+}
+
+left_parenthesis = {
+    "\"(\"": "left",
+    "\"(:\"": "latex_langle",
+    "\"[\"": "left_square",
+    "\"{\"": "left_curly",
+    "\"{:\"": "left_curly_semi_colon",
+    "\"langle\"": "latex_langle",
+    "\"<<\"": "latex_langle"
+}
+
+right_parenthesis = {
+    "\")\"": "right",
+    "\":)\"": "latex_rangle",
+    "\"]\"": "right_square",
+    "\"}\"": "right_curly",
+    "\":}\"": "right_curly_semi_colon",
+    "\"rangle\"": "latex_rangle",
+    "\">>\"": "latex_rangle"
+}
+
+arrows = {
+    "\"uarr\"": "latex_uparrow",
+    "\"uparrow\"": "latex_uparrow",
+    "\"darr\"": "latex_downarrow",
+    "\"downarrow\"": "latex_downarrow",
+    "\"rarr\"": "latex_rightarrow",
+    "\"rightarrow\"": "latex_rightarrow",
+    "\"->\"": "latex_to",
+    "\"to\"": "latex_to",
+    "\">->\"": "latex_rightarrowtail",
+    "\"rightarrowtail\"": "latex_rightarrowtail",
+    "\"->>\"": "latex_twoheadrightarrow",
+    "\"twoheadrightarrow\"": "latex_twoheadrightarrow",
+    "\">->>\"": "latex_twoheadrightarrowtail",
+    "\"twoheadrightarrowtail\"": "latex_twoheadrightarrowtail",
+    "\"|->\"": "latex_mapsto",
+    "\"mapsto\"": "latex_mapsto",
+    "\"larr\"": "latex_leftarrow",
+    "\"leftarrow\"": "latex_leftarrow",
+    "\"harr\"": "latex_leftrightarrow",
+    "\"leftrightarrow\"": "latex_leftrightarrow",
+    "\"rArr\"": "latex_upper_rightarrow",
+    "\"Rightarrow\"": "latex_upper_rightarrow",
+    "\"lArr\"": "latex_upper_leftarrow",
+    "\"Leftarrow\"": "latex_upper_leftarrow",
+    "\"hArr\"": "latex_upper_leftrightarrow",
+    "\"Leftrightarrow\"": "latex_upper_leftrightarrow",
+}
+
+misc_symbols = {
+    "\"int\"": "latex_int",
+    "\"oint\"": "latex_oint",
+    "\"del\"": "latex_partial",
+    "\"partial\"": "latex_partial",
+    "\"grad\"": "latex_nable",
+    "\"nabla\"": "latex_nabla",
+    "\"+-\"": "latex_pm",
+    "\"pm\"": "latex_pm",
+    "\"O/\"": "latex_emptyset",
+    "\"emptyset\"": "latex_emptyset",
+    "\"oo\"": "latex_infty",
+    "\"infty\"": "latex_infty",
+    "\"aleph\"": "aleph",
+    "\":.\"": "latex_therefore",
+    "\"therefore\"": "latex_therefore",
+    "\":'\"": "latex_because",
+    "\"because\"": "latex_because",
+    "\"...\"": "latex_ldots",
+    "\"ldots\"": "latex_ldots",
+    "\"cdots\"": "latex_cdots",
+    "\"vdots\"": "latex_vdots",
+    "\"ddots\"": "latex_ddots",
+    "\"quad\"": "empty_space",
+    "\"/_\"": "latex_angle",
+    "\"angle\"": "latex_angle",
+    "\"frown\"": "latex_frown",
+    "\"/_\\\\\"": "latex_triangle",
+    "\"triangle\"": "latex_triangle",
+    "\"diamond\"": "latex_diamond",
+    "\"square\"": "latex_square",
+    "\"|__\"": "latex_lfloor",
+    "\"lfloor\"": "latex_lfloor",
+    "\"__|\"": "latex_rfloor",
+    "\"rfloor\"": "latex_rfloor",
+    "\"|~\"": "latex_lceiling",
+    "\"lceiling\"": "latex_lceiling",
+    "\"~|\"": "latex_rceiling",
+    "\"rceiling\"": "rceiling",
+    "\"CC\"": "complex_set",
+    "\"NN\"": "natural_set",
+    "\"QQ\"": "rational_set",
+    "\"RR\"": "real_set",
+    "\"ZZ\"": "integer_set",
 }
 
 asciimath_grammar = r"""
     ?e: i+ -> exp
-    ?i: s -> inter_exp
-        | s "/" s -> frac_exp
-        | s "_" s -> under_exp
-        | s "^" s -> super_exp
-        | s "_" s "^" s -> under_super_exp
-    ?s: c -> simple_exp
-        | l e r -> par_exp
-        | u s -> unary_exp
-        | b s s -> binary_exp
+    ?i: s -> exp_interm
+        | s "/" s -> exp_frac
+        | s "_" s -> exp_under
+        | s "^" s -> exp_super
+        | s "_" s "^" s -> exp_under_super
+    ?s: c -> exp_simple
+        | l e r -> exp_par
+        | u s -> exp_unary_exp
+        | b s s -> exp_binary
         | quoted_string -> quoted_string
-    ?l: "(" -> left_par
-        | "(:" -> left_semi_colon_par
-        | "[" -> left_square_par
-        | "{{" -> left_curly_par
-        | "{{:" -> left_curly_semi_colon_par
-        | "langle" -> langle
-    ?r: ")" -> right_par
-        | ":)" -> right_semi_colon_par
-        | "]" -> right_square_par
-        | "}}" -> right_curly_par
-        | ":}}" -> right_curly_semi_colon_par
-        | "rangle" -> rangle
+    ?l: {} // left parenthesis
+    ?r: {} // right parenthesis
     ?b: {} // binary functions
     ?u: {} // unary functions
     ?c: /[A-Za-z]/ -> var
         | NUMBER -> num
         | "," -> comma
-        | "int" -> int
-        | "|" -> bar
+        | "." -> point
+        | misc_symbols
         | operation_symbols
         | relation_symbols
         | logical_symbols
         | function_symbols
         | greek_letters
+        | arrows
         | DERIVATIVES -> derivatives
+    ?misc_symbols: {}
     ?operation_symbols: {}
     ?relation_symbols: {}
     ?logical_symbols: {}
     ?function_symbols: {}
     ?greek_letters: {}
+    ?arrows: {}
     ?quoted_string: "\"" DOUBLE_QUOTED_STRING "\""
         | "'" SINGLE_QUOTED_STRING "'"
     DOUBLE_QUOTED_STRING: /(?<=").+(?=")/
@@ -282,17 +384,35 @@ asciimath_grammar = r"""
     %import common.NUMBER
     %ignore WS
 """.format(
-    alias_string(binary_functions),
-    alias_string(unary_functions),
-    alias_string(operation_symbols),
-    alias_string(relation_symbols),
-    alias_string(logical_symbols),
-    alias_string(function_symbols),
-    alias_string(greek_letters)
+    alias_string(left_parenthesis, prefix="par"),
+    alias_string(right_parenthesis, prefix="par"),
+    alias_string(binary_functions, prefix="binary"),
+    alias_string(unary_functions, prefix="unary"),
+    alias_string(misc_symbols, prefix="misc"),
+    alias_string(operation_symbols, prefix="op"),
+    alias_string(relation_symbols, prefix="rel"),
+    alias_string(logical_symbols, prefix="logical"),
+    alias_string(function_symbols, prefix="func"),
+    alias_string(greek_letters, prefix="greek"),
+    alias_string(arrows, prefix="arrow")
 )
 asciimath_parser = Lark(asciimath_grammar, start="e",
                         parser='lalr', debug=True)
-# text = 'frac{root(5)(langle alpha,omega rangle)}{int(sqrt(x_2^3.14) X root(langle x,t rangle) (max(dot z,4)) + min(x,y,text("time")))dg}'
-text = 'min{2x|x in bbb(N) wedge arccos x < 3}'
+text = '''
+    frac{root(5)(langle alpha,omega rangle)}
+    {
+        int(
+            sqrt(x_2^3.14)
+            X
+            root(langle x,t rangle) (max(dot z,4)) +
+            min(x,y,text("time"))
+        ) dg
+    }
+'''
+# text = 'uuu_{i=1}^{n}{min{2x|x in bbb(N) wedge arccos x < i}}'
+# text = '''
+#   [[v, c], [a,b]]
+#   (((x+2), (int e^{x^2} dx)))
+#   oint (lfloor x rfloor quad) dx'''
 parsed_text = asciimath_parser.parse(text)
 print(parsed_text.pretty())
