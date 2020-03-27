@@ -3,9 +3,9 @@ from app.models.models import User, Expression
 
 expression_template1 = {
             'expression': "x + 2 = 5",
-            'expression_type': "equation",
+            #'expression_type': "equation",
             'solutions': "3",
-            'step': " ",
+            #'step': " ",
             'plot': " ",
             'alternate_forms': " ",
             'execution_time': "1"
@@ -13,9 +13,9 @@ expression_template1 = {
 
 expression_template2 = {
             'expression': "x + 3 = 5",
-            'expression_type': "equation",
+            #'expression_type': "equation",
             'solutions': "2",
-            'step': " ",
+            #'step': " ",
             'plot': " ",
             'alternate_forms': " ",
             'execution_time': "1"
@@ -31,7 +31,7 @@ def test_create_expression(app):
     assert len(expressions) == 1
     assert expressions[0].expression == ex.expression
     assert expressions[0].solutions == ex.solutions
-    assert expressions[0].expression_type == ex.expression_type
+    #assert expressions[0].expression_type == ex.expression_type
     assert expressions[0].execution_time == ex.execution_time
     assert expressions[0].user_id == user.id
 
