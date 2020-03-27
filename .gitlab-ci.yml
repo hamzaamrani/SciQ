@@ -21,7 +21,7 @@ test:
     - echo 'test'
     #- ./test/test.sh
     - docker-compose up -d --build
-    - docker exec -it web python -m pytest tests/
+    - docker exec web python -m pytest tests/
     - touch success
   after_script:
     - if [ ! -e success ]; then
