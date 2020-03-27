@@ -26,7 +26,7 @@ To enter in container db:
 
 ## if there is change in db schema
 
-`flask db init` (if there isn't yet)
+`flask db init` (if there isn't a migrations folder yet)
 
 in .env file change db with ip docker engine
 
