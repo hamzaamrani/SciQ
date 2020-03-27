@@ -38,6 +38,7 @@ class Expression(db.Model):
     step = db.Column(db.String(128))
     plot = db.Column(db.String(128))
     alternate_forms = db.Column(db.String(128))
+    execution_time = db.Column(db.String(128))
 
     def __repr__(self):
         return '<Expression {} = {}>'.format(self.expression, self.result)
@@ -51,4 +52,5 @@ class ExpressionSchema(ma.Schema):
             'solutions',
             'step',
             'plot',
-            'alternate_forms')
+            'alternate_forms',
+            'execution_time')

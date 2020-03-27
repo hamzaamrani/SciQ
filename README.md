@@ -10,18 +10,30 @@ The insertion of the formulas could happen through the use of a predefined text-
 The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 
 ## Database
-To perform db creation/migration is necessary to execute following command before docker-compose:
-* `flask db init` to initialize migrations folder that save and control modifiies in db schema
-
-`flask --help` to show all possible command with description
-
 To use app:
+
 `docker-compose up --build`
 
 **on windows system the url isn't 0.0.0.0 but docker engine IP**
 
 To perform test:
+
 `docker-compose build && docker-compose up -d && docker exec -it web python -m pytest tests/` 
 
 To enter in container db:
+
 `docker start db && docker exec -it db bash`
+
+## if there is change in db schema
+
+`flask db init` (if there isn't yet)
+
+in .env file change db with ip docker engine
+
+`docker-compose up --build db`
+
+`flask db migrate -m "messaggio"`
+
+in .env change ip docker engine with db
+
+`docker-compose up --build`

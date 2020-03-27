@@ -8,7 +8,6 @@ done
 
 echo "MySQL started"
 
-flask db migrate
 flask db upgrade
 
 cd /sciq

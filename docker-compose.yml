@@ -13,16 +13,12 @@ services:
       always
     networks: 
       - backend
-    volumes:
-      - type: bind
-        source: ./migrations
-        target: /usr/src/sciq/migrations
 
   db:
     container_name: 'db'
     image: mysql:5.7
     ports:
-      - "32000:3306"  
+      - "3306:3306"  
     command: "--innodb_use_native_aio=0" 
     environment:
       MYSQL_DATABASE: sciq
@@ -34,9 +30,14 @@ services:
     networks: 
       - backend
     volumes:
-      - type: bind
-        source: ./mysql-data
+      - type: volume
+        source: mysql-data
         target: /var/lib/mysql
 
 networks:
   backend:
+
+volumes: 
+  mysql-data:
+    driver: 
+      local
