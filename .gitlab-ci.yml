@@ -1,17 +1,29 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
 image:
-  name: docker:stable
+  name: docker/compose:1.24.1
+  entrypoint: ["sh", "-c"]
 
 services:
   - docker:dind
-  
+
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 test:
   stage: test
+  before_script:
+    - apk add --update curl
+    - docker version
+    - docker-compose version
   script:
-    - python -m pytest tests/
+    - echo 'test'
+    - ./test.sh
+    - touch success
+  after_script:
+    - if [ ! -e success ]; then
+        docker-compose logs;
+      fi
+
     
