@@ -4,7 +4,7 @@ from app import db, ma
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(
-        db.String(64),
+        db.String(128),
         index=True,
         unique=True,
         nullable=False)
@@ -32,10 +32,10 @@ class Expression(db.Model):
         db.Integer,
         db.ForeignKey('user.id'),
         nullable=False)
-    expression = db.Column(db.String(64), index=True, nullable=False)
-    expression_type = db.Column(db.String(128), index=True)
+    expression = db.Column(db.String(128), index=True, nullable=False)
+    #expression_type = db.Column(db.String(128), index=True)
     solutions = db.Column(db.String(128))
-    step = db.Column(db.String(128))
+    #step = db.Column(db.String(128))
     plot = db.Column(db.String(128))
     alternate_forms = db.Column(db.String(128))
     execution_time = db.Column(db.String(128))
@@ -48,9 +48,9 @@ class ExpressionSchema(ma.Schema):
         fields = (
             'user_id',
             'expression',
-            'expression_type',
+            #'expression_type',
             'solutions',
-            'step',
+            #'step',
             'plot',
             'alternate_forms',
             'execution_time')

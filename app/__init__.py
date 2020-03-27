@@ -21,6 +21,6 @@ def create_app(config_name):
 
     from .api import user_blueprint, expression_blueprint
     app.register_blueprint(user_blueprint)
-    app.register_blueprint(expression_blueprint) 
+    app.register_blueprint(expression_blueprint)
 
     return app

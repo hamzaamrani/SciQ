@@ -24,9 +24,9 @@ To enter in container db:
 
 `docker start db && docker exec -it db bash`
 
-## if there is change in db schema
+## if there is change in db schema (only after docker-compose up --build)
 
-`flask db init` (if there isn't a migrations folder yet)
+`flask db init` (if there isn't a migrations folder in root yet)
 
 in .env file change db with ip docker engine
 
