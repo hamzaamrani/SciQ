@@ -18,7 +18,7 @@ To use app:
 
 To perform test:
 
-`docker-compose build && docker-compose up -d && docker exec -it web python -m pytest tests/` 
+`docker-compose build && docker-compose up -d && docker exec web python -m pytest tests/` or `bash ./test/test.sh` 
 
 To enter in container db:
 
