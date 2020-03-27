@@ -38,4 +38,3 @@ in .env change ip docker engine with db
 
 `docker-compose up --build`
 
-lalalal
