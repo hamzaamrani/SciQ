@@ -1,12 +1,15 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
 image:
-  #name: docker/compose:1.24.1
   name: docker:stable
   entrypoint: ["sh", "-c"]
 
 services:
   - docker:dind
+
+before_script:
+  - apk add --update python py-pip python-dev git openssh-client && pip install docker-compose
+    
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -15,10 +18,8 @@ variables:
 test:
   stage: test
   before_script:
-    - apk add --update curl
     - docker version
     - docker-compose version
-    #- sudo chmod +x ./test.sh
   script:
     - echo 'test'
     - ./test.sh
