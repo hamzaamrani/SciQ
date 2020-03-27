@@ -1,7 +1,8 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
 image:
-  name: docker/compose:1.24.1
+  #name: docker/compose:1.24.1
+  name: docker:stable
   entrypoint: ["sh", "-c"]
 
 services:
@@ -17,7 +18,7 @@ test:
     - apk add --update curl
     - docker version
     - docker-compose version
-    - sudo chmod +x ./test.sh
+    #- sudo chmod +x ./test.sh
   script:
     - echo 'test'
     - ./test.sh
