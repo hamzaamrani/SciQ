@@ -1,5 +1,7 @@
-from lark import Lark
+from lark import Lark, Transformer, Discard, Tree, Token
+import re
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 """
@@ -20,13 +22,9 @@ def alias_string(mapping: dict, init=False, prefix=""):
 
 
 binary_functions = {
-    "\"frac\"": "latex_frac",
-    "\"root\"": "root",
-    "\"stackrel\"": "latex_stackrel",
-    "\"overset\"": "overset",
-    "\"underset\"": "underset",
-    "\"color\"": "color",
-}
+    "\"frac\"": "latex_frac", "\"root\"": "latex_sqrt",
+    "\"stackrel\"": "latex_stackrel", "\"overset\"": "latex_overset",
+    "\"underset\"": "latex_underset", "\"color\"": "latex_textcolor", }
 
 unary_functions = {
     "\"sqrt\"": "latex_sqrt",
@@ -37,9 +35,9 @@ unary_functions = {
     "\"norm\"": "norm",
     "\"ubrace\"": "latex_underbrace",
     "\"underbrace\"": "latex_underbrace",
-    "\"obrace\"": "obrace",
+    "\"obrace\"": "latex_overbrace",
     "\"overbrace\"": "latex_overbrace",
-    "\"cancel\"": "cancel",
+    "\"cancel\"": "latex_cancel",
     "\"bb\"": "latex_boldsymbol",
     "\"bbb\"": "latex_mathbb",
     "\"cc\"": "latex_mathcal",
@@ -58,7 +56,7 @@ unary_functions = {
 
 operation_symbols = {
     "\"+\"": "plus",
-    "\"*\"": "cdot",
+    "\"*\"": "latex_cdot",
     "\"-\"": "minus",
     "\"cdot\"": "latex_cdot",
     "\"**\"": "latex_ast",
@@ -66,8 +64,8 @@ operation_symbols = {
     "\"***\"": "latex_star",
     "\"star\"": "latex_star",
     "\"//\"": "frac",
-    "\"\\\\\"": "latex_backslash_setminus",
-    "\"backslash_setminus\"": "latex_backslash_setminus",
+    "\"\\\\\"": "latex_setminus",
+    "\"setminus\"": "latex_setminus",
     "\"xx\"": "latex_times",
     "\"times\"": "latex_times",
     "\"-:\"": "latex_div",
@@ -134,10 +132,10 @@ relation_symbols = {
     "\"=\"": "equal",
     "\"!=\"": "latex_ne",
     "\"ne\"": "latex_ne",
-    "\"<\"": "latex_lt",
-    "\"lt\"": "latex_lt",
-    "\">\"": "latex_gt",
-    "\"gt\"": "latex_gt",
+    "\"<\"": "lt",
+    "\"lt\"": "lt",
+    "\">\"": "gt",
+    "\"gt\"": "gt",
     "\"<=\"": "latex_le",
     "\"le\"": "latex_le",
     "\">=\"": "latex_ge",
@@ -199,6 +197,8 @@ function_symbols = {
     "\"glb\"": "latex_glb",
     "\"min\"": "latex_min",
     "\"max\"": "latex_max",
+    "\"lim\"": "latex_lim",
+    "\"dstyle\"": "latex_displaystyle",
     "\"f\"": "f",
     "\"g\"": "g"
 }
@@ -249,7 +249,7 @@ left_parenthesis = {
     "\"{\"": "left_curly",
     "\"{:\"": "left_curly_semi_colon",
     "\"langle\"": "latex_langle",
-    "\"<<\"": "latex_langle"
+    "\"<<\"": "latex_langle",
 }
 
 right_parenthesis = {
@@ -259,7 +259,7 @@ right_parenthesis = {
     "\"}\"": "right_curly",
     "\":}\"": "right_curly_semi_colon",
     "\"rangle\"": "latex_rangle",
-    "\">>\"": "latex_rangle"
+    "\">>\"": "latex_rangle",
 }
 
 arrows = {
@@ -292,6 +292,7 @@ arrows = {
 }
 
 misc_symbols = {
+    "\"|\"": "bar",
     "\"int\"": "latex_int",
     "\"oint\"": "latex_oint",
     "\"del\"": "latex_partial",
@@ -304,7 +305,7 @@ misc_symbols = {
     "\"emptyset\"": "latex_emptyset",
     "\"oo\"": "latex_infty",
     "\"infty\"": "latex_infty",
-    "\"aleph\"": "aleph",
+    "\"aleph\"": "latex_aleph",
     "\":.\"": "latex_therefore",
     "\"therefore\"": "latex_therefore",
     "\":'\"": "latex_because",
@@ -314,7 +315,7 @@ misc_symbols = {
     "\"cdots\"": "latex_cdots",
     "\"vdots\"": "latex_vdots",
     "\"ddots\"": "latex_ddots",
-    "\"quad\"": "empty_space",
+    "\"quad\"": "latex_quad",
     "\"/_\"": "latex_angle",
     "\"angle\"": "latex_angle",
     "\"frown\"": "latex_frown",
@@ -329,13 +330,212 @@ misc_symbols = {
     "\"|~\"": "latex_lceiling",
     "\"lceiling\"": "latex_lceiling",
     "\"~|\"": "latex_rceiling",
-    "\"rceiling\"": "rceiling",
+    "\"rceiling\"": "latex_rceiling",
     "\"CC\"": "complex_set",
     "\"NN\"": "natural_set",
     "\"QQ\"": "rational_set",
     "\"RR\"": "real_set",
     "\"ZZ\"": "integer_set",
 }
+
+
+class LatexTransformer(Transformer):
+    # TODO: translate LateX matrices
+
+    def __init__(self):
+        super(LatexTransformer, self).__init__()
+        # TODO: left/right curly semicolon
+        self.latex_trans = {
+            "bar": "|",
+            "NN": "\\mathbb{C}",
+            "QQ": "\\mathbb{C}",
+            "RR": "\\mathbb{C}",
+            "ZZ": "\\mathbb{C}",
+            "plus": "+",
+            "minus": "-",
+            "frac": "/",
+            "<": "<",
+            "lt": "<",
+            ">": ">",
+            "gt": ">",
+            "equal": "=",
+            "left": "(",
+            "left_square": "[",
+            "left_curly": "\\{",
+            "right": ")",
+            "right_square": "]",
+            "right_curly": "\\}",
+            "and": "and",
+            "or": "or",
+            "if": "if",
+            ",": ",",
+            ".": ".",
+            "'": "'"
+        }
+        self.left_parenthesis = [
+            "\\(", ":\\(", "\\[", "\\{", ":\\{", "langle", "<<"]
+        self.right_parenthesis = ["\\)", ":\\)",
+                                  "\\]", "\\}", ":\\}", "rangle", ">>"]
+        self.formatted_left_parenthesis = "|".join(self.left_parenthesis)
+        self.formatted_right_parenthesis = "|".join(self.right_parenthesis)
+        self.start_end_par_reg = re.compile(
+            r"^(?:\\left(?:(?:\\)?(?:{})))"
+            r"(.*?)"
+            r"(?:\\right(?:(?:\\)?(?:{})))$".format(
+                self.formatted_left_parenthesis,
+                self.formatted_right_parenthesis
+            )
+        )
+
+    def remove_parenthesis(self, s: str):
+        return re.sub(self.start_end_par_reg, r"\1", s)
+
+    def exp(self, items):
+        print("exp", items)
+        return " ".join(items)
+
+    def exp_under(self, items):
+        print("exp_under", items)
+        items[1] = self.remove_parenthesis(items[1])
+        return items[0] + "_{" + items[1] + "}"
+
+    def exp_super(self, items):
+        print("exp_super", items)
+        items[1] = self.remove_parenthesis(items[1])
+        return items[0] + "^{" + items[1] + "}"
+
+    def exp_interm(self, items):
+        print("exp_interm", items)
+        return items[0]
+
+    def exp_under_super(self, items):
+        print("exp_under_super", items)
+        items[1] = self.remove_parenthesis(items[1])
+        items[2] = self.remove_parenthesis(items[2])
+        return items[0] + "_{" + items[1] + "}^{" + items[2] + "}"
+
+    def exp_simple(self, items):
+        print("exp_simple", items)
+        return items[0]
+
+    def exp_par(self, items):
+        print("exp_par", items)
+        lpar = items[0].data.split("_")
+        rpar = items[2].data.split("_")
+        if "latex" in lpar:
+            left = "\\left\\" + lpar[2] + " "
+        else:
+            left = "\\left" + self.latex_trans["_".join(lpar[1:])]
+        if "latex" in rpar:
+            right = "\\right\\" + rpar[2] + " "
+        else:
+            right = "\\right" + self.latex_trans["_".join(rpar[1:])]
+        return left + items[1] + right
+
+    def exp_unary(self, items):
+        print("exp_unary", items)
+        unary = items[0].data.split("_")
+        items[1] = self.remove_parenthesis(items[1])
+        if "latex" in unary:
+            return "\\" + unary[2] + "{" + items[1] + "}"
+        elif unary[1] == "norm":
+            return "\\left \\lVert " + items[1] + " \\right \\rVert"
+        elif unary[1] == "abs":
+            return "\\left \\mid " + items[1] + " \\right \\mid"
+        elif unary[1] == "floor":
+            return "\\left \\lfloor " + items[1] + " \\right \\rfloor"
+        else:
+            return "\\left \\lceil " + items[1] + " \\right \\rceil"
+        return items
+
+    def exp_binary(self, items):
+        print("exp_binary", items)
+        binary = items[0].data.split("_")
+        items[1] = self.remove_parenthesis(items[1])
+        items[2] = self.remove_parenthesis(items[2])
+        if binary[2] == "sqrt":
+            return "\\" + binary[2] +\
+                "[" + items[1] + "]" +\
+                "{" + items[2] + "}"
+        else:
+            return "\\" + binary[2] +\
+                "{" + items[1] + "}" +\
+                "{" + items[2] + "}"
+        # return "\\{}{{{}}}{{{}}}".format(binary[2], items[1], items[2])
+
+    def quoted_string(self, items):
+        print("quoted_string", items)
+        return "\\text{" + items[0] + "}"
+
+    def var(self, items):
+        print("var", items)
+        return items[0]
+
+    def num(self, items):
+        print("num", items)
+        return items[0]
+
+    def punctuation(self, items):
+        print("punct", items)
+        return items[0]
+
+    def misc_symbols(self, items):
+        print("misc", items)
+        misc = items[0].data.split("_")
+        if "latex" in misc:
+            return '\\' + misc[2]
+        else:
+            return self.latex_trans[misc[1]]
+
+    def operation_symbols(self, items):
+        print("op", items)
+        op = items[0].data.split("_")
+        if "latex" in op:
+            return '\\' + op[2]
+        else:
+            return self.latex_trans[op[1]]
+
+    def logical_symbols(self, items):
+        print("logical", items)
+        log = items[0].data.split("_")
+        if "latex" in log:
+            return "\\" + log[2]
+        else:
+            return "\\text{" + self.latex_trans[log[1]] + "}"
+
+    def relation_symbols(self, items):
+        print("rel", items)
+        rel = items[0].data.split("_")
+        if "latex" in rel:
+            return "\\" + rel[2]
+        else:
+            return self.latex_trans[rel[1]]
+
+    def function_symbols(self, items):
+        print("func", items)
+        func = items[0].data.split("_")
+        if "latex" in func:
+            return "\\" + func[2]
+        else:
+            return func[1]
+
+    def greek_letters(self, items):
+        print("func", items)
+        greek = items[0].data.split("_")
+        if "upper" in greek:
+            return "\\" + greek[3].capitalize()
+        else:
+            return "\\" + greek[2]
+
+    def arrows(self, items):
+        print("arrows", items)
+        arr = items[0].data.split("_")
+        return "\\" + arr[2]
+
+    def derivatives(self, items):
+        print("derivatives", items)
+        return items[0]
+
 
 asciimath_grammar = r"""
     ?e: i+ -> exp
@@ -346,7 +546,7 @@ asciimath_grammar = r"""
         | s "_" s "^" s -> exp_under_super
     ?s: c -> exp_simple
         | l e r -> exp_par
-        | u s -> exp_unary_exp
+        | u s -> exp_unary
         | b s s -> exp_binary
         | quoted_string -> quoted_string
     ?l: {} // left parenthesis
@@ -355,16 +555,15 @@ asciimath_grammar = r"""
     ?u: {} // unary functions
     ?c: /[A-Za-z]/ -> var
         | NUMBER -> num
-        | "," -> comma
-        | "." -> point
-        | misc_symbols
-        | operation_symbols
-        | relation_symbols
-        | logical_symbols
-        | function_symbols
-        | greek_letters
-        | arrows
+        | misc_symbols -> misc_symbols
+        | operation_symbols -> operation_symbols
+        | relation_symbols -> relation_symbols
+        | logical_symbols -> logical_symbols
+        | function_symbols -> function_symbols
+        | greek_letters -> greek_letters
+        | arrows -> arrows
         | DERIVATIVES -> derivatives
+        | PUNCTUATION -> punctuation
     ?misc_symbols: {}
     ?operation_symbols: {}
     ?relation_symbols: {}
@@ -377,10 +576,10 @@ asciimath_grammar = r"""
     DOUBLE_QUOTED_STRING: /(?<=").+(?=")/
     SINGLE_QUOTED_STRING: /(?<=').+(?=')/
     DERIVATIVES: /d[A-Za-z]/
-
+    PUNCTUATION: ","
+        | "."
+        | "'"
     %import common.WS
-    %import common.WORD
-    %import common.LETTER
     %import common.NUMBER
     %ignore WS
 """.format(
@@ -396,23 +595,35 @@ asciimath_grammar = r"""
     alias_string(greek_letters, prefix="greek"),
     alias_string(arrows, prefix="arrow")
 )
-asciimath_parser = Lark(asciimath_grammar, start="e",
-                        parser='lalr', debug=True)
+asciimath_parser = Lark(
+    asciimath_grammar, start="e", parser='lalr', debug=True,
+    transformer=LatexTransformer())
 text = '''
-    frac{root(5)(langle alpha,omega rangle)}
+    frac{root(5)(a iff c)}
     {
-        int(
+        dstyle int(
             sqrt(x_2^3.14)
             X
             root(langle x,t rangle) (max(dot z,4)) +
-            min(x,y,text("time"))
+            min(x,y,"time",bbb C)
         ) dg
     }
 '''
-# text = 'uuu_{i=1}^{n}{min{2x|x in bbb(N) wedge arccos x < i}}'
 # text = '''
-#   [[v, c], [a,b]]
+#     uuu_{2(x+1)=1)^{n}
+#     {
+#         min{
+#             2x|x in bbb(N) wedge arccos root(3}(frac{1}{3x}) < i rarr Omega < b
+#         }
+#     }
+# '''
+# text = '''
+#   [[[[v, c], [a,b]]]]
 #   (((x+2), (int e^{x^2} dx)))
 #   oint (lfloor x rfloor quad) dx'''
+# text = '''
+#     floor frac "Time" (A nn (bbb(N) |><| (D setminus (B uu C))))
+# '''
+# text = '''lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx'''
 parsed_text = asciimath_parser.parse(text)
-print(parsed_text.pretty())
+print(parsed_text)
