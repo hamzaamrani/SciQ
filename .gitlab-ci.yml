@@ -17,6 +17,7 @@ test:
     - apk add --update curl
     - docker version
     - docker-compose version
+    - sudo chmod +x ./test.sh
   script:
     - echo 'test'
     - ./test.sh
