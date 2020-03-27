@@ -19,7 +19,7 @@ test:
     - docker-compose version
   script:
     - echo 'test'
-    - ./test.sh
+    - ./test/test.sh
     - touch success
   after_script:
     - if [ ! -e success ]; then

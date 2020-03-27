@@ -12,7 +12,6 @@ WORKDIR /sciq
 RUN pip3 install -r requirements.txt 
 
 COPY docker-entrypoint.sh /sciq/docker-entrypoint.sh
-COPY test.sh /sciq/test.sh
 COPY run.py /sciq/run.py
 COPY .env /sciq/.env
 COPY /tests /sciq/tests

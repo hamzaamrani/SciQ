@@ -37,5 +37,3 @@ in .env file change db with ip docker engine
 in .env change ip docker engine with db
 
 `docker-compose up --build`
-
-lalala
