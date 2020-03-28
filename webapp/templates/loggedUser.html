@@ -6,7 +6,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=3">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include Bootstrap stuff-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ]
+            }
+        };
+    </script>
+
+
 </head>
 
 <!-- BODY-->
@@ -25,37 +49,34 @@
                     <a class="nav-link" href="{{ url_for('index') }}"> <strong>Home</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> <strong>Let's math!</strong></a>
+                    <a class="nav-link" href="#math_section"> <strong>Let's math!</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#footer"> <strong> Contact </strong> </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#footer"> <strong> Hey {{name}}! </strong> </a>
+                    <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <header class="page-header header container-fluid" id="try_section">
+    <header class="text-center">
+        <div class="container container-fluid">
+            <div class="mx-auto text-center form-group form p-4">
+                <h2 class="display-4 py-2 text-truncate" style="font-weight: bold; font-size:5vw;">SciQ - The smart solver!</h2>
+                <form class="enter-equation" method="POST" action="/submit_expression">
+                    <input id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
+                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key">
+                        <img src="{{ url_for('static', filename='images/done.svg') }}">   
+                    </button>
+                </form>
+            </div>
+        </div>
 
-
-
+        <script type="math/asciimath">
+            sum_(i=1)^n i^3=((n(n+1))/2)^2
+        </script>
     </header>
 
 
-    <!-- Include Bootstrap stuff-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 </body>
-
-
-
 
 </html>

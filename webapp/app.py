@@ -16,12 +16,12 @@ def getLoginValues():
     else:
         return render_template('index.html')
 
+@app.route('/submit_expression', methods=['POST'])
+def submit_expression():
+    expression = request.form["symbolic_expression"]
+    print("L'espressione del cazzo è = " + expression)
+    return render_template('loggedUser.html', expression = "expression")
 
-
-@app.route('/signUp')
-def signUp():
-    return render_template('signUp.html')
-    
 
 
 if __name__ == '__main__':
