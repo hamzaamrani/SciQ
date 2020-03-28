@@ -3,6 +3,7 @@ services:
   web:
     container_name: 'web'
     build: .
+    image: web
     links: 
       - db
     ports:
@@ -14,9 +15,18 @@ services:
     networks: 
       - backend
     volumes:
+      # volume for store plot 
       - type: volume
         source: plot-expression
-        target: /user/src/siq/app/api/plot
+        target: /usr/src/siq/app/api/plot
+      # volume for mapping host folder to container 
+      #- type: bind
+      #  source: ./migrations
+      #  target: /user/src/sciq/migrations
+      - type: volume
+        source: migrations-data
+        target: /usr/src/sciq/migrations
+      
 
   db:
     container_name: 'db'
@@ -47,4 +57,7 @@ volumes:
       local
   plot-expression:
     driver:
+      local
+  migrations-data:
+    driver: 
       local

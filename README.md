@@ -12,7 +12,7 @@ The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 ## Database
 To use app:
 
-`docker-compose up --build`
+`docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
 
 **on windows system the url isn't 0.0.0.0 but docker engine IP**
 
@@ -24,17 +24,6 @@ To enter in container db:
 
 `docker start db && docker exec -it db bash`
 
-## if there is change in db schema (only after docker-compose up --build)
+If there are change in the DB schema with `docker-compose up --build` the script apply migrate and upgrade.
 
-`flask db init` (if there isn't a migrations folder in root yet)
-
-in .env file change db with ip docker engine
-
-`docker-compose up --build db`
-
-`flask db migrate -m "messaggio"`
-
-in .env change ip docker engine with db
-
-`docker-compose up --build`
 

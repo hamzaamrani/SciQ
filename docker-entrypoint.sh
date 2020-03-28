@@ -8,6 +8,11 @@ done
 
 echo "MySQL started"
 
+flask db init || true 
+
+sleep 0.5
+
+flask db migrate 
 flask db upgrade
 
 cd /sciq

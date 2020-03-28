@@ -33,7 +33,7 @@ class Expression(db.Model):
         db.ForeignKey('user.id'),
         nullable=False)
     expression = db.Column(db.String(128), index=True, nullable=False)
-    #expression_type = db.Column(db.String(128), index=True)
+    expression_type = db.Column(db.String(128), index=True)
     solutions = db.Column(db.String(128))
     #step = db.Column(db.String(128))
     plot = db.Column(db.String(128))
@@ -48,7 +48,7 @@ class ExpressionSchema(ma.Schema):
         fields = (
             'user_id',
             'expression',
-            #'expression_type',
+            'expression_type',
             'solutions',
             #'step',
             'plot',

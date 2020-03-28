@@ -5,19 +5,18 @@ RUN apt update && \
 
 EXPOSE 5000
 
-ADD requirements.txt /sciq/requirements.txt
+WORKDIR /usr/src/sciq
 
-WORKDIR /sciq
+ADD ./requirements.txt .
 
 RUN pip3 install -r requirements.txt 
 
-COPY docker-entrypoint.sh /sciq/docker-entrypoint.sh
-COPY run.py /sciq/run.py
-COPY .env /sciq/.env
-COPY /tests /sciq/tests
-COPY /migrations /sciq/migrations
-ADD /app /sciq/app
+COPY docker-entrypoint.sh .
+COPY run.py .
+COPY .env .
+COPY tests tests
+ADD app app
 
-CMD ["/bin/bash", "/sciq/docker-entrypoint.sh"]
+CMD ["/bin/bash", "/usr/src/sciq/docker-entrypoint.sh"]
 
 
