@@ -1,7 +1,8 @@
 from lark import (Lark, Transformer, Discard, Tree,
                   Token)
 from lark.exceptions import VisitError, GrammarError
-from log import Log
+from itertools import chain
+from log import Log, flatten
 import re
 import logging
 
@@ -201,8 +202,8 @@ function_symbols = {
     "\"max\"": "latex_max",
     "\"lim\"": "latex_lim",
     "\"dstyle\"": "latex_displaystyle",
-    "\"f\"": "f",
-    "\"g\"": "g"
+    # "\"f\"": "f",
+    # "\"g\"": "g"
 }
 
 greek_letters = {
@@ -361,10 +362,11 @@ class LatexTransformer(Transformer):
         # TODO: left/right curly semicolon
         self.latex_trans = {
             "bar": "|",
-            "NN": "\\mathbb{C}",
-            "QQ": "\\mathbb{C}",
-            "RR": "\\mathbb{C}",
-            "ZZ": "\\mathbb{C}",
+            "natural": "\\mathbb{N}",
+            "rational": "\\mathbb{Q}",
+            "real": "\\mathbb{R}",
+            "integer": "\\mathbb{Z}",
+            "complex": "\\mathbb{C}",
             "plus": "+",
             "minus": "-",
             "frac": "/",
@@ -376,17 +378,14 @@ class LatexTransformer(Transformer):
             "left": "(",
             "left_square": "[",
             "left_curly": "\\{",
-            "left_curly_semi_colon": "\\{:",
+            "left_curly_semi_colon": "\\{",
             "right": ")",
             "right_square": "]",
             "right_curly": "\\}",
-            "right_curly_semi_colon": ":\\}",
+            "right_curly_semi_colon": "\\}",
             "and": "and",
             "or": "or",
-            "if": "if",
-            ",": ",",
-            ".": ".",
-            "'": "'"
+            "if": "if"
         }
         self.left_parenthesis = [
             "\\(", ":\\(", "\\[", "\\{", ":\\{", "langle", "<<"]
@@ -454,23 +453,55 @@ class LatexTransformer(Transformer):
     @log
     def exp(self, items):
         # logging.info("exp", items)
+        if isinstance(items[0], list):
+            return " ".join(items[0])
         return " ".join(items)
+
+    @log
+    def exp_system(self, items):
+        # logging.info("exp", items)
+        return "\\begin{cases}" + "\\\\".join(
+            map(lambda x: re.sub(r"(?<!&)=", "&=", x, 1),
+                items)) + "\\end{cases}"
+
+    @log
+    def exp_pmat(self, items):
+        items = items[0]
+        n = len(items[0])
+        consistent_mat = all(len(el) == n for el in items[1:])
+        if consistent_mat:
+            mat = "\\begin{pmatrix}" + "\\\\".join(
+                [" & ".join(el) for el in items]) + "\\end{pmatrix}"
+        return mat
+
+    @log
+    def exp_bmat(self, items):
+        n = len(items[0])
+        consistent_mat = all(len(el) == n for el in items[1:])
+        if consistent_mat:
+            mat = "\\begin{bmatrix}" + "\\\\".join(
+                [" & ".join(el) for el in items]) + "\\end{bmatrix}"
+        return mat
+
+    @log
+    def exp_list(self, items):
+        return [list(flatten(el)) for el in items]
 
     @log
     def exp_frac(self, items):
         # logging.info("exp", items)
-        return items[0] + "/" + items[1]
+        return "\\frac{" + items[0] + "}{" + items[1] + "}"
 
     @log
     def exp_under(self, items):
         # logging.info("exp_under", items)
-        # items[1] = self.remove_parenthesis(items[1])
+        items[1] = self.remove_parenthesis(items[1])
         return items[0] + "_{" + items[1] + "}"
 
     @log
     def exp_super(self, items):
         # logging.info("exp_super", items)
-        # items[1] = self.remove_parenthesis(items[1])
+        items[1] = self.remove_parenthesis(items[1])
         return items[0] + "^{" + items[1] + "}"
 
     @log
@@ -481,8 +512,8 @@ class LatexTransformer(Transformer):
     @log
     def exp_under_super(self, items):
         # logging.info("exp_under_super", items)
-        # items[1] = self.remove_parenthesis(items[1])
-        # items[2] = self.remove_parenthesis(items[2])
+        items[1] = self.remove_parenthesis(items[1])
+        items[2] = self.remove_parenthesis(items[2])
         return items[0] + "_{" + items[1] + "}^{" + items[2] + "}"
 
     @log
@@ -493,21 +524,21 @@ class LatexTransformer(Transformer):
     @log
     def exp_par(self, items):
         # logging.info("exp_par", items)
-        if items[0].parent.parent.data not in [
-                "exp_under_super", "exp_super", "exp_under"]:
-            lpar = items[0].data.split("_")
-            rpar = items[2].data.split("_")
-            if "latex" in lpar:
-                left = "\\left\\" + lpar[2] + " "
-            else:
-                left = "\\left" + self.latex_trans["_".join(lpar[1:])]
-            if "latex" in rpar:
-                right = "\\right\\" + rpar[2] + " "
-            else:
-                right = "\\right" + self.latex_trans["_".join(rpar[1:])]
-            return left + items[1] + right
+        # if items[0].parent.parent.data not in [
+        #         "exp_under_super", "exp_super", "exp_under", "exp_frac"]:
+        lpar = items[0].data.split("_")
+        rpar = items[2].data.split("_")
+        if "latex" in lpar:
+            left = "\\left\\" + lpar[2] + " "
         else:
-            return items[1]
+            left = "\\left" + self.latex_trans["_".join(lpar[1:])]
+        if "latex" in rpar:
+            right = "\\right\\" + rpar[2] + " "
+        else:
+            right = "\\right" + self.latex_trans["_".join(rpar[1:])]
+        return left + items[1] + right
+        # else:
+        #     return items[1]
 
     @log
     def exp_unary(self, items):
@@ -524,7 +555,6 @@ class LatexTransformer(Transformer):
             return "\\left \\lfloor " + items[1] + " \\right \\rfloor"
         else:
             return "\\left \\lceil " + items[1] + " \\right \\rceil"
-        return items
 
     @log
     def exp_binary(self, items):
@@ -540,7 +570,6 @@ class LatexTransformer(Transformer):
             return "\\" + binary[2] +\
                 "{" + items[1] + "}" +\
                 "{" + items[2] + "}"
-        # return "\\{}{{{}}}{{{}}}".format(binary[2], items[1], items[2])
 
     @log
     def quoted_string(self, items):
@@ -550,12 +579,12 @@ class LatexTransformer(Transformer):
     @log
     def var(self, items):
         # logging.info("var", items)
-        return items[0]
+        return items[0].value
 
     @log
     def num(self, items):
         # logging.info("num", items)
-        return items[0]
+        return items[0].value
 
     @log
     def punctuation(self, items):
@@ -625,21 +654,22 @@ class LatexTransformer(Transformer):
     @log
     def derivatives(self, items):
         # logging.info("derivatives", items)
-        return items[0]
+        return items[0].value
 
     @log
-    def letter(self, items):
-        # logging.info("LEVEL: {}, PARENT: {}".format())
-        return items
+    def exp_comma(self, items):
+        return ",".join(items)
 
 
 asciimath_grammar = r"""
-    ?e: i+ -> exp
+    ?e: i+ -> exp 
+        | e "," i? -> exp_comma
     ?i: s -> exp_interm
         | s "/" s -> exp_frac
         | s "_" s -> exp_under
         | s "^" s -> exp_super
         | s "_" s "^" s -> exp_under_super
+        | "{{" ("(" e ")" ","?)+ ":}}" -> exp_system
     ?s: c -> exp_simple
         | l e r -> exp_par
         | u s -> exp_unary
@@ -654,12 +684,11 @@ asciimath_grammar = r"""
         | misc_symbols -> misc_symbols
         | operation_symbols -> operation_symbols
         | relation_symbols -> relation_symbols
-        | logical_symbols -> logical_symbols
         | function_symbols -> function_symbols
+        | logical_symbols -> logical_symbols
         | greek_letters -> greek_letters
         | arrows -> arrows
         | DERIVATIVES -> derivatives
-        | PUNCTUATION -> punctuation
     ?misc_symbols: {}
     ?operation_symbols: {}
     ?relation_symbols: {}
@@ -672,9 +701,9 @@ asciimath_grammar = r"""
     DOUBLE_QUOTED_STRING: /(?<=").+(?=")/
     SINGLE_QUOTED_STRING: /(?<=').+(?=')/
     DERIVATIVES: /d[A-Za-z]/
-    PUNCTUATION: ","
-        | "."
-        | "'"
+    // PUNCTUATION: ","
+    //    | "."
+    //    | "'"
     %import common.WS
     %import common.NUMBER
     %ignore WS
@@ -692,18 +721,18 @@ asciimath_grammar = r"""
     alias_string(arrows, prefix="arrow")
 )
 asciimath_parser = Lark(
-    asciimath_grammar, start="e", parser='lalr', debug=True)
-text = '''
-    frac{root(5)(a iff c)}
-    {
-        dstyle int(
-            sqrt(x_2^3.14)
-            X
-            root(langle x,t rangle) (max(dot z,4)) +
-            min(x,y,"time",bbb C)
-        ) dg
-    }
-'''
+    asciimath_grammar, start="e", parser='lalr', debug=True, )
+# text = '''
+#     frac{root(5)(a iff c)}
+#     {
+#         dstyle int(
+#             sqrt(x_2^3.14)
+#             X
+#             root(langle x,t rangle) (max(dot z,4)) +
+#             min(x,y,"time",bbb C)
+#         ) dg
+#     }
+# '''
 # text = '''
 #     uuu_{2(x+1)=1)^{n}
 #     min{
@@ -719,7 +748,8 @@ text = '''
 #     floor frac "Time" (A nn (bbb(N) |><| (D setminus (B uu C))))
 # '''
 # text = '''lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx'''
-# text = '''{(2x,+,17y,=,23),(x,-,y,=,5):}'''
-parsed_text = asciimath_parser.parse("sum_{x=1}^{oo}1/x")
+# text = '''{(2 x + 17 y = 23),(y = int_{0}^{x} t dt):}'''
+text = '''lim_(N->oo) sum_(i=0)^N dstyle int_0^1 f(x)dx'''
+parsed_text = asciimath_parser.parse(text)
 print(parsed_text.pretty())
 print(LatexTransformer().transform(parsed_text))

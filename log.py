@@ -13,6 +13,16 @@ from collections.abc import Iterable
 from itertools import chain
 
 
+def flatten(l):
+    """Flatten a list (or other iterable) recursively"""
+    for el in l:
+        if isinstance(el, Iterable) and not isinstance(el, str):
+            for sub in flatten(el):
+                yield sub
+        else:
+            yield el
+
+
 class Log(object):
 
     def __init__(self, logger_func=None, print_self=False):
@@ -21,15 +31,6 @@ class Log(object):
         else:
             self.logger_func = logger_func
         self.print_self = print_self
-
-    def _flatten(self, l):
-        """Flatten a list (or other iterable) recursively"""
-        for el in l:
-            if isinstance(el, Iterable) and not isinstance(el, str):
-                for sub in self.flatten(el):
-                    yield sub
-            else:
-                yield el
 
     def _getargnames(self, func):
         """Return an iterator over all arg names, including nested arg names and varargs.
@@ -40,9 +41,9 @@ class Log(object):
         if not self.print_self:
             args_names.remove("self")
         return chain(
-            self._flatten(args_names),
+            flatten(args_names),
             filter(None, [varargs_names, varkws_names]),
-            self._flatten(kwonlyargs_names))
+            flatten(kwonlyargs_names))
 
     def _getcallargs_ordered(self, func, *args, **kwargs):
         """Return an OrderedDict of all arguments to a function.
