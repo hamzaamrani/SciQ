@@ -41,6 +41,25 @@ def delete_user(id):
     db.session.commit()
     return user_schema.jsonify(user)
 
-@user_blueprint.route('/plot', methods=['GET'])
-def get_plot():
-    return send_from_directory(directory=base_folder_image, filename='prova1.jpg')
+@user_blueprint.route('/plot/<filename>', methods=['GET'])
+def get_plot(filename):
+        return send_from_directory(directory=base_folder_image, filename=filename)
+
+@user_blueprint.route('/plot', methods=['POST'])
+def save_plot():
+    # in teoria bisognerebbe controllare che non ci siano più plot,
+    # nel caso salvare ogni plot in modo distinto
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file:
+        #filename = secure_filename(file.filename)
+        file.save(os.path.join(base_folder_image, file.filename))
+        return "immagine {} salvata correttamente".format(file.filename)
