@@ -1,7 +1,14 @@
 from app import db, ma
 
 
+user_expression = db.Table('user_expression', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('expression_id', db.Integer, db.ForeignKey('expression.id')),
+    db.PrimaryKeyConstraint('user_id', 'expression_id'))
+
+
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(
         db.String(128),
@@ -10,7 +17,7 @@ class User(db.Model):
         nullable=False)
     password = db.Column(db.String(128), nullable=False)
     token = db.Column(db.String(128))
-    expressions = db.relationship('Expression', cascade="all, delete-orphan" , lazy='dynamic')
+    expressions = db.relationship('Expression', secondary=user_expression, backref="user", cascade="all, delete-orphan" , lazy='dynamic', single_parent=True)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -21,21 +28,13 @@ class UserSchema(ma.Schema):
 
 
 class Expression(db.Model):
-    __table_args__ = (
-        db.UniqueConstraint(
-            'user_id',
-            'expression',
-            name='_user_expression_uc'),
-    )
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('user.id'),
-        nullable=False)
+    __tablename__ = 'expression'
+
+    id = db.Column(db.Integer, primary_key=True)    
+    
     expression = db.Column(db.String(128), index=True, nullable=False)
     expression_type = db.Column(db.String(128), index=True)
-    solutions = db.Column(db.String(128))
-    #step = db.Column(db.String(128))
+    solutions = db.Column(db.String(128), nullable=False)
     plot = db.Column(db.String(128))
     alternate_forms = db.Column(db.String(128))
     execution_time = db.Column(db.String(128))
@@ -46,11 +45,9 @@ class Expression(db.Model):
 class ExpressionSchema(ma.Schema):
     class Meta:
         fields = (
-            'user_id',
             'expression',
             'expression_type',
             'solutions',
-            #'step',
             'plot',
             'alternate_forms',
             'execution_time')

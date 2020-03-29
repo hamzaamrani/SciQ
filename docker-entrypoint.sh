@@ -15,5 +15,5 @@ sleep 0.5
 flask db migrate 
 flask db upgrade
 
-cd /sciq
+#cd /sciq
 python run.py
