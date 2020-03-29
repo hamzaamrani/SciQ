@@ -15,6 +15,7 @@ COPY docker-entrypoint.sh .
 COPY run.py .
 COPY .env .
 COPY tests tests
+COPY migrations migrations
 ADD app app
 
 CMD ["/bin/bash", "/usr/src/sciq/docker-entrypoint.sh"]

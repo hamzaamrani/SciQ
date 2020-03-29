@@ -20,12 +20,12 @@ services:
         source: plot-expression
         target: /usr/src/siq/app/api/plot
       # volume for mapping host folder to container 
-      #- type: bind
-      #  source: ./migrations
-      #  target: /user/src/sciq/migrations
-      - type: volume
-        source: migrations-data
+      - type: bind
+        source: ./migrations
         target: /usr/src/sciq/migrations
+      #- type: volume
+      #  source: migrations-data
+      #  target: /usr/src/sciq/migrations
       
 
   db:
@@ -58,6 +58,6 @@ volumes:
   plot-expression:
     driver:
       local
-  migrations-data:
-    driver: 
-      local
+  # migrations-data:
+  #  driver: 
+  #    local

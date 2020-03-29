@@ -8,7 +8,7 @@ done
 
 echo "MySQL started"
 
-flask db init || true 
+#flask db init || true 
 
 sleep 0.5
 
