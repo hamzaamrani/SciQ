@@ -2,7 +2,10 @@ version: "3.3"
 services:
   web:
     container_name: 'web'
-    build: .
+    build: 
+      context: .
+      args: 
+        MIGRATE: ${MIGRATE}
     image: web
     links: 
       - db

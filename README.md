@@ -12,7 +12,7 @@ The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 ## Database
 To use app:
 
-`docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
+`MIGRATE=true docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
 
 **on windows system the url isn't 0.0.0.0 but docker engine IP**
 
@@ -24,6 +24,8 @@ To enter in container db:
 
 `docker start db && docker exec -it db bash`
 
-If there are change in the DB schema with `docker-compose up --build` the script apply migrate and upgrade.
+If there are changes in code `MIGRATE=false docker-compose up --build`
+
+If there are changes in the DB schema with `MIGRATE=true docker-compose up --build` the script apply migrate and upgrade.
 
 

@@ -12,8 +12,14 @@ echo "MySQL started"
 
 sleep 0.5
 
-flask db migrate 
-flask db upgrade
+# check if migrate and upgrade
+if [${MIGRATE} == true]; then
+    echo "make migration"
+    flask db migrate 
+    flask db upgrade
+else
+    echo "not migration"
+fi
 
 #cd /sciq
 python run.py

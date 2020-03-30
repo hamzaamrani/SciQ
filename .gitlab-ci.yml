@@ -20,7 +20,7 @@ test:
   script:
     - echo 'test'
     #- ./test/test.sh
-    - docker-compose up -d --build
+    - MIGRATE=true docker-compose up -d --build
     - docker exec web python -m pytest tests/
     - touch success
   after_script:
