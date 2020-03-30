@@ -6,31 +6,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=3">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Include Bootstrap stuff-->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script>
         MathJax = {
-            tex: {
-                inlineMath: [
-                    ['$', '$'],
-                    ['\\(', '\\)']
+            loader: {
+                load: ['input/asciimath']
+            },
+            asciimath: {
+                delimiters: [
+                    ['`', '`']
                 ]
+            },
+            svg: {
+                fontCache: 'global'
             }
         };
     </script>
 
-
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
 </head>
 
 <!-- BODY-->
@@ -49,7 +53,10 @@
                     <a class="nav-link" href="{{ url_for('index') }}"> <strong>Home</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#math_section"> <strong>Let's math!</strong></a>
+                    <a class="nav-link" href="#AsciMathInfo"> <strong>We use ASCIIMath</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#upload_image"> <strong>Upload image</strong></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
@@ -60,22 +67,86 @@
 
     <header class="text-center">
         <div class="container container-fluid">
+            <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
+            <h1 style="padding-bottom: 10px;">Enter your expression</h1>
             <div class="mx-auto text-center form-group form p-4">
-                <h2 class="display-4 py-2 text-truncate" style="font-weight: bold; font-size:5vw;">SciQ - The smart solver!</h2>
                 <form class="enter-equation" method="POST" action="/submit_expression">
-                    <input id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
-                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key">
-                        <img src="{{ url_for('static', filename='images/done.svg') }}">   
-                    </button>
+                    <input id="symbolic_expression" onkeyup="" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
+                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression">
+                    <img src="{{ url_for('static', filename='images/done.svg') }}">   
+                </button>
                 </form>
             </div>
         </div>
-
-        <script type="math/asciimath">
-            sum_(i=1)^n i^3=((n(n+1))/2)^2
-        </script>
     </header>
 
+
+    <div class="text-center" style="padding-bottom: 10px;">
+        <div class="container container-fluid">
+            <div class="box" id="box">
+                <div id="MathOutput" class="output">` `</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="text-center" style="padding-top: 20px;" id="upload_image">
+        <div class="container container-fluid">
+            <h1 style="padding-bottom: 10px;">Or upload image</h1>
+            <form method=post enctype=multipart/form-data action="/upload">
+                <input type=file name=file>
+                <input type=submit value=Upload>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <header class="page-header header container-fluid asciimath_doc" id="AsciMathInfo">
+        <div class="container">
+            <h1 style="text-align: center;">ASCIIMath</h2>
+                <p>We use <b>ASCIIMath</b> to work with the expressions.
+                    <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath for you.
+                    <br>If there is not what you are looking for in the extended keyboard please refer to <a href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
+                    <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted" target="_blank">ASCIIMath</a>
+                </p>
+        </div>
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+    <footer class="page-footer" id="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Additional Information</h6>
+                    <p>Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.</p>
+                    <p>The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.</p>
+                    <p>The resolution of the formulas happen through the use of Wolfram|Alpha's API.</p>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Contact</h6>
+                    <p>Università degli studi di Milano Bicocca
+                        <br/>info[at]SciQ.com
+                        <br/>c.carta4[at]campus[dot]unimib[dot]it
+                        <br/>s.ventura6[at]campus[dot]unimib[dot]it
+                        <br/>h.amrani[at]campus[dot]unimib[dot]it
+                        <br/>f.belotti8[at]campus[dot]unimib[dot]it
+                        <br/>g.scarpellini[at]campus[dot]unimib[dot]it
+                    </p>
+                </div>
+            </div>
+            <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
+    </footer>
 
 </body>
 

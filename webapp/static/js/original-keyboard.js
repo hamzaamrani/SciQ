@@ -1,8 +1,9 @@
+// Definition of the KEYBOARD
 const Keyboard = {
     elements: {
         main: null, // Main keyboard element
         keysContainer: null, // Element that contains all the keys
-        keys: [] // Keys
+        keys: [], // Keys
     },
 
     eventHandlers: {
@@ -12,6 +13,12 @@ const Keyboard = {
 
     properties: {
         value: ""
+    },
+
+    object: {
+        input_text: null,
+        output: null,
+        RenderHelper: null
     },
 
     init() {
@@ -34,10 +41,10 @@ const Keyboard = {
         // Automatically use keyboard for elements with .use-keyboard-input
         document.querySelectorAll(".use-keyboard-input").forEach(element => {
             element.addEventListener("focus", () => {
+                element.value = this.object.input_text.value
                 this.open(element.value, currentValue => {
-                    console.log("Current value = " + currentValue);
                     element.value = currentValue;
-                    console.log("element.value = " + element.value);
+                    this.object.RenderHelper.convert();
                 });
             });
         });
@@ -47,9 +54,9 @@ const Keyboard = {
         const fragment = document.createDocumentFragment();
         const keyLayout = [
             "π", "°", "∞", "√", "∫", "∑", "∂", "∏", "∀", "∃", "∪", "∩", "∇", "Δ",
-            "α", "β", "γ", "ε", "ζ", "η", "θ", "κ", "λ", "μ", "ν", "ξ", "≠", "ρ",
-            "σ", "τ", "φ", "χ", "ψ", "ω", "Γ", "Θ", "Λ", "Ξ", "ϒ", "Φ", "Ѱ", "Ω",
-            "℧", "Å", "ℏ", "ℵ", "⇌", "→", "⊕", "⊙", "♂", "♀", "†", "≥", "≤", "done"
+            "α", "β", "γ", "ε", "ζ", "η", "θ", "κ", "λ", "μ", "ν", "ξ", "σ", "ρ",
+            "τ", "φ", "χ", "ψ", "ω", "Γ", "Θ", "Λ", "Ξ", "ϒ", "Φ", "Ѱ", "Ω",
+            "ℵ", "→", "⊕", "⊙", "≠", "≥", "≤", "done"
         ];
 
         // Creates HTML for an icon
@@ -65,6 +72,7 @@ const Keyboard = {
             keyElement.setAttribute("type", "button");
             keyElement.classList.add("keyboard__key");
             keyElement.setAttribute("data-toggle", "tooltip"); // Add attribute for tooltip
+            // Switch on key to associate the correct ASCIIMath translation at each keyboard key
             switch (key) {
                 case "done":
                     keyElement.classList.add("keyboard__key--dark");
@@ -74,11 +82,10 @@ const Keyboard = {
                         this.close();
                         this._triggerEvent("onclose");
                     });
-
                     break;
 
                 default:
-                    keyElement.textContent = key.toLowerCase();
+                    keyElement.textContent = key;
                     keyElement.addEventListener("click", () => {
                         switch (key) {
                             case "∫":
@@ -87,21 +94,148 @@ const Keyboard = {
                             case "π":
                                 key = "pi";
                                 break;
+                            case "σ":
+                                key = "sigma";
+                                break;
+                            case "∞":
+                                key = "oo";
+                                break;
+                            case "√":
+                                key = "sqrt"
+                                break;
+                            case "∑":
+                                key = "sum";
+                                break;
+                            case "∂":
+                                key = "partial";
+                                break;
+                            case "∏":
+                                key = "prod";
+                                break;
+                            case "∀":
+                                key = " AA";
+                                break;
+                            case "∃":
+                                key = " EE";
+                                break;
+                            case "∪":
+                                key = "uu";
+                                break;
+                            case "∩":
+                                key = "nn";
+                                break;
+                            case "∇":
+                                key = "grad";
+                                break;
+                            case "Δ":
+                                key = " Delta";
+                                break;
                             case "α":
                                 key = "alpha";
                                 break;
-                            case "σ":
-                                key = "sigma";
+                            case "β":
+                                key = "beta";
+                                break;
+                            case "γ":
+                                key = "gamma";
+                                break;
+                            case "ε":
+                                key = "epsilon";
+                                break;
+                            case "ζ":
+                                key = "zeta";
+                                break;
+                            case "η":
+                                key = "eta";
+                                break;
+                            case "θ":
+                                key = "theta";
+                                break;
+                            case "κ":
+                                key = "kappa";
+                                break;
+                            case "λ":
+                                key = "lambda";
+                                break;
+                            case "μ":
+                                key = "mu";
+                                break;
+                            case "ν":
+                                key = "nu";
+                                break;
+                            case "ξ":
+                                key = "xi";
+                                break;
+                            case "ρ":
+                                key = "rho";
+                                break;
+                            case "τ":
+                                key = "tau";
+                                break;
+                            case "φ":
+                                key = "phi";
+                                break;
+                            case "χ":
+                                key = "chi";
+                                break;
+                            case "ψ":
+                                key = "psi";
+                                break;
+                            case "ω":
+                                key = "omega";
+                                break;
+                            case "Θ":
+                                key = " Theta";
+                                break;
+                            case "Γ":
+                                key = " Gamma";
+                                break;
+                            case "Λ":
+                                key = " Lambda";
+                                break;
+                            case "Ξ":
+                                key = " Xi";
+                                break;
+                            case "ϒ":
+                                key = "upsilon";
+                                break;
+                            case "Φ":
+                                key = " Phi";
+                                break;
+                            case "Ѱ":
+                                key = " Psi";
+                                break;
+                            case "Ω":
+                                key = " Omega";
+                                break;
+                            case "ℵ":
+                                key = "aleph";
+                                break;
+                            case "→":
+                                key = "->";
+                                break;
+                            case "⊕":
+                                key = "oplus";
+                                break;
+                            case "⊙":
+                                key = "o.";
+                                break;
+                            case "≥":
+                                key = ">=";
+                                break;
+                            case "≤":
+                                key = "<=";
                                 break;
 
                             default:
                                 key = key;
                                 break;
                         }
-                        this.properties.value += key.toLowerCase();
+                        this.properties.value += key;
+                        console.log("Input text = " + this.object.input_text.value);
+                        console.log("Keyboard   = " + this.properties.value);
                         this._triggerEvent("oninput");
                     });
-
                     break;
             }
 
@@ -110,7 +244,6 @@ const Keyboard = {
                 fragment.appendChild(document.createElement("br"));
             }
         });
-
         return fragment;
     },
 
@@ -124,7 +257,7 @@ const Keyboard = {
 
     open(initialValue, oninput, onclose) {
         console.log("Clicked input!");
-        this.properties.value = initialValue || "";
+        this.properties.value = Keyboard.object.input_text.value;
         this.eventHandlers.oninput = oninput;
         this.eventHandlers.onclose = onclose;
 
@@ -149,25 +282,36 @@ const Keyboard = {
 
 window.addEventListener("DOMContentLoaded", function() {
     Keyboard.init();
+    var input_text = document.getElementById('symbolic_expression');
+    var output = document.getElementById('MathOutput');
+    RenderHelper = new renderHelper();
+    Keyboard.object.input_text = input_text;
+    Keyboard.object.output = output;
+    Keyboard.object.RenderHelper = RenderHelper;
 
-    var el = document.getElementById('symbolic_expression');
-    el.addEventListener('keydown', function(event) {
+    input_text.addEventListener('keydown', function(event) {
         switch (event.key) {
             case "Backspace":
-                Keyboard.properties.value = Keyboard.properties.value.substring(0, Keyboard.properties.value.length - 1);
+                Keyboard.properties.value = Keyboard.object.input_text.value;
                 Keyboard._triggerEvent("oninput");
                 console.log(Keyboard.properties.value);
+                RenderHelper.convert();
                 break;
             case "Spacebar":
-                Keyboard.properties.value += " ";
+                Keyboard.properties.value = Keyboard.object.input_text.value;
                 Keyboard._triggerEvent("oninput");
                 console.log(Keyboard.properties.value);
+                RenderHelper.convert();
                 break;
-                /*default:
+            default:
+                if (event.key != "CapsLock" && event.key != "Shift" && event.key != "Tab" && event.key != "Shift" && event.key != "Enter" && event.key != "Control" && event.key != "ArrowUp" && event.key != "ArrowDown" && event.key != "ArrowLeft" && event.key != "ArrowRight" && event.key != "NumLock" && event.key != "F1" && event.key != "F2" && event.key != "F3" && event.key != "F4" && event.key != "F5" && event.key != "F6" && event.key != "F7" && event.key != "F8" && event.key != "F9" && event.key != "F10" && event.key != "F11" && event.key != "F12" && event.key != "Insert") {
                     Keyboard.properties.value += event.key;
-                    Keyboard._triggerEvent("oninput");
-                    console.log("Added = " + event.key);
-                    console.log("String is now equals to = " + Keyboard.properties.value);*/
+                    //input_text.value = Keyboard.properties.value;
+                    console.log("Keyboard value is  = " + Keyboard.properties.value);
+                    console.log("Inputtext value is = " + Keyboard.object.input_text.value);
+                    RenderHelper.convert();
+                }
+                break;
         }
     });
 
