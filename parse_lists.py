@@ -14,14 +14,11 @@ class Transformer(Transformer):
     log = Log(logger_func=logging.info)
 
     def get_level(self, l: list, lvl):
-        if lvl > 2:
+        if lvl > 1:
             return lvl
         for el in l:
-            if el == "[":
-                lvl = lvl + 1
-            elif el == "]":
-                lvl = lvl - 1
             if isinstance(el, list):
+                lvl = lvl + 1
                 lvl = self.get_level(el, lvl)
         return lvl
 
@@ -52,10 +49,11 @@ class Transformer(Transformer):
     @log
     def mat(self, items):
         max_lvl = self.get_level(items, 0)
-        if max_lvl > 2:
+        print("LEVEL", max_lvl)
+        if max_lvl > 1:
             return ['['] + items + [']']
         else:
-            items = self.visit(items, action="remove")
+            items = self.visit(items, action="remove")[0]
             return "\\begin{bmatrix}" + " \\\\ ".join([" & ".join(el)
                                                        if isinstance(el, list) else el
                                                        for el in items]) + "\\end{bmatrix}"
@@ -91,7 +89,7 @@ asciimath_parser = Lark(r"""
     %import common.NUMBER
     %ignore WS
 """, start="stmt", parser='lalr', debug=True)
-text = '''1,2,3,4[:[1,3],[:1,[:[1,2], [3,4]:]:]:]'''
+text = '''[:[1,3,[2,3,[1,[2,7]]]]:]'''
 parsed_text = asciimath_parser.parse(text)
 print(parsed_text.pretty())
 print(Transformer().transform(parsed_text))
