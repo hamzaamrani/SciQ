@@ -1,13 +1,15 @@
 from app import db
 from . import user_blueprint
 from flask import request, jsonify, send_from_directory
-from app.models.models import User, UserSchema
+from app.models.models import User, UserSchema, Expression, ExpressionSchema
 import os
 
 base_folder_image = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plot')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+expression_schema = ExpressionSchema()
+expressions_schema = ExpressionSchema(many=True)
 
 # create user
 @user_blueprint.route('/', methods=['POST'])
@@ -40,6 +42,14 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     return user_schema.jsonify(user)
+
+
+@user_blueprint.route('/<username>/expression', methods=['GET'])
+def get_ex_for_user(username):
+    expressions = Expression.query.filter(Expression.user.any(username=username)).all()
+    return jsonify(expressions_schema.dump(expressions))
+
+
 
 @user_blueprint.route('/plot/<filename>', methods=['GET'])
 def get_plot(filename):

@@ -1,10 +1,12 @@
 from app import db, ma
-
+from sqlalchemy import event
+from sqlalchemy import *
+from sqlalchemy.orm import *
 
 user_expression = db.Table('user_expression', db.Model.metadata,
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('expression_id', db.Integer, db.ForeignKey('expression.id')),
-    db.PrimaryKeyConstraint('user_id', 'expression_id'))
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='cascade')),
+    db.Column('expression_id', db.Integer, db.ForeignKey('expression.id', ondelete='cascade')),
+    db.UniqueConstraint('user_id', 'expression_id'))
 
 
 class User(db.Model):
@@ -17,10 +19,16 @@ class User(db.Model):
         nullable=False)
     password = db.Column(db.String(128), nullable=False)
     token = db.Column(db.String(128))
-    expressions = db.relationship('Expression', secondary=user_expression, backref="user", cascade="all, delete-orphan" , lazy='dynamic', single_parent=True)
+    expressions = db.relationship('Expression', secondary=user_expression, backref="users", lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+@event.listens_for(Session, 'after_flush')
+def delete_expression_orphans(session, ctx):
+    session.query(Expression).\
+        filter(~Expression.users.any()).\
+        delete(synchronize_session=False)
 
 class UserSchema(ma.Schema):
     class Meta:
