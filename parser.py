@@ -340,24 +340,14 @@ misc_symbols = {
 }
 
 
-def __init__(self, data, children, meta=None, parent=None):
-    self.data = data
-    self.children = children
-    self._meta = meta
-    self.parent = parent
-
-
-Tree.__init__ = __init__
-
-
 class LatexTransformer(Transformer):
     log = Log(logger_func=logging.info)
 
     # TODO: translate LateX matrices
+    # TODO: system of equations
 
     def __init__(self, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
-        # TODO: left/right curly semicolon
         self.latex_trans = {
             "bar": "|",
             "natural": "\\mathbb{N}",
@@ -400,71 +390,20 @@ class LatexTransformer(Transformer):
             )
         )
 
-    def _call_userfunc(self, tree, new_children=None):
-        # Assumes tree is already transformed
-        children = tree.children if new_children is None else new_children
-        try:
-            f = getattr(self, tree.data)
-        except AttributeError:
-            # 'co_argcount', self.__default__.__code__.co_argcount,
-            # 'co_varnames', self.__default__.__code__.co_varnames,
-            # print('__defaults__', inspect.getargspec( self.__default__ ) )
-            return self.__default__(tree, children)
-        else:
-            try:
-                if getattr(f, 'meta', False):
-                    return f(children, tree.meta)
-                elif getattr(f, 'inline', False):
-                    return f(*children)
-                elif getattr(f, 'whole_tree', False):
-                    if new_children is not None:
-                        tree.children = new_children
-                    return f(tree)
-                else:
-                    return f(children)
-            except (GrammarError, Discard):
-                raise
-            except Exception as e:
-                raise VisitError(tree, e)
-
-    def _transform_children(self, tree):
-        for c in tree.children:
-            try:
-                if isinstance(c, Tree):
-                    c.parent = tree
-                    yield self._transform_tree(c)
-                elif self.__visit_tokens__ and isinstance(c, Token):
-                    c.parent = tree
-                    yield self._call_userfunc_token(c)
-                else:
-                    yield c
-            except Discard:
-                pass
-
-    def _transform_tree(self, tree):
-        children = list(self._transform_children(tree))
-        return self._call_userfunc(tree, children)
-
-    def transform(self, tree):
-        tree.parent = None
-        return self._transform_tree(tree)
-
-    def __default__(self, tree, children):
-        """Default operation on tree (for override)"""
-        return Tree(tree.data, children, tree.meta, tree.parent)
-
     def remove_parenthesis(self, s: str):
         return re.sub(self.start_end_par_reg, r"\1", s)
 
     @log
-    def get_level(self, l: list, lvl):
+    def get_level(self, l: list, lvl, max_lvl=1):
         for el in l:
             if el == "[":
                 lvl = lvl + 1
-                if lvl > 1:
+                if lvl > max_lvl:
                     return lvl
             if isinstance(el, list):
-                lvl = + self.get_level(el, lvl)
+                lvl = lvl + self.get_level(el, lvl, max_lvl)
+                if lvl > max_lvl:
+                    return lvl
             if el == "]":
                 lvl = lvl - 1
         return lvl
@@ -512,7 +451,7 @@ class LatexTransformer(Transformer):
         max_lvl = self.get_level([re.split(r"([\[\]])", el)
                                   for el in items], 0)
         if max_lvl > 1:
-            return '\\left(' + items[0] + '\\right)'
+            return '\\left(' + " ".join(items) + '\\right)'
         else:
             items = self.visit(items, action="remove")
             items = [self.remove_parenthesis(
@@ -759,7 +698,8 @@ asciimath_grammar = r"""
     alias_string(arrows, prefix="arrow")
 )
 asciimath_parser = Lark(
-    asciimath_grammar, start="e", parser='lalr', debug=True, )
+    asciimath_grammar, start="e", parser='lalr', debug=True,
+    transformer=LatexTransformer())
 text = ""
 text = text + '''
     frac{root(5)(a iff c)}
@@ -791,7 +731,7 @@ text = text + '''floor frac "Time" (A nn (bbb(N) |><| (D setminus (B uu C))))'''
 text = text + \
     '''(:[2 x + 17 y = 23],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt]:)'''
 text = text + \
-    '''e^(:[2 x + 17 y = 23],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt]:)'''
+    '''e^{{(:[2 x + 17 y = 23, [1]],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt]:)}}'''
 parsed_text = asciimath_parser.parse(text)
 print(parsed_text.pretty())
 print(LatexTransformer().transform(parsed_text))
