@@ -114,6 +114,7 @@ class Expression(object):
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
+        self.symbolic_solutions = []
         self.results = []
         self.limits = []
         self.partial_derivatives = []
@@ -123,7 +124,7 @@ class Expression(object):
             for pod in results['pod']:
                 try:
                     print(pod['@id'])
-                    if pod['@id'].find("Plot") >= 0:
+                    if 'Plot' in pod['@id']:
                         if isinstance(pod['subpod'], list):
                             for subpod in pod['subpod']:
                                 src_plot = subpod['img']['@src']
@@ -131,60 +132,43 @@ class Expression(object):
                                     base64.b64encode(
                                         requests.get(src_plot).content))
                         else:
-                            src_plot = subpod['img']['@src']
-                            self.plots.append(src_plot)
+                            src_plot = pod['subpod']['img']['@src']
+                            self.plots.append(
+                                    base64.b64encode(
+                                        requests.get(src_plot).content))
 
-                    if pod['@id'].find("AlternateForm") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.alternate_forms.append(
-                                    subpod['plaintext'])
-                        else:
-                            self.alternate_forms.append(
-                                pod['subpod']['plaintext'])
-
-                    if pod['@id'].find("Solution") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.solutions.append(subpod['plaintext'])
-                        else:
-                            self.solutions.append(pod['subpod']['plaintext'])
-
-                    if pod['@id'].find("Result") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.results.append(subpod['plaintext'])
-                        else:
-                            self.results.append(pod['subpod']['plaintext'])
-
-                    if pod['@id'].find("Limit") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.limits.append(subpod['plaintext'])
-                        else:
-                            self.limits.append(pod['subpod']['plaintext'])
-
-                    if pod['@id'].find("Derivative") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.partial_derivatives.append(
-                                    subpod['plaintext'])
-                        else:
-                            self.partial_derivatives.append(
-                                pod['subpod']['plaintext'])
-
-                    if pod['@id'].find("Integral") >= 0:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                self.integral.append(subpod['plaintext'])
-                        else:
-                            self.integral.append(pod['subpod']['plaintext'])
+                    if 'AlternateForm' in pod['@id']:
+                        self.alternate_forms.extend(self.extract_plaintext(pod=pod))
+                    if 'Solution' in pod['@id'] and not 'SolutionForTheVariable' in pod['@id'] and not 'SymbolicSolution' in pod['@id']:
+                        self.solutions.extend(self.extract_plaintext(pod=pod))
+                    if 'SymbolicSolution' in pod['@id']:
+                        self.symbolic_solutions.extend(self.extract_plaintext(pod=pod))
+                    if 'Result' in pod['@id']:
+                        self.results.extend(self.extract_plaintext(pod=pod))
+                    if 'Limit' in pod['@id']:
+                        self.limits.extend(self.extract_plaintext(pod=pod))
+                    if 'Derivative' in pod['@id']:
+                        self.partial_derivatives.extend(self.extract_plaintext(pod=pod))
+                    if 'Integral' in pod['@id']:
+                        self.integral.extend(self.extract_plaintext(pod=pod))
 
                 except BaseException:
                     print("Error in extraction:", pod['@id'])
 
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
+
+    def extract_plaintext(self, pod):
+        """
+        Extract plaintext field from subpods
+        """
+        plaint_text = []
+        if isinstance(pod['subpod'], list):
+            for subpod in pod['subpod']:
+                plaint_text.append(subpod['plaintext'])
+        else:
+            plaint_text.append(pod['subpod']['plaintext'])
+        return plaint_text
 
     def save_plots(self, id_equation, dir_plots):
         """
@@ -211,6 +195,7 @@ class Expression(object):
         print("Alternate forms: ", self.alternate_forms)
         print("Results: ", self.results)
         print("Solutions: ", self.solutions)
+        print("Symbolic Solutions: ", self.symbolic_solutions)
         print("Limit: ", self.limits)
         print("Partial derivatives: ", self.partial_derivatives)
         print("Integral: ", self.integral)
@@ -219,13 +204,15 @@ class Expression(object):
 if __name__ == "__main__":
     """
     Query examples:
-        \int x^2 dx
+        x^3 - y^2 = 23
         x^3 + x^2 y + x y^2 + y^3
+        3x^3 + 2x^2 - 4ax +2 = 0
         \frac{x^2-1}{x^2+1}
         \cos{\frac{\arcsin{x}}{2}}
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
+        \int x^2 dx
     """
-    query = '\cos{\frac{\arcsin{x}}{2}}'
+    query = ''
     api = waAPI(KEY)
     results = api.full_results(query=query)
 
@@ -238,6 +225,5 @@ if __name__ == "__main__":
     # file.close()
 
     id_equation = '001'
-
     obj = Expression(query=query, results=results, id_equation=id_equation)
     obj.print_expression()
