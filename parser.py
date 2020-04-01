@@ -14,14 +14,14 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 """
 
 
-def alias_string(mapping: dict, init=False, prefix=""):
+def alias_string(mapping: dict, init=False, alias=True, prefix=""):
     mapping = list(mapping.items())
     s = "|" if init else "" + \
-        mapping[0][0] + " -> " + \
-        (prefix + "_" if prefix != "" else "") + mapping[0][1]
+        mapping[0][0] + (" -> " +
+                         (prefix + "_" if prefix != "" else "") + mapping[0][1] if alias else "")
     for k, v in mapping[1:]:
-        s = s + "\n\t| " + k + " -> " + \
-            (prefix + "_" if prefix != "" else "") + v
+        s = s + "\n\t| " + k + (" -> " + (prefix + "_" if prefix !=
+                                          "" else "") + v if alias else "")
     return s
 
 
@@ -203,8 +203,8 @@ function_symbols = {
     "\"max\"": "latex_max",
     "\"lim\"": "latex_lim",
     "\"dstyle\"": "latex_displaystyle",
-    # "\"f\"": "f",
-    # "\"g\"": "g"
+    "\"f\"": "f",
+    "\"g\"": "g"
 }
 
 greek_letters = {
@@ -248,22 +248,20 @@ greek_letters = {
 
 left_parenthesis = {
     "\"(\"": "left",
-    # "\"(:\"": "left_semicolon",
+    "\"(:\"": "latex_langle",
     "\"[\"": "left_square",
-    # "\"[:\"": "left_square_semicolon",
     "\"{\"": "left_curly",
-    # "\"{:\"": "left_curly_semicolon",
+    "\"{:\"": "left_curly_semicolon",
     "\"langle\"": "latex_langle",
     "\"<<\"": "latex_langle",
 }
 
 right_parenthesis = {
     "\")\"": "right",
-    # "\":)\"": "right_semicolon",
+    "\":)\"": "latex_rangle",
     "\"]\"": "right_square",
-    # "\":]\"": "right_square_semicolon",
     "\"}\"": "right_curly",
-    # "\":}\"": "right_curly_semicolon",
+    "\":}\"": "right_curly_semicolon",
     "\"rangle\"": "latex_rangle",
     "\">>\"": "latex_rangle",
 }
@@ -299,6 +297,10 @@ arrows = {
 
 misc_symbols = {
     "\"|\"": "bar",
+    "\"'\"": "squote",
+    "\",\"": "comma",
+    "\"_\"": "underscore",
+    "\"^\"": "superflex",
     "\"int\"": "latex_int",
     "\"oint\"": "latex_oint",
     "\"del\"": "latex_partial",
@@ -346,8 +348,6 @@ misc_symbols = {
 
 
 class LatexTransformer(Transformer):
-    # TODO: translate LateX matrices
-    # TODO: system of equations
 
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
@@ -367,20 +367,20 @@ class LatexTransformer(Transformer):
             "gt": ">",
             "equal": "=",
             "left": "(",
-            # "left_semicolon": "(",
             "left_square": "[",
-            # "left_square_semicolon": "[",
             "left_curly": "\\{",
-            # "left_curly_semicolon": "\\{",
+            "left_curly_semicolon": "",
             "right": ")",
-            # "right_semicolon": ":)",
             "right_square": "]",
-            # "right_square_semicolon": ":]",
             "right_curly": "\\}",
-            # "right_curly_semicolon": "\\}",
+            "right_curly_semicolon": "",
             "and": "and",
             "or": "or",
-            "if": "if"
+            "if": "if",
+            "comma": ",",
+            "underscore": "\\_",
+            "superflex": "\\^",
+            "squote": "'"
         }
         self.left_parenthesis = [
             "\\(", "\\[", "\\{", "langle", "<<"]
@@ -416,89 +416,26 @@ class LatexTransformer(Transformer):
         return re.sub(self.start_end_par_pattern, r"\2", s)
 
     @_log
-    def get_level(self, l: list, lvl, max_lvl=1,
-                  left_par="[", right_par="]", first=False):
-        for el in l:
-            if first:
-                first = False
-                if el == "(":
-                    left_par = "("
-                    right_par = ")"
-                elif el == "[":
-                    left_par = "["
-                    right_par = "]"
-            if el == left_par:
-                lvl = lvl + 1
-                if lvl > max_lvl:
-                    return lvl
-            if isinstance(el, list):
-                lvl = lvl + self.get_level(el,
-                                           lvl,
-                                           max_lvl,
-                                           left_par=left_par,
-                                           right_par=right_par,
-                                           first=first)
-                if lvl > max_lvl:
-                    return lvl
-            if el == right_par:
-                lvl = lvl - 1
-        return lvl
-
-    # @_log
-    # def visit(self, l: list, action="remove"):
-    #     expanded_l = []
-    #     for el in l:
-    #         if isinstance(el, list):
-    #             el = self.visit(el, action=action)
-    #         elif isinstance(el, Token) or isinstance(el, Tree):
-    #             if action == "remove":
-    #                 continue
-    #             elif action == "expand":
-    #                 if isinstance(el, Tree):
-    #                     el = el.data
-    #                 else:
-    #                     el = el.value
-    #         expanded_l = expanded_l + [el]
-    #     return expanded_l
-
-    # @_log
-    # def recursive_join(self, l: list):
-    #     s = ""
-    #     for el in l:
-    #         if isinstance(el, list):
-    #             el = self.recursive_join(el)
-    #         elif isinstance(el, Token):
-    #             el = el.value
-    #         s = s + el
-    #     return s
-
-    @_log
-    def exp_list(self, items):
+    def exp_par(self, items):
         lpar = items[0].data.split("_")
         rpar = items[-1].data.split("_")
         if "latex" in lpar:
             left = "\\left\\" + lpar[2] + " "
         else:
-            left = "\\left" + self.latex_trans["_".join(lpar[1:])]
+            left = "\\left" + ("." if "semicolon" in lpar else "") + \
+                self.latex_trans["_".join(lpar[1:])]
         if "latex" in rpar:
             right = "\\right\\" + rpar[2] + " "
         else:
-            right = "\\right" + self.latex_trans["_".join(rpar[1:])]
+            right = "\\right" + \
+                ("." if "semicolon" in rpar else "") + \
+                self.latex_trans["_".join(rpar[1:])]
         return left + " ".join(items[1:-1]) + right
 
     @_log
     def exp_mat(self, items, mat_type="pmatrix"):
-        max_lvl = self.get_level([re.split(self.split_par_pattern, el)
-                                  for el in items], 0, first=True)
-        if max_lvl > 1:
-            return '\\left(' + " ".join(items) + '\\right)'
-        else:
-            # items = self.visit(items, action="remove")
-            # logging.info("AFTER REMOVE {}".format(items))
-            items = [self.remove_parenthesis(
-                el) for el in items if not isinstance(el, Token)]
-            return "\\begin{" + mat_type + "}" + " \\\\ ".join(
-                items) + "\\end{" + mat_type + "}"
+        return "\\begin{" + mat_type + "}" + \
+            items[0] + "\\end{" + mat_type + "}"
 
     @_log
     def exp_cmat(self, items):
@@ -523,6 +460,18 @@ class LatexTransformer(Transformer):
     @_log
     def exp_system(self, items):
         return re.sub(r"(?<!&)=", "&=", self.exp_mat(items, mat_type="cases"))
+
+    @_log
+    def csl(self, items):
+        return ", ".join(items)
+
+    @_log
+    def csl_mat(self, items):
+        return " \\\\ ".join(items)
+
+    @_log
+    def icsl_mat(self, items):
+        return " & ".join(items)
 
     @_log
     def exp_frac(self, items):
@@ -554,7 +503,7 @@ class LatexTransformer(Transformer):
         return items[0] + "_{" + items[1] + "}^{" + items[2] + "}"
 
     @_log
-    def exp_simple(self, items):
+    def symbol(self, items):
         # logging.info("exp_simple", items)
         return items[0]
 
@@ -665,11 +614,6 @@ class LatexTransformer(Transformer):
         return "\\" + arr[2]
 
     @_log
-    def punctuation(self, items):
-        # logging.info("derivatives", items)
-        return items[0].value
-
-    @_log
     def derivatives(self, items):
         # logging.info("derivatives", items)
         return items[0].value
@@ -683,6 +627,7 @@ class ASCIIMath2Tex(object):
 
     def __init__(
             self, grammar, *args, inplace=False, parser="lalr",
+            lexer="contextual",
             transformer=LatexTransformer(),
             **kwargs):
         self.inplace = inplace
@@ -690,7 +635,12 @@ class ASCIIMath2Tex(object):
         self.transformer = transformer
         if inplace:
             kwargs.update({"transformer": transformer})
-        self.parser = Lark(grammar, *args, parser=parser, **kwargs)
+        self.parser = Lark(
+            grammar,
+            *args,
+            parser=parser,
+            lexer=lexer,
+            **kwargs)
 
     def asciimath2tex(self, s: str, pprint=False):
         if not self.inplace:
@@ -702,23 +652,25 @@ class ASCIIMath2Tex(object):
             return self.parser.parse(s)
 
 
-# TODO:
 asciimath_grammar = r"""
-    start: _csl -> exp
-    _csl: i (/[,&]/? i)* /[,&]/? //csl = Char Separated List
+    start: i+ -> exp
+    csl: start ("," start)* ","?                    // csl = Comma Separated List
+    csl_mat: icsl_mat ("," icsl_mat)* ","?          // csl_mat = Comma Separated List for Matrices
+    icsl_mat: "[" start? ("," start)* ","? "]"      // icsl_mat = Internal Comma Separated List
     i: s -> exp_interm
         | s "/" s -> exp_frac
         | s "_" s -> exp_under
         | s "^" s -> exp_super
         | s "_" s "^" s -> exp_under_super
-    s: c -> exp_simple
-        | l _csl? r -> exp_list
-        | "[:" _csl? ":]" -> exp_bmat
-        | "(:" _csl? ":)" -> exp_pmat
-        | "{{:" _csl? ":}}" -> exp_cmat
-        | "|:" _csl? ":|" -> exp_vmat
-        | "||:" _csl? ":||" -> exp_nmat
-        | "{{:" _csl? ":)" -> exp_system
+    s: c -> symbol
+        | l csl? r -> exp_par
+        | "[" csl_mat? "]" -> exp_bmat
+        | "(" csl_mat? ")" -> exp_pmat
+        | "(" csl_mat? ")" -> exp_pmat
+        | "{{" csl_mat? "}}" -> exp_cmat
+        | "|" csl_mat? "|" -> exp_vmat
+        | "||" csl_mat? "||" -> exp_nmat
+        | "{{" csl_mat? ")" -> exp_system
         | u s -> exp_unary
         | b s s -> exp_binary
         | _qs -> q_str
@@ -726,12 +678,10 @@ asciimath_grammar = r"""
     r: {} // right parenthesis
     b: {} // binary functions
     u: {} // unary functions
-    _qs: "\"" DOUBLE_QUOTED_STRING "\""
-        | "'" SINGLE_QUOTED_STRING "'"
+    _qs: "\"" /(?<=").+(?=")/ "\""
     c: LETTER -> var
        | NUMBER -> num
-       | DERIVATIVES -> derivatives
-       | PUNCTUATION -> punctuation
+       | /d[A-Za-z]/ -> derivatives
        | ms -> misc_symbols
        | os -> operation_symbols
        | rs -> relation_symbols
@@ -746,10 +696,6 @@ asciimath_grammar = r"""
     fs: {}
     g: {}
     a: {}
-    DOUBLE_QUOTED_STRING: /(?<=").+(?=")/
-    SINGLE_QUOTED_STRING: /(?<=').+(?=')/
-    DERIVATIVES: /d[A-Za-z]/
-    PUNCTUATION: "'" | "."
     %import common.WS
     %import common.LETTER
     %import common.NUMBER
@@ -767,40 +713,39 @@ asciimath_grammar = r"""
     alias_string(greek_letters, prefix="greek"),
     alias_string(arrows, prefix="arrow")
 )
-
 parser = ASCIIMath2Tex(
     asciimath_grammar,
     inplace=False,
     transformer=LatexTransformer())
 text = ""
-# text = text + '''
-#     frac{root(5)(a iff c)}
-#     {
-#         dstyle int(
-#             sqrt(x_2^3.14)
-#             X
-#             root(langle x,t rangle) (max(dot z,4)) +
-#             min(x,y,"time",bbb C)
-#         ) dg
-#     }
-# '''
-# text = text + '''
-#     uuu_{2(x+1)=1)^{n}
-#     min{
-#             2x|x^{y+2} in bbb(N) wedge arccos root(3}(frac{1}{3x}) < i rarr Omega < b, 5=x
-#     }
-# '''
-# text = text + '''
-#   [[[[v, c], [a,b]]]]
-#   (((x+2), (int e^{x^2} dx)))
-#   oint (lfloor x rfloor quad) dx'''
-# text = text + '''lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx'''
-# text = text + '''||:(2 x + 17 y = 23),(y = int_{0}^{x} t dt):||'''
-# text = text + \
-#     '''floor frac "Time" (A nn (bbb(N) | f'(x) = dx/dy | |><| (D setminus (B uu C))))'''
+text = text + '''
+    frac{root(5)(a iff c)}
+    {
+        dstyle int(
+            sqrt(x_2^3.14)
+            X
+            root(langle x,t rangle) (max(dot z,4)) +
+            min(x,y,"time",bbb C)
+        ) dg
+    }
+'''
+text = text + '''
+    uuu_{2(x+1)=1)^{n}
+    min{
+            2x|x^{y+2} in bbb(N) wedge arccos root(3}(frac{1}{3x}) < i rarr Omega < b, 5=x
+    }
+'''
+text = text + '''
+  [[[[v, c], [a,b]]]]
+  (((x+2), (int e^{x^2} dx)))
+  oint (lfloor x rfloor quad) dx'''
+text = text + '''lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx'''
+text = text + '''||[2 x + 17 y = 23],[y = int_{0}^{x} t dt]||'''
 text = text + \
-    '''(:[1 & 2], [2, 3,4], [e^(vec x) & max{1,2,3}], [(5,6,min{1,2,3})& 8]:)'''
-# text = text + \
-#     '''e^{{(:[2 x + 17 y = 23, [1]],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt]:)}}'''
-# text = text + '''{:[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt]:)'''
-print(parser.asciimath2tex(text))
+    '''floor frac "Time" (A nn (bbb(N) | f'(x) = dx/dy | |><| (D setminus (B uu C))))'''
+text = text + \
+    '''[[1,2,[[5,6], [7,8,]]], [3,4]]'''
+text = text + \
+    '''e^{{([2 x + 17 y = 23, [1]],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt])}}'''
+text = text + ''','''
+print(parser.asciimath2tex(text, pprint=True))
