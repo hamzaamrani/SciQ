@@ -9,10 +9,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Include Bootstrap stuff-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 
     <script>
         MathJax = {
@@ -35,6 +36,7 @@
     <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
 </head>
 
 <!-- BODY-->
@@ -90,37 +92,29 @@
     </div>
 
 
-    <div class="text-center" style="padding-top: 20px;" id="upload_image">
+    <div class="text-center" style="padding-top: 5px;" id="drag_n_drop">
         <div class="container container-fluid">
-            <h1 style="padding-bottom: 10px;">Or upload image</h1>
-            <form method=post enctype=multipart/form-data action="/upload">
-                <input type=file name=file>
-                <input type=submit value=Upload>
-            </form>
+            <h1 style="padding-bottom: 10px;"> Upload image</h1>
+            <div class="container">
+                <div class="droparea">
+                    <p>Drop Here</p>
+                </div>
+            </div>
+
+
         </div>
     </div>
-
-
-
 
     <header class="page-header header container-fluid asciimath_doc" id="AsciMathInfo">
         <div class="container">
             <h1 style="text-align: center;">ASCIIMath</h2>
-                <p>We use <b>ASCIIMath</b> to work with the expressions.
+                <p style="text-align:left">We use <b>ASCIIMath</b> to work with the expressions.
                     <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath for you.
                     <br>If there is not what you are looking for in the extended keyboard please refer to <a href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
                     <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted" target="_blank">ASCIIMath</a>
                 </p>
         </div>
     </header>
-
-
-
-
-
-
-
-
 
 
 
