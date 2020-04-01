@@ -1,13 +1,12 @@
-CREATE DATABASE knights;
-use knights;
+CREATE DATABASE sciq;
+use sciq;
 
-CREATE TABLE favorite_colors (
-  name VARCHAR(20),
-  color VARCHAR(10)
+CREATE TABLE User (
+  username VARCHAR(16),
+  password VARCHAR(50)
 );
 
-INSERT INTO favorite_colors
-  (name, color)
+INSERT INTO User
+  (username, password)
 VALUES
-  ('Lancelot', 'blue'),
-  ('Galahad', 'yellow');
+  ('hamza', '5f4dcc3b5aa765d61d8327deb882cf99');
