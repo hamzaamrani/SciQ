@@ -12,7 +12,6 @@ import pickle
 import os.path
 from PIL import Image
 from io import BytesIO
-import unittest
 
 
 API_URL = 'https://api.wolframalpha.com/v2/query'
@@ -85,16 +84,24 @@ class waAPI(object):
             return 'Sorry, I did not get your question.'
         else:
             query = raw(query)
-            url = '%s?input=%s&podstate%s&output=%s&appid=%s&format=mathml,image' % (API_URL, urllib.parse.quote(
-                query), 'Result__Step-by-step+solution', self.response_format, key)
-            
+            url = '%s?input=%s&podstate%s&output=%s&appid=%s&format=mathml,image' % (
+                API_URL, urllib.parse.quote(query), 'Result__Step-by-step+solution', self.response_format, key)
+
             #r = urllib.request.urlopen(url)
             #result = xmltodict.parse(r, dict_constructor=dict)['queryresult']
-            #return result
+            # return result
 
             r = requests.get(url)
             r = r.json()
             return r['queryresult']
+
+
+class ExpressionException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 
 class Expression(object):
@@ -116,6 +123,12 @@ class Expression(object):
         :param id_equation: identifier of expression
         """
 
+        if query is None:
+            raise ExpressionException('Sorry, there is no expression query')
+        if results is None:
+            raise ExpressionException(
+                'Sorry, there are no results to examinate')
+
         self.query = query
         self.success = results['success']
         self.execution_time = results['timing']
@@ -128,8 +141,7 @@ class Expression(object):
         self.partial_derivatives = []
         self.integral = []
 
-
-        if self.success == True:
+        if self.success:
             for pod in results['pods']:
                 try:
                     # print(pod['id'])
@@ -143,21 +155,24 @@ class Expression(object):
                         else:
                             src_plot = pod['subpods']['img']['src']
                             self.plots.append(
-                                    base64.b64encode(
-                                        requests.get(src_plot).content))
+                                base64.b64encode(
+                                    requests.get(src_plot).content))
 
                     if 'AlternateForm' in pod['id']:
-                        self.alternate_forms.extend(self.extract_mathml(pod=pod))
-                    if 'Solution' in pod['id'] and not 'SolutionForTheVariable' in pod['id'] and not 'SymbolicSolution' in pod['id']:
+                        self.alternate_forms.extend(
+                            self.extract_mathml(pod=pod))
+                    if 'Solution' in pod['id'] and 'SolutionForTheVariable' not in pod['id'] and 'SymbolicSolution' not in pod['id']:
                         self.solutions.extend(self.extract_mathml(pod=pod))
                     if 'SymbolicSolution' in pod['id']:
-                        self.symbolic_solutions.extend(self.extract_mathml(pod=pod))
+                        self.symbolic_solutions.extend(
+                            self.extract_mathml(pod=pod))
                     if 'Result' in pod['id']:
                         self.results.extend(self.extract_mathml(pod=pod))
                     if 'Limit' in pod['id']:
                         self.limits.extend(self.extract_mathml(pod=pod))
                     if 'Derivative' in pod['id']:
-                        self.partial_derivatives.extend(self.extract_mathml(pod=pod))
+                        self.partial_derivatives.extend(
+                            self.extract_mathml(pod=pod))
                     if 'Integral' in pod['id']:
                         self.integral.extend(self.extract_mathml(pod=pod))
 
@@ -187,11 +202,11 @@ class Expression(object):
         if isinstance(pod['subpods'], list):
             for subpod in pod['subpods']:
                 ml = subpod['mathml']
-                ml = ml.replace("\n","")
+                ml = ml.replace("\n", "")
                 mathml.append(ml)
         else:
             ml = pod['subpods']['mathml']
-            ml = ml.replace("\n","")
+            ml = ml.replace("\n", "")
             mathml.append(ml)
         return mathml
 
@@ -225,12 +240,6 @@ class Expression(object):
         print("Partial derivatives: ", self.partial_derivatives)
         print("Integral: ", self.integral)
 
-class TestStringMethods(unittest.TestCase): 
-      
-    def setUp(self): 
-        pass
-  
-
 
 if __name__ == "__main__":
     """
@@ -243,7 +252,7 @@ if __name__ == "__main__":
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
         \int x^2 dx
     """
-    query = '2x+17y=23,x-y=5,\int_{0}^{x} x dx'
+    query = 'x^3 - y^2 = 23'
     api = waAPI(KEY)
     results = api.full_results(query=query)
 
