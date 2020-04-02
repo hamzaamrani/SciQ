@@ -1,0 +1,48 @@
+from const import asciimath_grammar
+from parser import ASCIIMath2Tex
+
+if __name__ == "__main__":
+    parser = ASCIIMath2Tex(asciimath_grammar, inplace=False)
+    text = ""
+    text = (
+        text
+        + """
+        frac{root(5)(a iff c)}
+        {
+            dstyle int(
+                sqrt(x_2^3.14)
+                X
+                root(langle x,t rangle) (max(dot z,4)) +
+                min(x,y,"time",bbb C)
+            ) dg
+        }
+    """
+    )
+    text = (
+        text
+        + """
+        uuu_{2(x+1)=1)^{n}
+        min{
+                2x|x^{y+2} in bbb(N) wedge arccos root(3}(frac{1}{3x}) < i rarr Omega < b, 5=x
+        }
+    """
+    )
+    text = (
+        text
+        + """
+        {|}
+    """
+    )
+    text = text + """lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx"""
+    text = text + """||[2 x + 17 y = 23],[y = int_{0}^{x} t dt]||"""
+    text = (
+        text
+        + """floor frac "Time" (A nn (bbb(N) | f'(x) = dx/dy | |><| (D setminus (B uu C))))"""
+    )
+    text = text + """(1,2,3)"""
+    text = (
+        text
+        + """e^{{([2 x + 17 y = 23, [1]],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt])}}"""
+    )
+    text = text + """([1,2], [min(1,2,3),3])"""
+    print(parser.asciimath2tex(text, pprint=True))
