@@ -18,37 +18,6 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 class LatexTransformer(Transformer):
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
-        # self.latex_trans = {
-        #     "bar": "|",
-        #     "natural": "\\mathbb{N}",
-        #     "rational": "\\mathbb{Q}",
-        #     "real": "\\mathbb{R}",
-        #     "integer": "\\mathbb{Z}",
-        #     "complex": "\\mathbb{C}",
-        #     "plus": "+",
-        #     "minus": "-",
-        #     "frac": "/",
-        #     "<": "<",
-        #     "lt": "<",
-        #     ">": ">",
-        #     "gt": ">",
-        #     "equal": "=",
-        #     "left": "(",
-        #     "left_square": "[",
-        #     "left_curly": "\\{",
-        #     "left_curly_semicolon": "",
-        #     "right": ")",
-        #     "right_square": "]",
-        #     "right_curly": "\\}",
-        #     "right_curly_semicolon": "",
-        #     "and": "and",
-        #     "or": "or",
-        #     "if": "if",
-        #     "comma": ",",
-        #     "underscore": "\\_",
-        #     "superflex": "\\^",
-        #     "squote": "'"
-        # }
         formatted_left_parenthesis = "|".join(
             ["\\(", "\\[", "\\{", "langle", "<<"]
         )
@@ -87,20 +56,22 @@ class LatexTransformer(Transformer):
 
     @_log
     def exp_par(self, items):
-        left = left_parenthesis[self._concat(items[0])]
-        right = right_parenthesis[self._concat(items[-1])]
-        # if "latex" in lpar:
-        #     left = "\\left\\" + lpar[2] + " "
-        # else:
-        #     left = "\\left" + ("." if "semicolon" in lpar else "") + \
-        #         self.latex_trans["_".join(lpar[1:])]
-        # if "latex" in rpar:
-        #     right = "\\right\\" + rpar[2] + " "
-        # else:
-        #     right = "\\right" + \
-        #         ("." if "semicolon" in rpar else "") + \
-        #         self.latex_trans["_".join(rpar[1:])]
-        return "\\left" + left + ", ".join(items[1:-1]) + "\\right" + right
+        lpar = left_parenthesis[self._concat(items[0])]
+        rpar = right_parenthesis[self._concat(items[-1])]
+        s = ", ".join(items[1:-1])
+        if lpar == "\\langle":
+            left = "\\left" + lpar + " "
+        elif lpar == "{:":
+            left = "\\left."
+        else:
+            left = "\\left" + lpar
+        if rpar == "\\rangle":
+            right = " \\right" + rpar
+        elif rpar == ":}":
+            right = "\\right."
+        else:
+            right = "\\right" + rpar
+        return left + s + right
 
     @_log
     def exp_mat(self, items, mat_type="pmatrix"):
@@ -191,13 +162,13 @@ class LatexTransformer(Transformer):
         unary = unary_functions[self._concat(items[0])]
         items[1] = self.remove_parenthesis(items[1])
         if unary == "norm":
-            return "\\left \\lVert " + items[1] + " \\right \\rVert"
+            return "\\left\\lVert " + items[1] + " \\right\\rVert"
         elif unary == "abs":
-            return "\\left \\mid " + items[1] + " \\right \\mid"
+            return "\\left\\mid " + items[1] + " \\right\\mid"
         elif unary == "floor":
-            return "\\left \\lfloor " + items[1] + " \\right \\rfloor"
+            return "\\left\\lfloor " + items[1] + " \\right\\rfloor"
         elif unary == "ceil":
-            return "\\left \\lceil " + items[1] + " \\right \\rceil"
+            return "\\left\\lceil " + items[1] + " \\right\\rceil"
         else:
             return unary + "{" + items[1] + "}"
 
@@ -215,79 +186,6 @@ class LatexTransformer(Transformer):
     def q_str(self, items):
         return "\\text{" + items[0] + "}"
 
-    # @_log
-    # def var(self, items):
-    #     return items[0].value
-
-    # @_log
-    # def num(self, items):
-    #     return items[0].value
-
-    # @_log
-    # def misc_symbols(self, items):
-    #     misc = items[0].data.split("_")
-    #     if "latex" in misc:
-    #         return '\\' + misc[2]
-    #     else:
-    #         return self.latex_trans[misc[1]]
-
-    # @_log
-    # def operation_symbols(self, items):
-    #     op = items[0].data.split("_")
-    #     if "latex" in op:
-    #         return '\\' + op[2]
-    #     else:
-    #         return self.latex_trans[op[1]]
-
-    # @_log
-    # def logical_symbols(self, items):
-    #     log = items[0].data.split("_")
-    #     if "latex" in log:
-    #         return "\\" + log[2]
-    #     else:
-    #         return "\\text{" + self.latex_trans[log[1]] + "}"
-
-    # @_log
-    # def relation_symbols(self, items):
-    #     rel = items[0].data.split("_")
-    #     if "latex" in rel:
-    #         return "\\" + rel[2]
-    #     else:
-    #         return self.latex_trans[rel[1]]
-
-    # @_log
-    # def function_symbols(self, items):
-    #     func = items[0].data.split("_")
-    #     if "latex" in func:
-    #         return "\\" + func[2]
-    #     else:
-    #         return func[1]
-
-    # @_log
-    # def greek_letters(self, items):
-    #     greek = items[0].data.split("_")
-    #     if "upper" in greek:
-    #         return "\\" + greek[3].capitalize()
-    #     else:
-    #         return "\\" + greek[2]
-
-    # @_log
-    # def arrows(self, items):
-    #     arr = items[0].data.split("_")
-    #     return "\\" + arr[2]
-
-    # @_log
-    # def derivatives(self, items):
-    #     return items[0].value
-
-    # @_log
-    # def latex_smb(self, items):
-    #     return smb[self._concat(items[0])]
-
-    @_log
-    def punct(self, items):
-        return items[0]
-
     @_log
     def exp(self, items):
         return " ".join(items)
@@ -298,6 +196,7 @@ class ASCIIMath2Tex(object):
         self,
         grammar,
         *args,
+        cache=False,
         inplace=False,
         parser="lalr",
         lexer="contextual",
@@ -310,7 +209,7 @@ class ASCIIMath2Tex(object):
         if inplace:
             kwargs.update({"transformer": transformer})
         self.parser = Lark(
-            grammar, *args, parser=parser, lexer=lexer, cache=True, **kwargs
+            grammar, *args, parser=parser, lexer=lexer, cache=cache, **kwargs
         )
 
     def asciimath2tex(self, s: str, pprint=False):

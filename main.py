@@ -2,7 +2,12 @@ from const import asciimath_grammar
 from parser import ASCIIMath2Tex
 
 if __name__ == "__main__":
-    parser = ASCIIMath2Tex(asciimath_grammar, inplace=False)
+    parser = ASCIIMath2Tex(
+        asciimath_grammar,
+        inplace=False,
+        parser="lalr",
+        lexer="contextual",
+    )
     text = ""
     text = (
         text
@@ -30,19 +35,19 @@ if __name__ == "__main__":
     text = (
         text
         + """
-        {|}
+        [[:[1,2]:]]
     """
     )
     text = text + """lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx"""
-    text = text + """||[2 x + 17 y = 23],[y = int_{0}^{x} t dt]||"""
+    text = text + """||:[2 x + 17 y = 23],[y = int_{0}^{x} t dt]:||"""
     text = (
         text
-        + """floor frac "Time" (A nn (bbb(N) | f'(x) = dx/dy | |><| (D setminus (B uu C))))"""
+        + """floor frac "Time" (A nn (bbb(N) | f'(x) = dx/dy | |><|><| (D setminus (B uu C))))"""
     )
     text = text + """(1,2,3)"""
     text = (
         text
-        + """e^{{([2 x + 17 y = 23, [1]],[y = dstyle int_{0}^{x} t dt],[y = dstyle int_{0}^{x} t dt])}}"""
+        + """e^{:[2 x + 17 y = 23], [1], [y = dstyle int_{0}^{x} t dt], [y = dstyle integral_{0}^{x} t dt]:}"""
     )
-    text = text + """([1,2], [min(1,2,3),3])"""
+    text = text + """{:[1,2:]:}|"""
     print(parser.asciimath2tex(text, pprint=True))
