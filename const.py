@@ -226,21 +226,21 @@ greek_letters = {
 }
 
 left_parenthesis = {
-    '"("': "(",
     '"(:"': "\\langle",
+    '"("': "(",
     '"["': "[",
+    '"{:"': "{:",
     '"{"': "\{",
-    '"{:"': "{",
     '"langle"': "\\langle",
     '"<<"': "\\langle",
 }
 
 right_parenthesis = {
-    '")"': ")",
     '":)"': "\\rangle",
+    '")"': ")",
     '"]"': "]",
+    '":}"': ":}",
     '"}"': "\}",
-    '":}"': "}",
     '"rangle"': "\\rangle",
     '">>"': "\\rangle",
 }
@@ -362,48 +362,53 @@ smb.update(logical_symbols)
 smb.update(operation_symbols)
 smb.update(greek_letters)
 smb.update(arrows)
+left_parenthesis = dict(
+    sorted(left_parenthesis.items(), key=lambda x: (-len(x[0]), x[0]))
+)
+right_parenthesis = dict(
+    sorted(right_parenthesis.items(), key=lambda x: (-len(x[0]), x[0]))
+)
 smb = dict(sorted(smb.items(), key=lambda x: (-len(x[0]), x[0])))
 
 asciimath_grammar = r"""
+    %import common.WS
+    %import common.LETTER
+    %import common.NUMBER
+    %ignore WS
     start: i+ -> exp
-    _csl: start ("," start)* ","?                    // csl = Comma Separated List
+    _csl: start ("," start)* ","?                   // csl = Comma Separated List
     csl_mat: icsl_mat ("," icsl_mat)* ","?          // csl_mat = Comma Separated List for MATrices
-    icsl_mat: "[" _csl? "]"      // icsl_mat = Internal Comma Separated List for MATrices
+    icsl_mat: "[" _csl? "]"                         // icsl_mat = Internal Comma Separated List for MATrices
     i: s -> exp_interm
         | s "/" s -> exp_frac
         | s "_" s -> exp_under
         | s "^" s -> exp_super
         | s "_" s "^" s -> exp_under_super
     s: _l _csl? _r -> exp_par
-        | "[" csl_mat? "]" -> exp_bmat
-        | "(" csl_mat? ")" -> exp_pmat
-        | "(" csl_mat? ")" -> exp_pmat
-        | "{{" csl_mat? "}}" -> exp_cmat
-        | "|" csl_mat? "|" -> exp_vmat
-        | "||" csl_mat? "||" -> exp_nmat
-        | "{{" csl_mat? ")" -> exp_system
+        | "[:" csl_mat? ":]" -> exp_bmat
+        | "(:" csl_mat? ":)" -> exp_pmat
+        | "{{:" csl_mat? ":}}" -> exp_cmat
+        | "|:" csl_mat? ":|" -> exp_vmat
+        | "||:" csl_mat? ":||" -> exp_nmat
+        | "{{:" csl_mat? ":)" -> exp_system
         | _u s -> exp_unary
         | _b s s -> exp_binary
-        | _qs -> q_str
         | _c -> symbol
-        | _p -> punct
+        | QS -> q_str
     _c: LETTER
         | NUMBER
         | /d[A-Za-z]/
         | LATEX1
         | LATEX2
-    !_p: "|" | "'" | ":" | ";" | "." // punctuation
+        | P
+    P: "|" | "'" | "." | "," | ":" // punctuation
     !_l: {} // left parenthesis
     !_r: {} // right parenthesis
     !_b: {} // binary functions
     !_u: {} // unary functions
     LATEX1: {}
     LATEX2: {}
-    _qs: "\"" /(?<=").+(?=")/ "\"" // Quoted String
-    %import common.WS
-    %import common.LETTER
-    %import common.NUMBER
-    %ignore WS
+    QS: "\"" /(?<=").+(?=")/ "\"" // Quoted String
 """.format(
     alias_string(left_parenthesis, alias=False),
     alias_string(right_parenthesis, alias=False),
