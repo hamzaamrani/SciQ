@@ -83,7 +83,7 @@
         <div class="modal-dialog modal-login">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Log In</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Log in</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -91,21 +91,16 @@
                 <div class="modal-body">
                     <form name="loginData" action="/login" method="POST">
                         <div class=".form-control">
-                            <label for="Username"> Username </label>
-                            <input type="text" class="form-control" placeholder="Enter username" id="Username" name="Username" required="required">
+                            <label for="username_login"> Username </label>
+                            <input type="text" class="form-control" placeholder="Enter username" id="username_login" name="username_login" required="required">
                         </div>
 
                         <div class=".form-control">
-                            <label for="password">Password</label>
+                            <label for="password_login">Password</label>
                             <a href="#" class="pull-right text-muted">
                                 <small>Forgot?</small>
                             </a>
-                            <input type="password" class="form-control" required id="password" name="password" placeholder="Enter password" required="required">
-                            <div class="mt-2">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox">Remember me
-                                </label>
-                            </div>
+                            <input type="password" class="form-control" placeholder="Enter password" id="password_login" name="password_login" required="required">
                             <div class="text-center">
                                 <button type="submit" class="btn btn-outline-success text-center mt-10">Log in</button>
                             </div>
@@ -129,21 +124,22 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form name="signUpData" action="/sign_up" method="POST">
+                    <form name="signUpData" action="/signup" method="POST">
                         <div class=".form-control">
-                            <label for="emailAddress" class="font-weight-bold">Email address</label>
-                            <input type="email" class="form-control" id="emailAddress" placeholder="name@example.com" required>
+                            <label for="username_signup" class="font-weight-bold">Username</label>
+                            <input type="text" class="form-control" id="username_signup" name="username_signup" placeholder="Enter username" required>
                         </div>
 
                         <div class=".form-control">
-                            <label for="password" class="font-weight-bold">Password</label>
-                            <input type="password" class="form-control" id="password1" placeholder="Enter password" required>
+                            <label for="password_signup1" class="font-weight-bold">Password</label>
+                            <input type="password" class="form-control" id="password_signup1" name="password_signup1" placeholder="Enter password" required>
                         </div>
 
                         <div class=".form-control">
-                            <label for="password" class="font-weight-bold">Repeat password</label>
-                            <input type="password" class="form-control" id="password2" placeholder="Re-enter password" required>
+                            <label for="password_signup2" class="font-weight-bold">Repeat password</label>
+                            <input type="password" class="form-control" id="password_signup2" name="password_signup2" placeholder="Re-enter password" required>
                         </div>
+
                         <div class="text-center mt-2">
                             <button type="submit" class="btn btn-outline-success top-buffer">Register!</button>
                         </div>
