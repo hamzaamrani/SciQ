@@ -1,16 +1,19 @@
 # autopep8 --in-place --aggressive --aggressive waAPI.py
 # Wolfram|Alpha Show Steps API Reference:
 # https://products.wolframalpha.com/show-steps-api/documentation/
+# test con pytest
 
 import requests
 import urllib.parse
 import urllib.request
+import json
 import base64
-import xmltodict
 import pickle
 import os.path
 from PIL import Image
 from io import BytesIO
+import unittest
+
 
 API_URL = 'https://api.wolframalpha.com/v2/query'
 API_SIGNUP_PAGE = 'https://developer.wolframalpha.com'
@@ -52,7 +55,7 @@ class waAPI(object):
         :param key: Wolfram Alpha App ID Developer Key
         """
         self.key = key
-        self.response_format = 'xml'
+        self.response_format = 'json'
 
         if self.key is None:
             raise NoAPIKeyException(
@@ -82,11 +85,16 @@ class waAPI(object):
             return 'Sorry, I did not get your question.'
         else:
             query = raw(query)
-            url = '%s?input=%s&podstate%s&output=%s&appid=%s' % (API_URL, urllib.parse.quote(
+            url = '%s?input=%s&podstate%s&output=%s&appid=%s&format=mathml,image' % (API_URL, urllib.parse.quote(
                 query), 'Result__Step-by-step+solution', self.response_format, key)
-            r = urllib.request.urlopen(url)
-            result = xmltodict.parse(r, dict_constructor=dict)['queryresult']
-            return result
+            
+            #r = urllib.request.urlopen(url)
+            #result = xmltodict.parse(r, dict_constructor=dict)['queryresult']
+            #return result
+
+            r = requests.get(url)
+            r = r.json()
+            return r['queryresult']
 
 
 class Expression(object):
@@ -109,8 +117,8 @@ class Expression(object):
         """
 
         self.query = query
-        self.success = results['@success']
-        self.execution_time = results['@timing']
+        self.success = results['success']
+        self.execution_time = results['timing']
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
@@ -120,40 +128,41 @@ class Expression(object):
         self.partial_derivatives = []
         self.integral = []
 
-        if self.success == 'true':
-            for pod in results['pod']:
+
+        if self.success == True:
+            for pod in results['pods']:
                 try:
-                    print(pod['@id'])
-                    if 'Plot' in pod['@id']:
-                        if isinstance(pod['subpod'], list):
-                            for subpod in pod['subpod']:
-                                src_plot = subpod['img']['@src']
+                    # print(pod['id'])
+                    if 'Plot' in pod['id']:
+                        if isinstance(pod['subpods'], list):
+                            for subpod in pod['subpods']:
+                                src_plot = subpod['img']['src']
                                 self.plots.append(
                                     base64.b64encode(
                                         requests.get(src_plot).content))
                         else:
-                            src_plot = pod['subpod']['img']['@src']
+                            src_plot = pod['subpods']['img']['src']
                             self.plots.append(
                                     base64.b64encode(
                                         requests.get(src_plot).content))
 
-                    if 'AlternateForm' in pod['@id']:
-                        self.alternate_forms.extend(self.extract_plaintext(pod=pod))
-                    if 'Solution' in pod['@id'] and not 'SolutionForTheVariable' in pod['@id'] and not 'SymbolicSolution' in pod['@id']:
-                        self.solutions.extend(self.extract_plaintext(pod=pod))
-                    if 'SymbolicSolution' in pod['@id']:
-                        self.symbolic_solutions.extend(self.extract_plaintext(pod=pod))
-                    if 'Result' in pod['@id']:
-                        self.results.extend(self.extract_plaintext(pod=pod))
-                    if 'Limit' in pod['@id']:
-                        self.limits.extend(self.extract_plaintext(pod=pod))
-                    if 'Derivative' in pod['@id']:
-                        self.partial_derivatives.extend(self.extract_plaintext(pod=pod))
-                    if 'Integral' in pod['@id']:
-                        self.integral.extend(self.extract_plaintext(pod=pod))
+                    if 'AlternateForm' in pod['id']:
+                        self.alternate_forms.extend(self.extract_mathml(pod=pod))
+                    if 'Solution' in pod['id'] and not 'SolutionForTheVariable' in pod['id'] and not 'SymbolicSolution' in pod['id']:
+                        self.solutions.extend(self.extract_mathml(pod=pod))
+                    if 'SymbolicSolution' in pod['id']:
+                        self.symbolic_solutions.extend(self.extract_mathml(pod=pod))
+                    if 'Result' in pod['id']:
+                        self.results.extend(self.extract_mathml(pod=pod))
+                    if 'Limit' in pod['id']:
+                        self.limits.extend(self.extract_mathml(pod=pod))
+                    if 'Derivative' in pod['id']:
+                        self.partial_derivatives.extend(self.extract_mathml(pod=pod))
+                    if 'Integral' in pod['id']:
+                        self.integral.extend(self.extract_mathml(pod=pod))
 
                 except BaseException:
-                    print("Error in extraction:", pod['@id'])
+                    print("Error in extraction:", pod['id'])
 
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
@@ -169,6 +178,22 @@ class Expression(object):
         else:
             plaint_text.append(pod['subpod']['plaintext'])
         return plaint_text
+
+    def extract_mathml(self, pod):
+        """
+        Extract mathml field from subpods
+        """
+        mathml = []
+        if isinstance(pod['subpods'], list):
+            for subpod in pod['subpods']:
+                ml = subpod['mathml']
+                ml = ml.replace("\n","")
+                mathml.append(ml)
+        else:
+            ml = pod['subpods']['mathml']
+            ml = ml.replace("\n","")
+            mathml.append(ml)
+        return mathml
 
     def save_plots(self, id_equation, dir_plots):
         """
@@ -200,10 +225,16 @@ class Expression(object):
         print("Partial derivatives: ", self.partial_derivatives)
         print("Integral: ", self.integral)
 
+class TestStringMethods(unittest.TestCase): 
+      
+    def setUp(self): 
+        pass
+  
+
 
 if __name__ == "__main__":
     """
-    Query examples:
+    Expression examples:
         x^3 - y^2 = 23
         x^3 + x^2 y + x y^2 + y^3
         3x^3 + 2x^2 - 4ax +2 = 0
@@ -212,7 +243,7 @@ if __name__ == "__main__":
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
         \int x^2 dx
     """
-    query = ''
+    query = '2x+17y=23,x-y=5,\int_{0}^{x} x dx'
     api = waAPI(KEY)
     results = api.full_results(query=query)
 
