@@ -1,3 +1,5 @@
+from itertools import islice
+
 binary_functions = {
     '"frac"': "\\frac",
     '"root"': "\\sqrt",
@@ -272,12 +274,8 @@ arrows = {
 }
 
 misc_symbols = {
-    '"|"': "|",
-    '"\'"': "'",
-    # '","': ",",
-    '"_"': "_",
-    '"^"': "^",
     '"int"': "\\int",
+    '"integral"': "\\int",
     '"oint"': "\\oint",
     '"del"': "\\partial",
     '"partial"': "\\partial",
@@ -321,6 +319,41 @@ misc_symbols = {
     '"RR"': "\\mathbb{R}",
     '"ZZ"': "\\mathbb{Z}",
 }
+matrix2par = {
+    "pmatrix": ["(", ")"],
+    "bmatrix": ["[", "]"],
+    "Bmatrix": ["\{", "\}"],
+    "vmatrix": ["|", "|"],
+    "Vmatrix": ["||", "||"],
+}
+
+
+def alias_string(mapping: dict, init=False, alias=True, prefix=""):
+    mapping = list(mapping.items())
+    s = (
+        "|"
+        if init
+        else ""
+        + mapping[0][0]
+        + (
+            " -> " + (prefix + "_" if prefix != "" else "") + mapping[0][1]
+            if alias
+            else ""
+        )
+    )
+    for k, v in mapping[1:]:
+        s = (
+            s
+            + "\n\t| "
+            + k
+            + (
+                " -> " + (prefix + "_" if prefix != "" else "") + v
+                if alias
+                else ""
+            )
+        )
+    return s
+
 
 smb = misc_symbols
 smb.update(function_symbols)
@@ -329,3 +362,61 @@ smb.update(logical_symbols)
 smb.update(operation_symbols)
 smb.update(greek_letters)
 smb.update(arrows)
+smb = dict(sorted(smb.items(), key=lambda x: (-len(x[0]), x[0])))
+
+asciimath_grammar = r"""
+    start: i+ -> exp
+    _csl: start ("," start)* ","?                    // csl = Comma Separated List
+    csl_mat: icsl_mat ("," icsl_mat)* ","?          // csl_mat = Comma Separated List for MATrices
+    icsl_mat: "[" _csl? "]"      // icsl_mat = Internal Comma Separated List for MATrices
+    i: s -> exp_interm
+        | s "/" s -> exp_frac
+        | s "_" s -> exp_under
+        | s "^" s -> exp_super
+        | s "_" s "^" s -> exp_under_super
+    s: _l _csl? _r -> exp_par
+        | "[" csl_mat? "]" -> exp_bmat
+        | "(" csl_mat? ")" -> exp_pmat
+        | "(" csl_mat? ")" -> exp_pmat
+        | "{{" csl_mat? "}}" -> exp_cmat
+        | "|" csl_mat? "|" -> exp_vmat
+        | "||" csl_mat? "||" -> exp_nmat
+        | "{{" csl_mat? ")" -> exp_system
+        | _u s -> exp_unary
+        | _b s s -> exp_binary
+        | _qs -> q_str
+        | _c -> symbol
+        | _p -> punct
+    _c: LETTER
+        | NUMBER
+        | /d[A-Za-z]/
+        | LATEX1
+        | LATEX2
+    !_p: "|" | "'" | ":" | ";" | "." // punctuation
+    !_l: {} // left parenthesis
+    !_r: {} // right parenthesis
+    !_b: {} // binary functions
+    !_u: {} // unary functions
+    LATEX1: {}
+    LATEX2: {}
+    _qs: "\"" /(?<=").+(?=")/ "\"" // Quoted String
+    %import common.WS
+    %import common.LETTER
+    %import common.NUMBER
+    %ignore WS
+""".format(
+    alias_string(left_parenthesis, alias=False),
+    alias_string(right_parenthesis, alias=False),
+    alias_string(binary_functions, alias=False),
+    alias_string(unary_functions, alias=False),
+    alias_string(dict(islice(smb.items(), len(smb) // 2)), alias=False),
+    alias_string(
+        dict(islice(smb.items(), len(smb) // 2, len(smb))), alias=False
+    ),
+    # alias_string(operation_symbols, prefix="op"),
+    # alias_string(relation_symbols, prefix="rel"),
+    # alias_string(logical_symbols, prefix="logical"),
+    # alias_string(function_symbols, prefix="func"),
+    # alias_string(greek_letters, prefix="greek"),
+    # alias_string(arrows, prefix="arrow")
+)
