@@ -141,7 +141,7 @@ class Expression(object):
             for pod in results['pods']:
                 try:
                     # print(pod['id'])
-                    if 'Plot' in pod['id']:
+                    if 'Plot' in pod['id'] or 'Parallelogram' in pod['id']:
                         if isinstance(pod['subpods'], list):
                             for subpod in pod['subpods']:
                                 src_plot = subpod['img']['src']
