@@ -1,14 +1,8 @@
-# autopep8 --in-place --aggressive --aggressive waAPI.py
-# Wolfram|Alpha Show Steps API Reference:
-# https://products.wolframalpha.com/show-steps-api/documentation/
-# test con pytest
-
 import requests
 import urllib.parse
 import urllib.request
 import json
 import base64
-import pickle
 import os.path
 from PIL import Image
 from io import BytesIO
@@ -110,7 +104,7 @@ class Expression(object):
             query,
             results,
             id_equation=None,
-            dir_plots='plot_images'):
+            dir_plots=None):
         """
         Initializes the Expression class with a results from Wolfram Alpha API.
 
@@ -118,13 +112,15 @@ class Expression(object):
         Request a JSON results.
 
         :param query: expression query
-        :param results: results of query from Wolfram Alpha App
+        :param results: results of query from Wolfram Alpha API
         :param dir_plots: rir where to save plots
         :param id_equation: identifier of expression
         """
 
         if query is None:
             raise ExpressionException('Sorry, there is no expression query')
+        if dir_plots is None:
+            dir_plots = 'plot_images'
         if results is None:
             raise ExpressionException(
                 'Sorry, there are no results to examinate')
@@ -231,7 +227,7 @@ class Expression(object):
         print("Success: ", self.success)
         print("Query: ", raw(self.query))
         print("Execution time: ", self.execution_time)
-        print("Plots: ", self.plots)
+        print("Plots: ", len(self.plots))
         print("Alternate forms: ", self.alternate_forms)
         print("Results: ", self.results)
         print("Solutions: ", self.solutions)
@@ -241,8 +237,16 @@ class Expression(object):
         print("Integral: ", self.integral)
 
 
-if __name__ == "__main__":
+def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
     """
+    Returns an Expression object containing the query results
+
+    :param query: expression query
+    :param key: key to use Wolfram Alpha API
+    :param id_equation: identifier to rename plot images
+    :param dir_plots: directory where to save plot images
+
+
     Expression examples:
         x^3 - y^2 = 23
         x^3 + x^2 y + x y^2 + y^3
@@ -252,18 +256,11 @@ if __name__ == "__main__":
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
         \int x^2 dx
     """
-    query = 'x^3 - y^2 = 23'
-    api = waAPI(KEY)
-    results = api.full_results(query=query)
-
-    # filehandler = open("pick","wb")
-    # pickle.dump(results,filehandler)
-    # filehandler.close()
-
-    # file = open("pick",'rb')
-    # results = pickle.load(file)
-    # file.close()
-
-    id_equation = '001'
-    obj = Expression(query=query, results=results, id_equation=id_equation)
-    obj.print_expression()
+    client_api = waAPI(key)
+    results_json = client_api.full_results(query=query)
+    obj_expression = Expression(
+        query=query,
+        results=results_json,
+        id_equation=id_equation,
+        dir_plots=dir_plots)
+    return obj_expression

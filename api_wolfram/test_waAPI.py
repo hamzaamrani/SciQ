@@ -1,7 +1,6 @@
 import unittest
 from waAPI import NoAPIKeyException, waAPI, ExpressionException, Expression
 
-
 KEY = 'V2WJ46-EEXEV95WXG'
 
 
