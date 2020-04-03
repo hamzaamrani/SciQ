@@ -79,6 +79,7 @@ def get_md5(password):
 def submit_expression():
     expression = request.form["symbolic_expression"]
     print("L'espressione inserita è = " + expression)
+    
     return render_template('loggedUser.html', expression="expression")
 
 

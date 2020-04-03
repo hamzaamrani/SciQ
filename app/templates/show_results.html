@@ -32,7 +32,6 @@
     </script>
 
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/mml-chtml.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
@@ -53,71 +52,28 @@
         <div class="collapse navbar-collapse" id="main-navigation">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Home</strong></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#AsciMathInfo"> <strong>We use ASCIIMath</strong></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#upload_image"> <strong>Upload image</strong></a>
+                    <a class="nav-link" href="{{ url_for('loggedUser') }}"> <strong>Math again!</strong></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Log Out</strong></a>
                 </li>
             </ul>
         </div>
     </nav>
 
     <header class="text-center">
-        <div class="container container-fluid">
-            <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
-            <h1 style="padding-bottom: 10px;">Enter your expression</h1>
-            <div class="mx-auto text-center form-group form p-4">
-                <form class="enter-equation" method="POST" action="/submit_expression">
-                    <input id="symbolic_expression" onkeyup="" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
-                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression">
-                    <img src="{{ url_for('static', filename='images/done.svg') }}">   
-                </button>
-                </form>
-            </div>
-        </div>
+
     </header>
 
 
-    <div class="text-center" style="padding-bottom: 10px;">
-        <div class="container container-fluid">
-            <div class="box" id="box">
-                <div id="MathOutput" class="output">` `</div>
-            </div>
-        </div>
+    <div id="solutions">
+
     </div>
 
 
-    <div class="text-center" style="padding-top: 5px;" id="drag_n_drop">
-        <div class="container container-fluid">
-            <h1 style="padding-bottom: 10px;">Upload image</h1>
-            <div class="container">
-                <div class="droparea">
-                    <p>Drop Here</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <p><math xmlns='http://www.w3.org/1998/Math/MathML' mathematica:form='StandardForm' xmlns:mathematica='http://www.wolfram.com/XML/'> <mrow>  <mfrac>   <mrow>    <mi>d</mi>    <mo>&#8290;</mo>    <mrow>     <mi>x</mi>     <mo>&#8289;</mo>     <mo>(</mo>     <mi>y</mi>     <mo>)</mo>    </mrow>   </mrow>   <mrow>    <mi>d</mi>    <mo>&#8290;</mo>    <mi>y</mi>   </mrow>  </mfrac>  <mo>=</mo>  <mfrac>   <mrow>    <mn>2</mn>    <mo>&#8290;</mo>    <mi>y</mi>   </mrow>   <mrow>    <mn>3</mn>    <mo>&#8290;</mo>    <msup>     <mi>x</mi>     <mn>2</mn>    </msup>   </mrow>  </mfrac> </mrow></math>
-    </p>
-
-    <header class="page-header header container-fluid asciimath_doc" id="AsciMathInfo">
-        <div class="container">
-            <h1 style="text-align: center;">ASCIIMath</h2>
-                <p style="text-align:left">We use <b>ASCIIMath</b> to work with the expressions.
-                    <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath for you.
-                    <br>If there is not what you are looking for in the extended keyboard please refer to <a href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
-                    <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted" target="_blank">ASCIIMath</a>
-                </p>
-        </div>
-    </header>
 
 
 
@@ -144,8 +100,6 @@
             </div>
             <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
     </footer>
-
-
 
 </body>
 
