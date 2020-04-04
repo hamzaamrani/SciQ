@@ -330,6 +330,7 @@ misc_symbols = {
     '"RR"': "\\mathbb{R}",
     '"ZZ"': "\\mathbb{Z}",
 }
+
 matrix2par = {
     "pmatrix": ["(", ")"],
     "bmatrix": ["[", "]"],

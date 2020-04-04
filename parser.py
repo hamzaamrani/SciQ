@@ -4,6 +4,7 @@ from itertools import chain, islice
 from functools import wraps
 from log import Log, flatten
 from const import *
+from utils import get_mat, check_mat, concat
 import re
 import sys
 import logging
@@ -45,75 +46,6 @@ class LatexTransformer(Transformer):
 
         return decorator
 
-    def _concat(self, s):
-        return '"' + s + '"'
-
-    @_log
-    def _check_mat(self, s):
-        rows = 0
-        cols = 0
-        max_cols = 0
-        par_stack = []
-        transitions = 0
-        for c in s:
-            if c == "[":
-                par_stack.append(c)
-            elif c == "]":
-                if len(par_stack) == 0:
-                    logging.info("WRONG: UNMATCHED PARS")
-                    return False
-                else:
-                    par_stack.pop()
-                if max_cols == 0 and cols > 0:
-                    max_cols = cols
-                elif len(par_stack) == 0:
-                    if max_cols != cols:
-                        logging.info("WRONG: COLS DIFFER")
-                        return False
-                if len(par_stack) == 0:
-                    transitions = transitions + 1
-                cols = 0
-            elif c == ",":
-                if len(par_stack) == 1 and par_stack[-1] == "[":
-                    cols = cols + 1
-                elif len(par_stack) == 0:
-                    rows = rows + 1
-                    if transitions != rows:
-                        logging.info(
-                            "WRONG: NO OPEN-CLOSE PAR BETWEEN TWO COMMAS"
-                        )
-                        return False
-        if len(par_stack) != 0:
-            logging.info("WRONG: UNMATCHED PARS")
-            return False
-        elif rows == 0 or transitions - rows != 1:
-            logging.info("WRONG: MISSING COMMA OR EMPTY ROW")
-            return False
-        return True
-
-    @_log
-    def _get_mat(self, s):
-        s = re.sub(self.left_right_pattern, "", s)
-        stack_par = []
-        mat = ""
-        for c in s:
-            if c == "[":
-                stack_par.append(c)
-                if len(stack_par) > 1:
-                    mat = mat + "\\left" + c
-            elif c == "]":
-                stack_par.pop()
-                if len(stack_par) > 0:
-                    mat = mat + "\\right" + c
-            elif c == "," and len(stack_par) == 1:
-                mat = mat + " & "
-            elif c == "," and len(stack_par) == 0:
-                mat = mat + " \\\\ "
-            else:
-                if len(stack_par) > 0:
-                    mat = mat + c
-        return mat
-
     @_log
     def remove_parenthesis(self, s: str):
         return re.sub(self.start_end_par_pattern, r"\2", s)
@@ -122,15 +54,15 @@ class LatexTransformer(Transformer):
     def exp_par(self, items):
         mat = False
         if items[1].startswith("\\left"):
-            if self._check_mat(items[1]):
+            if check_mat(items[1]):
                 mat = True
-                s = self._get_mat(items[1])
+                s = get_mat(items[1], self.left_right_pattern)
             else:
                 s = ", ".join(items[1:-1])
         else:
             s = ", ".join(items[1:-1])
-        lpar = left_parenthesis[self._concat(items[0])]
-        rpar = right_parenthesis[self._concat(items[-1])]
+        lpar = left_parenthesis[concat(items[0])]
+        rpar = right_parenthesis[concat(items[-1])]
         if lpar == "\\langle":
             left = "\\left" + lpar + " "
         elif lpar == "{:":
@@ -228,7 +160,7 @@ class LatexTransformer(Transformer):
 
     @_log
     def symbol(self, items):
-        return smb[self._concat(items[0])]
+        return smb[concat(items[0])]
 
     @_log
     def const(self, items):
@@ -236,7 +168,7 @@ class LatexTransformer(Transformer):
 
     @_log
     def exp_unary(self, items):
-        unary = unary_functions[self._concat(items[0])]
+        unary = unary_functions[concat(items[0])]
         items[1] = self.remove_parenthesis(items[1])
         if unary == "norm":
             return "\\left\\lVert " + items[1] + " \\right\\rVert"
@@ -251,7 +183,7 @@ class LatexTransformer(Transformer):
 
     @_log
     def exp_binary(self, items):
-        binary = binary_functions[self._concat(items[0])]
+        binary = binary_functions[concat(items[0])]
         items[1] = self.remove_parenthesis(items[1])
         items[2] = self.remove_parenthesis(items[2])
         if binary == "\\sqrt":
@@ -273,7 +205,7 @@ class ASCIIMath2Tex(object):
         self,
         grammar,
         *args,
-        cache=False,
+        cache=True,
         inplace=False,
         parser="lalr",
         lexer="contextual",
