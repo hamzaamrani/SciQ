@@ -47,7 +47,7 @@ if __name__ == "__main__":
     text = text + """(1,2,3)"""
     text = (
         text
-        + """e^{:[2 x + 17 y = 23], [1], [y = dstyle int_{0}^{x} t dt], [y = dstyle integral_{0}^{x} t dt]:}"""
+        + """e^{:[2 x + 17 (y) = 23], [1], [y = dstyle int_{0}^{x} t dt], [y = dstyle integral_{0}^{x} t dt]:}"""
     )
     text = text + """((1,2))int sin{x^2}/4pidxroot(5)(x_1^2+x_2^2)"""
     print(parser.asciimath2tex(text, pprint=True))

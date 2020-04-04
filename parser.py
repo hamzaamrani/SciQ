@@ -4,7 +4,7 @@ from itertools import chain, islice
 from functools import wraps
 from log import Log, flatten
 from const import *
-from utils import get_mat, check_mat, concat
+from utils import UtilsMat, concat
 import re
 import sys
 import logging
@@ -19,6 +19,9 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 class LatexTransformer(Transformer):
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
+        UtilsMat.set_pars(
+            left_parenthesis.values(), right_parenthesis.values()
+        )
         formatted_left_parenthesis = "|".join(
             ["\\(", "\\[", "\\{", "langle", "<<"]
         )
@@ -54,9 +57,9 @@ class LatexTransformer(Transformer):
     def exp_par(self, items):
         mat = False
         if items[1].startswith("\\left"):
-            if check_mat(items[1]):
+            if UtilsMat.check_mat(items[1]):
                 mat = True
-                s = get_mat(items[1], self.left_right_pattern)
+                s = UtilsMat.get_mat(items[1], self.left_right_pattern)
             else:
                 s = ", ".join(items[1:-1])
         else:
