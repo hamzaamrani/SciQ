@@ -24,6 +24,7 @@ class LatexTransformer(Transformer):
         formatted_right_parenthesis = "|".join(
             ["\\)", "\\]", "\\}", "rangle", ">>"]
         )
+        self.left_right_pattern = re.compile(r"(\\right|\\left)")
         self.start_end_par_pattern = re.compile(
             r"^(?:\\left(?:(?:\\)?({})))"
             r"(.*?)"
@@ -31,13 +32,10 @@ class LatexTransformer(Transformer):
                 formatted_left_parenthesis, formatted_right_parenthesis,
             )
         )
-        logger_func = logging.info
+        self._logger_func = logging.info
         if not log:
-
-            def logger_func(x):
-                return x
-
-        self._logger = Log(logger_func=logger_func)
+            self._logger_func = lambda x: x
+        self._logger = Log(logger_func=self._logger_func)
 
     def _log(f):
         @wraps(f)
@@ -51,14 +49,88 @@ class LatexTransformer(Transformer):
         return '"' + s + '"'
 
     @_log
+    def _check_mat(self, s):
+        rows = 0
+        cols = 0
+        max_cols = 0
+        par_stack = []
+        transitions = 0
+        for c in s:
+            if c == "[":
+                par_stack.append(c)
+            elif c == "]":
+                if len(par_stack) == 0:
+                    logging.info("WRONG: UNMATCHED PARS")
+                    return False
+                else:
+                    par_stack.pop()
+                if max_cols == 0 and cols > 0:
+                    max_cols = cols
+                elif len(par_stack) == 0:
+                    if max_cols != cols:
+                        logging.info("WRONG: COLS DIFFER")
+                        return False
+                if len(par_stack) == 0:
+                    transitions = transitions + 1
+                cols = 0
+            elif c == ",":
+                if len(par_stack) == 1 and par_stack[-1] == "[":
+                    cols = cols + 1
+                elif len(par_stack) == 0:
+                    rows = rows + 1
+                    if transitions != rows:
+                        logging.info(
+                            "WRONG: NO OPEN-CLOSE PAR BETWEEN TWO COMMAS"
+                        )
+                        return False
+        if len(par_stack) != 0:
+            logging.info("WRONG: UNMATCHED PARS")
+            return False
+        elif rows == 0 or transitions - rows != 1:
+            logging.info("WRONG: MISSING COMMA OR EMPTY ROW")
+            return False
+        return True
+
+    @_log
+    def _get_mat(self, s):
+        s = re.sub(self.left_right_pattern, "", s)
+        stack_par = []
+        mat = ""
+        for c in s:
+            if c == "[":
+                stack_par.append(c)
+                if len(stack_par) > 1:
+                    mat = mat + "\\left" + c
+            elif c == "]":
+                stack_par.pop()
+                if len(stack_par) > 0:
+                    mat = mat + "\\right" + c
+            elif c == "," and len(stack_par) == 1:
+                mat = mat + " & "
+            elif c == "," and len(stack_par) == 0:
+                mat = mat + " \\\\ "
+            else:
+                if len(stack_par) > 0:
+                    mat = mat + c
+        return mat
+
+    @_log
     def remove_parenthesis(self, s: str):
         return re.sub(self.start_end_par_pattern, r"\2", s)
 
     @_log
     def exp_par(self, items):
+        mat = False
+        if items[1].startswith("\\left"):
+            if self._check_mat(items[1]):
+                mat = True
+                s = self._get_mat(items[1])
+            else:
+                s = ", ".join(items[1:-1])
+        else:
+            s = ", ".join(items[1:-1])
         lpar = left_parenthesis[self._concat(items[0])]
         rpar = right_parenthesis[self._concat(items[-1])]
-        s = ", ".join(items[1:-1])
         if lpar == "\\langle":
             left = "\\left" + lpar + " "
         elif lpar == "{:":
@@ -71,7 +143,11 @@ class LatexTransformer(Transformer):
             right = "\\right."
         else:
             right = "\\right" + rpar
-        return left + s + right
+        return (
+            left
+            + ("\\begin{matrix}" + s + "\\end{matrix}" if mat else s)
+            + right
+        )
 
     @_log
     def exp_mat(self, items, mat_type="pmatrix"):
@@ -152,10 +228,11 @@ class LatexTransformer(Transformer):
 
     @_log
     def symbol(self, items):
-        if self._concat(items[0]) in smb:
-            return smb[self._concat(items[0])]
-        else:
-            return items[0].value
+        return smb[self._concat(items[0])]
+
+    @_log
+    def const(self, items):
+        return items[0].value
 
     @_log
     def exp_unary(self, items):

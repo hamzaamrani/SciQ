@@ -231,6 +231,8 @@ left_parenthesis = {
     '"["': "[",
     '"{:"': "{:",
     '"{"': "\{",
+    '"|:"': "\\vert",
+    '"||:"': "\\lVert",
     '"langle"': "\\langle",
     '"<<"': "\\langle",
 }
@@ -241,6 +243,8 @@ right_parenthesis = {
     '"]"': "]",
     '":}"': ":}",
     '"}"': "\}",
+    '":|"': "\\vert",
+    '":||"': "\\rVert",
     '"rangle"': "\\rangle",
     '">>"': "\\rangle",
 }
@@ -274,6 +278,13 @@ arrows = {
 }
 
 misc_symbols = {
+    '"^"': "^",
+    '","': ",",
+    '"_"': "_",
+    '"\'"': "'",
+    '"/"': "/",
+    '"|"': "|",
+    '":"': ":",
     '"int"': "\\int",
     '"integral"': "\\int",
     '"oint"': "\\oint",
@@ -355,6 +366,7 @@ def alias_string(mapping: dict, init=False, alias=True, prefix=""):
     return s
 
 
+# unary_functions.update(function_symbols)
 smb = misc_symbols
 smb.update(function_symbols)
 smb.update(relation_symbols)
@@ -362,12 +374,6 @@ smb.update(logical_symbols)
 smb.update(operation_symbols)
 smb.update(greek_letters)
 smb.update(arrows)
-left_parenthesis = dict(
-    sorted(left_parenthesis.items(), key=lambda x: (-len(x[0]), x[0]))
-)
-right_parenthesis = dict(
-    sorted(right_parenthesis.items(), key=lambda x: (-len(x[0]), x[0]))
-)
 smb = dict(sorted(smb.items(), key=lambda x: (-len(x[0]), x[0])))
 
 asciimath_grammar = r"""
@@ -375,53 +381,31 @@ asciimath_grammar = r"""
     %import common.LETTER
     %import common.NUMBER
     %ignore WS
-    start: i+ -> exp
-    _csl: start ("," start)* ","?                   // csl = Comma Separated List
-    csl_mat: icsl_mat ("," icsl_mat)* ","?          // csl_mat = Comma Separated List for MATrices
-    icsl_mat: "[" _csl? "]"                         // icsl_mat = Internal Comma Separated List for MATrices
+    start: i start* -> exp
+        | i "/" i -> exp_frac
     i: s -> exp_interm
-        | s "/" s -> exp_frac
         | s "_" s -> exp_under
         | s "^" s -> exp_super
         | s "_" s "^" s -> exp_under_super
-    s: _l _csl? _r -> exp_par
-        | "[:" csl_mat? ":]" -> exp_bmat
-        | "(:" csl_mat? ":)" -> exp_pmat
-        | "{{:" csl_mat? ":}}" -> exp_cmat
-        | "|:" csl_mat? ":|" -> exp_vmat
-        | "||:" csl_mat? ":||" -> exp_nmat
-        | "{{:" csl_mat? ":)" -> exp_system
+    s: _l start? _r -> exp_par
         | _u s -> exp_unary
         | _b s s -> exp_binary
-        | _c -> symbol
+        | _latex -> symbol
+        | _c -> const
         | QS -> q_str
-    _c: LETTER
+    !_c: /d[A-Za-z]/
         | NUMBER
-        | /d[A-Za-z]/
-        | LATEX1
-        | LATEX2
-        | P
-    P: "|" | "'" | "." | "," | ":" // punctuation
+        | LETTER
     !_l: {} // left parenthesis
     !_r: {} // right parenthesis
     !_b: {} // binary functions
     !_u: {} // unary functions
-    LATEX1: {}
-    LATEX2: {}
+    !_latex: {}
     QS: "\"" /(?<=").+(?=")/ "\"" // Quoted String
 """.format(
     alias_string(left_parenthesis, alias=False),
     alias_string(right_parenthesis, alias=False),
     alias_string(binary_functions, alias=False),
     alias_string(unary_functions, alias=False),
-    alias_string(dict(islice(smb.items(), len(smb) // 2)), alias=False),
-    alias_string(
-        dict(islice(smb.items(), len(smb) // 2, len(smb))), alias=False
-    ),
-    # alias_string(operation_symbols, prefix="op"),
-    # alias_string(relation_symbols, prefix="rel"),
-    # alias_string(logical_symbols, prefix="logical"),
-    # alias_string(function_symbols, prefix="func"),
-    # alias_string(greek_letters, prefix="greek"),
-    # alias_string(arrows, prefix="arrow")
+    alias_string(smb, alias=False),
 )
