@@ -38,7 +38,7 @@ if __name__ == "__main__":
     #     [[:[1,2]:]]
     # """
     # )
-    # text = text + """lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx"""
+    text = text + """lim_(N->oo) sum_(i=0)^N int_0^1 f(x)dx"""
     # text = text + """||:[2 x + 17 y = 23],[y = int_{0}^{x} t dt]:||"""
     # text = (
     #     text
@@ -50,5 +50,6 @@ if __name__ == "__main__":
     #     + """e^{:[2 x + 17 (y) = 23], [1], [y = dstyle int_{0}^{x} t dt], [y = dstyle integral_{0}^{x} t dt]:}"""
     # )
     # text = text + """((1,2))int sin{x^2}/4pidxroot(5)(x_1^2+x_2^2)"""
-    text = text + "[(1,2), (2^|: 3 :|, (dstyle int x^{2(x-n)})), (2,4)]"
+    # text = text + "[(1,2), (2^|: 3 :|, (dstyle int x^{2(x-n)})), (2,4)]"
+    # text = text + "[[int x dx], [log(x+1)]]"
     print(parser.asciimath2tex(text, pprint=True))

@@ -367,7 +367,6 @@ def alias_string(mapping: dict, init=False, alias=True, prefix=""):
     return s
 
 
-# unary_functions.update(function_symbols)
 smb = misc_symbols
 smb.update(function_symbols)
 smb.update(relation_symbols)

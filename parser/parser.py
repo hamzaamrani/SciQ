@@ -19,16 +19,18 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 class LatexTransformer(Transformer):
+    """Trasformer class, read `lark.Transformer`."""
+    
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
         UtilsMat.set_pars(
             left_parenthesis.values(), right_parenthesis.values()
         )
         formatted_left_parenthesis = "|".join(
-            ["\\(", "\\(:", "\\[", "\\{", "\\{:",]
+            ["\\(", "\\(:", "\\[", "\\{", "\\{:"]
         )
         formatted_right_parenthesis = "|".join(
-            ["\\)", ":\\)", "\\]", "\\}", ":\\}",]
+            ["\\)", ":\\)", "\\]", "\\}", ":\\}"]
         )
         self.start_end_par_pattern = re.compile(
             r"^(?:\\left(?:(?:\\)?({})))"
