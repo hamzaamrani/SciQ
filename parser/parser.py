@@ -1,13 +1,15 @@
-from lark import Lark, Transformer, Discard, Tree, Token, v_args
-from lark.exceptions import VisitError, GrammarError
-from itertools import chain, islice
-from functools import wraps
-from log import Log, flatten
-from const import *
-from utils import UtilsMat, concat
+import logging
 import re
 import sys
-import logging
+from functools import wraps
+from itertools import chain, islice
+from parser.const import *
+
+from lark import Discard, Lark, Token, Transformer, Tree, v_args
+from lark.exceptions import GrammarError, VisitError
+
+from utils.log import Log, flatten
+from utils.utils import UtilsMat, concat
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 """
@@ -23,12 +25,11 @@ class LatexTransformer(Transformer):
             left_parenthesis.values(), right_parenthesis.values()
         )
         formatted_left_parenthesis = "|".join(
-            ["\\(", "\\[", "\\{", "langle", "<<"]
+            ["\\(", "\\(:", "\\[", "\\{", "\\{:",]
         )
         formatted_right_parenthesis = "|".join(
-            ["\\)", "\\]", "\\}", "rangle", ">>"]
+            ["\\)", ":\\)", "\\]", "\\}", ":\\}",]
         )
-        self.left_right_pattern = re.compile(r"(\\right|\\left)")
         self.start_end_par_pattern = re.compile(
             r"^(?:\\left(?:(?:\\)?({})))"
             r"(.*?)"
@@ -57,9 +58,10 @@ class LatexTransformer(Transformer):
     def exp_par(self, items):
         mat = False
         if items[1].startswith("\\left"):
-            if UtilsMat.check_mat(items[1]):
+            yeah_mat, row_par = UtilsMat.check_mat(items[1])
+            if yeah_mat:
                 mat = True
-                s = UtilsMat.get_mat(items[1], self.left_right_pattern)
+                s = UtilsMat.get_mat(items[1], row_par)
             else:
                 s = ", ".join(items[1:-1])
         else:
@@ -83,59 +85,6 @@ class LatexTransformer(Transformer):
             + ("\\begin{matrix}" + s + "\\end{matrix}" if mat else s)
             + right
         )
-
-    @_log
-    def exp_mat(self, items, mat_type="pmatrix"):
-        if items == [] or items != [] and items[0] == "":
-            return "".join(matrix2par[mat_type])
-        else:
-            return (
-                "\\begin{"
-                + mat_type
-                + "}"
-                + (items[0] if items != [] else "\\null")
-                + "\\end{"
-                + mat_type
-                + "}"
-            )
-
-    @_log
-    def exp_cmat(self, items):
-        return self.exp_mat(items, mat_type="Bmatrix")
-
-    @_log
-    def exp_bmat(self, items):
-        return self.exp_mat(items, mat_type="bmatrix")
-
-    @_log
-    def exp_vmat(self, items):
-        return self.exp_mat(items, mat_type="vmatrix")
-
-    @_log
-    def exp_nmat(self, items):
-        return self.exp_mat(items, mat_type="Vmatrix")
-
-    @_log
-    def exp_pmat(self, items):
-        return self.exp_mat(items)
-
-    @_log
-    def exp_system(self, items):
-        return re.sub(r"(?<!&)=", "&=", self.exp_mat(items, mat_type="cases"))
-
-    @_log
-    def csl(self, items):
-        return ",".join(items)
-
-    @_log
-    def csl_mat(self, items):
-        return " \\\\ ".join(items)
-
-    @_log
-    def icsl_mat(self, items):
-        if items == []:
-            return "\\null"
-        return " & ".join(items)
 
     @_log
     def exp_frac(self, items):
