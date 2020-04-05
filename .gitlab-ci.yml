@@ -20,8 +20,8 @@ test:
   script:
     - echo 'test'
     #- ./test/test.sh
-    - MIGRATE=true docker-compose up -d --build
-    - docker exec web python -m pytest tests/
+    - docker-compose up -d --build
+    - docker exec web python -m unittest -v tests.runner
     - touch success
   after_script:
     - if [ ! -e success ]; then
