@@ -7,6 +7,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 
+
 def create_app(config_name):
     app = Flask(__name__)
 
@@ -16,9 +17,10 @@ def create_app(config_name):
     db.init_app(app)
     ma.init_app(app)
 
-    from .models.models import User, Expression
+    from .models import User, Expression
     migrate.init_app(app, db)
 
+    # add routes to api
     from .api import user_blueprint, expression_blueprint
     app.register_blueprint(user_blueprint)
     app.register_blueprint(expression_blueprint)

@@ -3,16 +3,16 @@ services:
   web:
     container_name: 'web'
     build: 
-      context: .
-      args: 
-        MIGRATE: ${MIGRATE}
+      context: ./web
+      #args: 
+        #MIGRATE: ${MIGRATE}
     image: web
     links: 
       - db
     ports:
       - "5000:5000"
     env_file: 
-      - .env
+      - ./web/.env
     restart: 
       always
     networks: 
@@ -24,7 +24,7 @@ services:
         target: /usr/src/siq/app/api/plot
       # volume for mapping host folder to container 
       - type: bind
-        source: ./migrations
+        source: ./web/migrations
         target: /usr/src/sciq/migrations
       #- type: volume
       #  source: migrations-data

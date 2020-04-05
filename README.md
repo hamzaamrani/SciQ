@@ -12,20 +12,12 @@ The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 ## Database
 To use app:
 
-`MIGRATE=true docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
+`docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
 
 **on windows system the url isn't 0.0.0.0 but docker engine IP**
 
 To perform test:
 
-`docker-compose build && docker-compose up -d && docker exec web python -m pytest tests/` or `bash ./test/test.sh` 
+`docker-compose up -d --build && docker exec web python -m unittest -v tests.runner` or run bash file `test.sh` 
 
-To enter in container db:
-
-`docker start db && docker exec -it db bash`
-
-If there are changes in code `MIGRATE=false docker-compose up --build`
-
-If there are changes in the DB schema with `MIGRATE=true docker-compose up --build` the script apply migrate and upgrade.
-
-
+If there are changes in code `docker-compose up --build`

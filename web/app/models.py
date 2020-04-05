@@ -1,4 +1,4 @@
-from app import db, ma
+from app import db,ma
 from sqlalchemy import event
 from sqlalchemy import *
 from sqlalchemy.orm import *
@@ -41,11 +41,16 @@ class Expression(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
     
     expression = db.Column(db.String(128), index=True, nullable=False)
-    expression_type = db.Column(db.String(128), index=True)
+    #expression_type = db.Column(db.String(128), index=True)
     solutions = db.Column(db.String(128), nullable=False)
-    plot = db.Column(db.String(128))
+    plots = db.Column(db.String(128))
     alternate_forms = db.Column(db.String(128))
     execution_time = db.Column(db.String(128))
+    symbolic_solutions = db.Column(db.String(128))
+    results = db.Column(db.String(128))
+    limits = db.Column(db.String(128))
+    partial_derivates = db.Column(db.String(128))
+    integral = db.Column(db.String(128))
 
     def __repr__(self):
         return '<Expression {} = {}>'.format(self.expression, self.result)
@@ -54,8 +59,13 @@ class ExpressionSchema(ma.Schema):
     class Meta:
         fields = (
             'expression',
-            'expression_type',
+            #'expression_type',
             'solutions',
-            'plot',
+            'plots',
             'alternate_forms',
-            'execution_time')
+            'execution_time',
+            'symbolic_solutions',
+            'results',
+            'limits',
+            'partial_derivates',
+            'integral')

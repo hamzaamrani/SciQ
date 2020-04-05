@@ -1,7 +1,7 @@
 from app import db
 from . import user_blueprint
 from flask import request, jsonify, send_from_directory
-from app.models.models import User, UserSchema, Expression, ExpressionSchema
+from app.models import User, UserSchema, Expression, ExpressionSchema
 import os
 
 base_folder_image = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plot')
@@ -11,6 +11,10 @@ users_schema = UserSchema(many=True)
 expression_schema = ExpressionSchema()
 expressions_schema = ExpressionSchema(many=True)
 
+@user_blueprint.route('/index', methods=['GET'])
+def home():
+    return "ciao figlio di una buona donna"
+    
 # create user
 @user_blueprint.route('/', methods=['POST'])
 def create_user():

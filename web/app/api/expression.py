@@ -1,7 +1,7 @@
 from app import db
 from . import expression_blueprint
 from flask import request, jsonify
-from app.models.models import Expression, ExpressionSchema, User, user_expression
+from app.models import Expression, ExpressionSchema, User, user_expression
 
 expression_schema = ExpressionSchema()
 expressions_schema = ExpressionSchema(many=True)
