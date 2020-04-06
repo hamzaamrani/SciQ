@@ -79,15 +79,11 @@ If you want them to be rendered, you have to double them, for example: `((x+y))/
 For a text to be rendered as a matrix must have a structure like 
 
 <div align="center">
-    <code>
-    L '[' ... (, ...)* ']', '[' ... (, ...)* ']' (, '[' ... (, ...)* ']' )* R
-    </code> 
+    <code>L '[' ... (, ...)* ']', '[' ... (, ...)* ']' (, '[' ... (, ...)* ']' )* R</code> 
     <br>
     or
     <br>
-    <code>
-    L '(' ... (, ...)* ')', '(' ... (, ...)* ')' (, '(' ... (, ...)* ')' )* R
-    </code>
+    <code>L '(' ... (, ...)* ')', '(' ... (, ...)* ')' (, '(' ... (, ...)* ')' )* R</code>
 </div>
 
 that is:
