@@ -1,6 +1,6 @@
 import unittest
 from parser.const import asciimath_grammar
-from parser.parser import ASCIIMath2Tex
+from parser.parser import ASCIIMath2Tex, LatexTransformer
 
 
 class TestUtilsMat(unittest.TestCase):
@@ -12,6 +12,7 @@ class TestUtilsMat(unittest.TestCase):
             inplace=True,
             parser="lalr",
             lexer="contextual",
+            transformer=LatexTransformer(log=False)
         )
 
     # Returns True if the string contains 4 a.
@@ -28,7 +29,7 @@ class TestUtilsMat(unittest.TestCase):
         )
         self.assertEqual(
             s,
-            r"\left(\left(1 , 2\right)\right) \int \sin \frac{\left\{x^{2}\right\}}{4} \pi dx \sqrt[5]{x_{1}^{2} + x_{2}^{2}}",
+            r"\left(\left(1 , 2\right)\right) \int \sin \frac{x^{2}}{4} \pi dx \sqrt[5]{x_{1}^{2} + x_{2}^{2}}",
         )
 
     def test_asciimath2tex_ok_3(self):
@@ -36,6 +37,18 @@ class TestUtilsMat(unittest.TestCase):
         self.assertEqual(
             s,
             r"\lim_{N \to \infty} \sum_{i = 0}^{N} \int_{0}^{1} f \left(x\right) dx",
+        )
+
+    def test_asciimath2tex_ok_4(self):
+        s = self.parser.asciimath2tex(
+            """uuu_{2(x+1)=1)^{n}
+            min{
+                2x|x^{y+2} in bbb(N) wedge arccos root(3}(frac{1}{3x}) < i rarr Omega < b, 5=x
+            }"""
+        )
+        self.assertEqual(
+            s,
+            r"\bigcup_{2 \left(x + 1\right) = 1}^{n} \min \left\{2 x | x^{y + 2} \in \mathbb{N} \wedge \arccos \sqrt[3]{\frac{1}{3 x}} < i \rightarrow \Omega < b , 5 = x\right\}",
         )
 
 

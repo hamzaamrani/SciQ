@@ -20,7 +20,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 class LatexTransformer(Transformer):
     """Trasformer class, read `lark.Transformer`."""
-    
+
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
         UtilsMat.set_pars(
@@ -58,16 +58,12 @@ class LatexTransformer(Transformer):
 
     @_log
     def exp_par(self, items):
-        mat = False
-        if items[1].startswith("\\left"):
-            yeah_mat, row_par = UtilsMat.check_mat(items[1])
+        yeah_mat = False
+        s = ", ".join(items[1:-1])
+        if s.startswith("\\left"):
+            yeah_mat, row_par = UtilsMat.check_mat(s)
             if yeah_mat:
-                mat = True
-                s = UtilsMat.get_mat(items[1], row_par)
-            else:
-                s = ", ".join(items[1:-1])
-        else:
-            s = ", ".join(items[1:-1])
+                s = UtilsMat.get_mat(s, row_par)
         lpar = left_parenthesis[concat(items[0])]
         rpar = right_parenthesis[concat(items[-1])]
         if lpar == "\\langle":
@@ -84,12 +80,14 @@ class LatexTransformer(Transformer):
             right = "\\right" + rpar
         return (
             left
-            + ("\\begin{matrix}" + s + "\\end{matrix}" if mat else s)
+            + ("\\begin{matrix}" + s + "\\end{matrix}" if yeah_mat else s)
             + right
         )
 
     @_log
     def exp_frac(self, items):
+        items[0] = self.remove_parenthesis(items[0])
+        items[1] = self.remove_parenthesis(items[1])
         return "\\frac{" + items[0] + "}{" + items[1] + "}"
 
     @_log
