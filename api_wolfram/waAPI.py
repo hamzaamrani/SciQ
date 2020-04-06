@@ -6,6 +6,7 @@ import base64
 import os.path
 from PIL import Image
 from io import BytesIO
+from flask import Markup
 
 
 API_URL = 'https://api.wolframalpha.com/v2/query'
@@ -199,10 +200,12 @@ class Expression(object):
             for subpod in pod['subpods']:
                 ml = subpod['mathml']
                 ml = ml.replace("\n", "")
+                ml = Markup(ml)
                 mathml.append(ml)
         else:
             ml = pod['subpods']['mathml']
             ml = ml.replace("\n", "")
+            ml = Markup(ml)
             mathml.append(ml)
         return mathml
 
@@ -227,7 +230,7 @@ class Expression(object):
         print("Success: ", self.success)
         print("Query: ", raw(self.query))
         print("Execution time: ", self.execution_time)
-        print("Plots: ", len(self.plots))
+        print("Plots: ", self.plots)
         print("Alternate forms: ", self.alternate_forms)
         print("Results: ", self.results)
         print("Solutions: ", self.solutions)
@@ -264,3 +267,6 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         id_equation=id_equation,
         dir_plots=dir_plots)
     return obj_expression
+
+obj = compute_expression('x^3 - y^2 = 23')
+obj.print_expression()
