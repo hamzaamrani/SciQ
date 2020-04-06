@@ -9,9 +9,8 @@ from __future__ import print_function
 from functools import wraps
 from inspect import getcallargs, getfullargspec
 from collections import OrderedDict
-from collections.abc import Iterable
 from itertools import chain
-from utils import flatten
+from utils.utils import flatten
 
 
 class Log(object):
@@ -24,7 +23,8 @@ class Log(object):
         self.print_self = print_self
 
     def _getargnames(self, func):
-        """Return an iterator over all arg names, including nested arg names and varargs.
+        """Return an iterator over all arg names, including nested arg names 
+        and varargs.
         Goes in the order of the functions argspec, with varargs and
         keyword args last if present."""
         (args_names, varargs_names, varkws_names, _,

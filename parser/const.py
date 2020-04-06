@@ -1,5 +1,3 @@
-from itertools import islice
-
 binary_functions = {
     '"frac"': "\\frac",
     '"root"': "\\sqrt",

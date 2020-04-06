@@ -5,6 +5,7 @@ if __name__ == "__main__":
     parser = ASCIIMath2Tex(
         asciimath_grammar,
         inplace=False,
+        cache=True,
         parser="lalr",
         lexer="contextual",
     )

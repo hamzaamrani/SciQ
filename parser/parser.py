@@ -1,14 +1,17 @@
 import logging
 import re
-import sys
 from functools import wraps
-from itertools import chain, islice
-from parser.const import *
 
-from lark import Discard, Lark, Token, Transformer, Tree, v_args
-from lark.exceptions import GrammarError, VisitError
+from lark import Lark, Transformer
 
-from utils.log import Log, flatten
+from parser.const import (
+    binary_functions,
+    left_parenthesis,
+    right_parenthesis,
+    smb,
+    unary_functions,
+)
+from utils.log import Log
 from utils.utils import UtilsMat, concat
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)

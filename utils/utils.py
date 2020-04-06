@@ -1,5 +1,5 @@
-import re
 import logging
+from collections.abc import Iterable
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -35,7 +35,6 @@ class UtilsMat(object):
     2) Given a correctly matrix-like string, it returns the LaTeX translation:
        col (& col)* \\\\ col (& col)* (\\\\ col (& col)*)*
     """
-
 
     @classmethod
     def get_row_par(cls, s: str):

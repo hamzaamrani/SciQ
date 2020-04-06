@@ -1,6 +1,6 @@
 import unittest
-from parser.const import asciimath_grammar
 from parser.parser import ASCIIMath2Tex, LatexTransformer
+from parser.const import asciimath_grammar
 
 
 class TestUtilsMat(unittest.TestCase):
@@ -8,11 +8,11 @@ class TestUtilsMat(unittest.TestCase):
         self.maxDiff = None
         self.parser = ASCIIMath2Tex(
             asciimath_grammar,
+            inplace=False,
             cache=True,
-            inplace=True,
             parser="lalr",
             lexer="contextual",
-            transformer=LatexTransformer(log=False)
+            transformer=LatexTransformer(log=False),
         )
 
     # Returns True if the string contains 4 a.
