@@ -99,10 +99,4 @@ that is:
 * Every row must contain the same number of columns
 
 Since `L` and `R` can be any left or right parenthesis, and every matrices must have the same number of columns, to render a system of equation one can write something like `{[(root n x)/(x) <= 4], [x^2=e^x]:}`.  
-On the other hand a matrix can be somenthing like
-
-<div align="center">
-    <code>
-        [[(root n x)/(x) <= 4, int x dx], [x^2=e^x, lim_(x to infty) 1 / (x^2)]]
-    </code>
-</div>
+On the other hand a matrix can be somenthing like `[[(root n x)/(x) <= 4, int x dx], [x^2=e^x, lim_(x to infty) 1 / (x^2)]]`.
