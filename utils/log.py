@@ -11,16 +11,7 @@ from inspect import getcallargs, getfullargspec
 from collections import OrderedDict
 from collections.abc import Iterable
 from itertools import chain
-
-
-def flatten(l):
-    """Flatten a list (or other iterable) recursively"""
-    for el in l:
-        if isinstance(el, Iterable) and not isinstance(el, str):
-            for sub in flatten(el):
-                yield sub
-        else:
-            yield el
+from utils import flatten
 
 
 class Log(object):
