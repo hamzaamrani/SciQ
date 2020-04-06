@@ -7,6 +7,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 def concat(s: str):
     return '"' + s + '"'
 
+
 def flatten(l):
     """Flatten a list (or other iterable) recursively"""
     for el in l:
@@ -35,21 +36,6 @@ class UtilsMat(object):
        col (& col)* \\\\ col (& col)* (\\\\ col (& col)*)*
     """
 
-    left_par = ["(", "[", "{"]
-    right_par = [")", "]", "}"]
-
-    @classmethod
-    def set_left_par(cls, l_par: list):
-        left_par = l_par
-
-    @classmethod
-    def set_right_par(cls, r_par: list):
-        right_par = r_par
-
-    @classmethod
-    def set_pars(cls, l_par: list, r_par: list):
-        cls.set_left_par(l_par)
-        cls.set_right_par(r_par)
 
     @classmethod
     def get_row_par(cls, s: str):

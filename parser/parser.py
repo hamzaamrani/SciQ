@@ -23,9 +23,6 @@ class LatexTransformer(Transformer):
 
     def __init__(self, log=True, visit_tokens=False):
         super(LatexTransformer, self).__init__(visit_tokens=visit_tokens)
-        UtilsMat.set_pars(
-            left_parenthesis.values(), right_parenthesis.values()
-        )
         formatted_left_parenthesis = "|".join(
             ["\\(", "\\(:", "\\[", "\\{", "\\{:"]
         )
