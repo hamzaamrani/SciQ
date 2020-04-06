@@ -3,7 +3,9 @@ from sqlalchemy import event
 from sqlalchemy import *
 from sqlalchemy.orm import *
 
-user_expression = db.Table('user_expression', db.Model.metadata,
+user_expression = db.Table(
+    'user_expression', 
+    db.Model.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='cascade')),
     db.Column('expression_id', db.Integer, db.ForeignKey('expression.id', ondelete='cascade')),
     db.UniqueConstraint('user_id', 'expression_id'))

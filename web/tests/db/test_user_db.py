@@ -11,7 +11,6 @@ class TestUserDb(unittest.TestCase):
         with self.app.app_context():
             self.db.create_all()
 
-
     def tearDown(self):
         with self.app.app_context():
             self.db.session.remove()
@@ -46,14 +45,12 @@ class TestUserDb(unittest.TestCase):
             users = User.query.all()
         self.assertEqual(len(users), 0)
 
-
     def test_get_all_user(self):
         _ = self.create_user("test1", "password1", "12345")
         _ = self.create_user("test2", "password2", "12325465")
         with self.app.app_context():
             users = User.query.all()
         self.assertEqual(len(users), 2)
-
 
     def test_get_user(self):
         _ = self.create_user("test1", "password1", "12345")

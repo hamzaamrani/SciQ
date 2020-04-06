@@ -4,29 +4,29 @@ from app.models import Expression, User
 
 
 expression_template1 = {
-            'expression': "x + 2 = 5",
-            'solutions': "3",
-            'plots': " ",
-            'alternate_forms': " ",
-            'execution_time': "",
-            'symbolic_solutions': "1",
-            'results': " ",
-            'limits': "",
-            'partial_derivates': "",
-            'integral': ""
+    'expression': "x + 2 = 5",
+    'solutions': "3",
+    'plots': " ",
+    'alternate_forms': " ",
+    'execution_time': "",
+    'symbolic_solutions': "1",
+    'results': " ",
+    'limits': "",
+    'partial_derivates': "",
+    'integral': ""
 }
 
 expression_template2 = {
-            'expression': "x + 2 = 5",
-            'solutions': "1",
-            'plots': " ",
-            'alternate_forms': " ",
-            'execution_time': "",
-            'symbolic_solutions': "1",
-            'results': " ",
-            'limits': "",
-            'partial_derivates': "",
-            'integral': ""
+    'expression': "x + 2 = 5",
+    'solutions': "1",
+    'plots': " ",
+    'alternate_forms': " ",
+    'execution_time': "",
+    'symbolic_solutions': "1",
+    'results': " ",
+    'limits': "",
+    'partial_derivates': "",
+    'integral': ""
 }
 
 
@@ -37,7 +37,6 @@ class TestExpressionDb(unittest.TestCase):
         self.db = db
         with self.app.app_context():
             self.db.create_all()
-
 
     def tearDown(self):
         with self.app.app_context():
@@ -101,12 +100,12 @@ class TestExpressionDb(unittest.TestCase):
         ex2 = Expression(**expression_template2)
         ex3 = Expression(**expression_template2)
         user1.expressions.append(ex1)
-        user1.expressions.append(ex2)  
+        user1.expressions.append(ex2)
         user2.expressions.append(ex3)
         with self.app.app_context():
             db.session.add(user1)
             db.session.add(user2)
-            db.session.commit()  
+            db.session.commit()
 
             user = User.query.get(1)
             user.expressions.remove(ex2)
@@ -122,12 +121,12 @@ class TestExpressionDb(unittest.TestCase):
         ex2 = Expression(**expression_template2)
         ex3 = Expression(**expression_template2)
         user1.expressions.append(ex1)
-        user1.expressions.append(ex2)  
+        user1.expressions.append(ex2)
         user2.expressions.append(ex3)
         with self.app.app_context():
             db.session.add(user1)
             db.session.add(user2)
-            db.session.commit()  
+            db.session.commit()
 
             # select expression of user1
             expressions = User.query.get(id=1).expressions
@@ -136,14 +135,13 @@ class TestExpressionDb(unittest.TestCase):
         self.assertEqual(expression[0], ex1)
         self.assertEqual(expression[1], ex2)
 
-        # select expression of user2 
+        # select expression of user2
         with self.app.app_context():
             expressions = User.query.get(id=1).expressions
 
         self.assertEqual(len(expressions), 1)
         self.assertEqual(expression[0], ex3)
 
+
 if __name__ == "__main__":
     unittest.main()
-
-
