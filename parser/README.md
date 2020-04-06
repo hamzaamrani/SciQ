@@ -29,8 +29,8 @@ results in:
 The grammar used to parse the input is:
 ```python
 start: i start* -> exp
-    | i "/" i -> exp_frac
 i: s -> exp_interm
+    | s "/" s -> exp_frac
     | s "_" s -> exp_under
     | s "^" s -> exp_super
     | s "_" s "^" s -> exp_under_super
