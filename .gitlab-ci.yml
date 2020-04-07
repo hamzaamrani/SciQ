@@ -7,21 +7,28 @@ image:
 services:
   - docker:dind
 
+  stages:
+    - build
+    - test
+
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
-test:
-  stage: test
-  before_script:
-    - apk add --update curl
-    - docker version
-    - docker-compose version
+
+build-db:
+  stage: build
+  services:
+      - docker:dind
   script:
-    - echo 'test'
-    #- ./test/test.sh
-    - docker-compose up -d --build
-    - docker exec web python -m unittest -v tests.runner
+      - echo 'build db'
+      - docker-compose up -d --build web
+
+test-db:
+  stage: test
+  script:
+    - echo 'test db'
+    - docker exec web python -m unittest discover tests.db
     - touch success
   after_script:
     - if [ ! -e success ]; then

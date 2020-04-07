@@ -14,7 +14,7 @@ RUN pip3 install -r requirements.txt
 COPY docker-entrypoint.sh .
 COPY run.py .
 COPY .env .
-COPY tests tests
+COPY ../tests tests
 COPY migrations migrations
 ADD app app
 

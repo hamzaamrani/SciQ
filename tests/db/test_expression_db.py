@@ -4,36 +4,35 @@ from app.models import Expression, User
 
 
 expression_template1 = {
-    'expression': "x + 2 = 5",
-    'solutions': "3",
-    'plots': " ",
-    'alternate_forms': " ",
-    'execution_time': "",
-    'symbolic_solutions': "1",
-    'results': " ",
-    'limits': "",
-    'partial_derivates': "",
-    'integral': ""
+    "expression": "x + 2 = 5",
+    "solutions": "3",
+    "plots": " ",
+    "alternate_forms": " ",
+    "execution_time": "",
+    "symbolic_solutions": "1",
+    "results": " ",
+    "limits": "",
+    "partial_derivates": "",
+    "integral": "",
 }
 
 expression_template2 = {
-    'expression': "x + 2 = 5",
-    'solutions': "1",
-    'plots': " ",
-    'alternate_forms': " ",
-    'execution_time': "",
-    'symbolic_solutions': "1",
-    'results': " ",
-    'limits': "",
-    'partial_derivates': "",
-    'integral': ""
+    "expression": "x + 2 = 5",
+    "solutions": "1",
+    "plots": " ",
+    "alternate_forms": " ",
+    "execution_time": "",
+    "symbolic_solutions": "1",
+    "results": " ",
+    "limits": "",
+    "partial_derivates": "",
+    "integral": "",
 }
 
 
 class TestExpressionDb(unittest.TestCase):
-
     def setUp(self):
-        self.app = create_app('testing')
+        self.app = create_app("testing")
         self.db = db
         with self.app.app_context():
             self.db.create_all()
@@ -132,15 +131,15 @@ class TestExpressionDb(unittest.TestCase):
             expressions = User.query.get(id=1).expressions
 
         self.assertEqual(len(expressions), 2)
-        self.assertEqual(expression[0], ex1)
-        self.assertEqual(expression[1], ex2)
+        self.assertEqual(expressions[0], ex1)
+        self.assertEqual(expressions[1], ex2)
 
         # select expression of user2
         with self.app.app_context():
             expressions = User.query.get(id=1).expressions
 
         self.assertEqual(len(expressions), 1)
-        self.assertEqual(expression[0], ex3)
+        self.assertEqual(expressions[0], ex3)
 
 
 if __name__ == "__main__":
