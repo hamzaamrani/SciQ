@@ -20,6 +20,9 @@ build-db:
   stage: build
   services:
     - docker:dind
+  before_script:
+    - apk update
+    - apk add docker docker-compose
   script:
     - echo 'build db'
     - docker-compose up -d --build web
