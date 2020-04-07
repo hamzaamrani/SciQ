@@ -7,9 +7,9 @@ image:
 services:
   - docker:dind
 
-  stages:
-    - build
-    - test
+stages:
+  - build
+  - test
 
 variables:
   DOCKER_HOST: tcp://docker:2375
