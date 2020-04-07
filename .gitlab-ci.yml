@@ -28,19 +28,20 @@ test-db:
   stage: test
   before_script:
     - apk update
-    - apk add python
-    - apk add py-pip
-    - pip install -r ./web/requirements.txt
+    - apk add python3
+    - apk add py3-pip
+    - pip3 install -r ./web/requirements.txt
   script:
     - echo 'test db'
-    - python -m unittest discover tests.db -v
+    - python3 -m unittest discover tests.db -v
 
 test-parser:
   stage: test
   before_script:
     - apk update
-    - apk add python
+    - apk add python3
+    - apk add py3-pip
   script:
     - echo 'test parser'
-    - python -m unittest discover tests.parser -v
+    - python3 -m unittest discover tests.parser -v
     
