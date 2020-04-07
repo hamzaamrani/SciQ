@@ -16,25 +16,25 @@ variables:
   DOCKER_DRIVER: overlay2
 
 
-build-db:
-  stage: build
-  services:
-      - docker:dind
-  script:
-      - echo 'build db'
-      - docker-compose up -d --build web
+#build-db:
+#  stage: build
+#  services:
+#      - docker:dind
+#  script:
+#      - echo 'build db'
+#      - docker-compose up -d --build web
 
 test-db:
   stage: test
+  before_script:
+    - apt-get -qq install -y python python-pip
+    - pip install -r ./web/requirements.txt
   script:
     - echo 'test db'
     - python -m unittest discover tests.db -v
 
 test-parser:
   stage: test
-  before-script:
-    - apt-get -qq install -y python python-pip
-    - pip install -r ./web/requirements.txt
   script:
     - echo 'test parser'
     - python -m unittest discover tests.parser -v
