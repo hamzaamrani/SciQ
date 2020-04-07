@@ -8,7 +8,6 @@ services:
   - docker:dind
 
 stages:
-  - build
   - test
 
 variables:
@@ -29,4 +28,13 @@ test-db:
   script:
     - echo 'test db'
     - python -m unittest discover tests.db -v
+
+test-parser:
+  stage: test
+  before-script:
+    - apt-get -qq install -y python python-pip
+    - pip install -r ./web/requirements.txt
+  script:
+    - echo 'test parser'
+    - python -m unittest discover tests.parser -v
     
