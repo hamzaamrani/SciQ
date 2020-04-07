@@ -1,7 +1,7 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
 image:
-  name: docker/compose:1.24.1
+  name: alpine:latest
   entrypoint: ["sh", "-c"]
 
 services:
@@ -27,7 +27,9 @@ variables:
 test-db:
   stage: test
   before_script:
-    - apt-get -qq install -y python python-pip
+    - apk update
+    - apk add python
+    - apk add py-pip
     - pip install -r ./web/requirements.txt
   script:
     - echo 'test db'
@@ -35,6 +37,9 @@ test-db:
 
 test-parser:
   stage: test
+  before_script:
+    - apk update
+    - apk add python
   script:
     - echo 'test parser'
     - python -m unittest discover tests.parser -v
