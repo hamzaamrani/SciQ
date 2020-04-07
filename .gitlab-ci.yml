@@ -16,13 +16,13 @@ variables:
   DOCKER_DRIVER: overlay2
 
 
-#build-db:
-#  stage: build
-#  services:
-#      - docker:dind
-#  script:
-#      - echo 'build db'
-#      - docker-compose up -d --build web
+build-db:
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - echo 'build db'
+    - docker-compose up -d --build web
 
 test-db:
   stage: test
@@ -41,6 +41,7 @@ test-parser:
     - apk update
     - apk add python3
     - apk add py3-pip
+    - pip3 install git+https://github.com/lark-parser/lark.git@master
   script:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
