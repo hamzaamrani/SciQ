@@ -2,19 +2,16 @@
 <html lang="en">
 
 <head>
-    <title>SciQ</title>
+    <title>SciQ - Query results</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Include Bootstrap stuff-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=3">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-
     <script>
         MathJax = {
             loader: {
@@ -34,9 +31,17 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/original-keyboard.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js">
+        MathJax.Hub.Config({
+            extensions: ["mml2jax.js"],
+            jax: ["input/MathML", "output/HTML-CSS"],
+            CommonHTML: {
+                scale: 130
+            }
+        });
+    </script>
 </head>
 
 <!-- BODY-->
@@ -52,7 +57,7 @@
         <div class="collapse navbar-collapse" id="main-navigation">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('loggedUser') }}"> <strong>Math again!</strong></a>
+                    <a class="nav-link" href="{{ url_for('loggedUser')}}"> <strong> Math again </strong> </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
@@ -64,17 +69,209 @@
         </div>
     </nav>
 
-    <header class="text-center">
+    <div class="container container-fluid response_global" style="padding-left: 5px;">
 
-    </header>
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title"> Query : `{{ query|safe }}` </p>
+                </div>
+                <div class="col-4">
+                    <p class="res_title"> Query response : {{ response_obj.success }} </p>
+                </div>
+                <div class="col-4">
+                    <p class="res_title"> Execution Time : {{ response_obj.execution_time }} </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- if success= true-->
+        {% if response_obj.success %}
+        <!-- if plot exists -->
+        {% if response_obj.plots|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Plots : </p>
+                </div>
+                <div class="col">
+                    <img src="data:image/png;base64, {{ response_obj.plots[0] }}">
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.plots[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <img src="data:image/png;base64, {{ tmp }}">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- if solution exists -->
+        {% if response_obj.solutions|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Solutions:</p>
+                </div>
+                <div class="col-8">
+                    <p class="response">{{ response_obj.solutions[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.solutions[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response"> {{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
 
-    <div id="solutions">
+        <!-- if symbolic solutions exists -->
+        {% if response_obj.symbolic_solutions|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Symbolic solutions :</p>
+                </div>
+                <div class="col-8">
+                    <p class="response"> {{ response_obj.symbolic_solutions[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.symbolic_solutions[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response">{{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
+        <!-- other -->
+
+        <!-- if alternate form exists -->
+        {% if response_obj.alternate_forms|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Alternate forms:</p>
+                </div>
+                <div class="col-8">
+                    <p class="response">{{ response_obj.alternate_forms[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.alternate_forms[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response"> {{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- if alternate form exists -->
+        {% if response_obj.limits|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Limits:</p>
+                </div>
+                <div class="col-8">
+                    <p class="response"> {{ response_obj.limits[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.limits[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response">{{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+
+        <!-- if alternate form exists -->
+        {% if response_obj.partial_derivatives|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Partial derivatives :</p>
+                </div>
+                <div class="col-8">
+                    <p class="response-multi"> {{ response_obj.partial_derivatives[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.partial_derivatives[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response-multi"> {{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- if alternate form exists -->
+        {% if response_obj.integral|length > 0 %}
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p class="res_title">Integral :</p>
+                </div>
+                <div class="col-8">
+                    <p class="response"> {{ response_obj.integral[0] }} </p>
+                </div>
+            </div>
+            <!-- for plot dal secondo-->
+            {% for tmp in response_obj.integral[1:] %}
+            <div class="row">
+                <div class="col-4">
+                    <!-- empty -->
+                </div>
+                <div class="col-8">
+                    <p class="response">{{ tmp }} </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- other -->
+        {% endif %}
     </div>
-
-
-
 
 
     <footer class="page-footer" id="page-footer">
@@ -98,7 +295,9 @@
                     </p>
                 </div>
             </div>
-            <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
+            <div class="row">
+                <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
+            </div>
     </footer>
 
 </body>

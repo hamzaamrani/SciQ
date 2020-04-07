@@ -9,4 +9,5 @@ CREATE TABLE User (
 INSERT INTO User
   (username, password)
 VALUES
-  ('hamza', '5f4dcc3b5aa765d61d8327deb882cf99');
+  ('Username', 'dc647eb65e6711e155375218212b3964');
+  

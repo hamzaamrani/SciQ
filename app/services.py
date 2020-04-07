@@ -26,6 +26,7 @@ class UserService:
         cursor.close()
         return len(results) > 0
 
+
     def signup(self, username, password):
         cursor = self.connection.cursor()
         if self.check_exist(username):

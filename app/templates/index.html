@@ -13,9 +13,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+    <script>
+    </script>
+
 </head>
 
 <!-- BODY-->
+
 
 <body>
     <!-- Navigation Bar -->
@@ -36,6 +43,25 @@
             </ul>
         </div>
     </nav>
+
+    {% if alert %}
+    <div class="container" id="Alert" style="display: block;">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="container" id="Alert" style="display: none;">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" id="close">&times;</button> {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Carousel START-->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -101,14 +127,14 @@
                                 <small>Forgot?</small>
                             </a>
                             <input type="password" class="form-control" placeholder="Enter password" id="password_login" name="password_login" required="required">
-                            <div class="text-center">
+                            <div class="text-center" style="padding-top: 20px;">
                                 <button type="submit" class="btn btn-outline-success text-center mt-10">Log in</button>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer ">
-                    <h8 class="top-inline ">Or <a data-toggle="modal" href="#signUpModal" data-target="#signUpModal" data-dismiss="modal">Sign up</a> and start using SciQ!</h8>
+                    <p class="top-inline ">Or <a data-toggle="modal" href="#signUpModal" data-target="#signUpModal" data-dismiss="modal">Sign up</a> and start using SciQ!</p>
                 </div>
             </div>
         </div>
