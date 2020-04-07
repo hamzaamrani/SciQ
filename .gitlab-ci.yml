@@ -28,11 +28,5 @@ test-db:
   stage: test
   script:
     - echo 'test db'
-    - docker exec web python -m unittest discover tests.db
-    - touch success
-  after_script:
-    - if [ ! -e success ]; then
-        docker-compose logs;
-      fi
-
+    - python -m unittest discover tests.db -v
     

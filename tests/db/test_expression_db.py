@@ -1,6 +1,6 @@
 import unittest
-from app import create_app, db
-from app.models import Expression, User
+from web.app import create_app, db
+from web.app.models import Expression, User
 
 
 expression_template1 = {
