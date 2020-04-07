@@ -1,3 +1,8 @@
+*.*pyc
+settings.json
+test.sqlite
+mysql-data/
+
 # Lark grammar cache
 .lark*
 
