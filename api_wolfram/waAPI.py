@@ -267,6 +267,3 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         id_equation=id_equation,
         dir_plots=dir_plots)
     return obj_expression
-
-obj = compute_expression('x^3 - y^2 = 23')
-obj.print_expression()
