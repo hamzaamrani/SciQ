@@ -3,7 +3,8 @@ services:
   web:
     container_name: 'web'
     build: 
-      context: ./web
+      context: $PWD
+      dockerfile: $PWD/web/Dockerfile
       #args: 
         #MIGRATE: ${MIGRATE}
     image: web

@@ -7,16 +7,16 @@ EXPOSE 5000
 
 WORKDIR /usr/src/sciq
 
-ADD ./requirements.txt .
+ADD ./web/requirements.txt .
 
 RUN pip3 install -r requirements.txt 
 
-COPY docker-entrypoint.sh .
-COPY run.py .
-COPY .env .
-COPY ../tests tests
-COPY migrations migrations
-ADD app app
+COPY ./web/docker-entrypoint.sh .
+COPY ./web/run.py .
+COPY ./web/.env .
+COPY ./tests tests
+COPY ./web/migrations migrations
+ADD ./web/app app
 
 CMD ["/bin/bash", "/usr/src/sciq/docker-entrypoint.sh"]
 
