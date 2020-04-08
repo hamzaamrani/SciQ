@@ -34,6 +34,14 @@
     
     .readme {
         background-color: #f2f6e9;
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-left: 15px;
+        padding-bottom: 10px;
+        border-top: 3px solid #6ab446;
+        border-left: 2px solid #6ab446;
+        border-right: 2px solid #6ab446;
+        width: 100%;
     }
     
     .overlay {
@@ -364,6 +372,11 @@
     
     .response-multi {
         font-size: 1.5em;
+        line-height: 0%;
+    }
+    
+    .expr_example {
+        font-size: 1.2em;
         line-height: 0%;
     }
     

@@ -7,9 +7,6 @@ function renderHelper() {
         //
         var input = document.getElementById("symbolic_expression").value.trim();
         //
-        //  Disable the render button until MathJax is done
-        //
-        //var button = document.getElementById("render");
         //
         //  Clear the old output
         //

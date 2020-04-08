@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Include Bootstrap stuff-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -41,9 +41,6 @@
 </head>
 
 
-
-<!-- BODY-->
-
 <body>
 
     <!-- Navigation Bar -->
@@ -67,7 +64,7 @@
         </div>
     </nav>
 
-
+    <!-- Alert template; user can see alert only if there are messages from the server -->
     <div class="container">
         {% for message in get_flashed_messages() %}
         <div class="alert alert-warning">
@@ -81,12 +78,12 @@
         <div class="container container-fluid">
             <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
             <h1 style="padding-bottom: 10px;">Enter your expression</h1>
-            <div class="mx-auto text-center form-group form p-4">
+            <div class="container container-fluid">
                 <form class="enter-equation" method="POST" action="/submit_expression">
-                    <input id="symbolic_expression" onkeyup="" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
-                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression">
+                    <input required id="symbolic_expression" onkeyup="" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
+                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression" onclick="">
                     <img src="{{ url_for('static', filename='images/done.svg') }}">   
-                </button>
+                    </button>
                 </form>
             </div>
         </div>
@@ -116,76 +113,132 @@
 
 
 
-    <header class="page-header header container-fluid readme" id="AsciMathInfo" style="width: 100%;">
-        <h3 style="text-align: left; color: green; padding-left: 5px;">ASCIIMath</h3>
-        <p style="text-align:left; padding-top: 7px; padding-left: 8px;">We use <b>ASCIIMath</b> to work with the expressions.
+    <div class="readme" id="AsciMathInfo">
+        <h4 style="text-align: left; color: green; font-weight: bold;">ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">We use <b>ASCIIMath</b> to work with the expressions.
             <br>We built a parser that get ASCIIMath expressions and convert them into latex format.
             <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath for you.
             <br>If there is not what you are looking for in the extended keyboard please refer to <a href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
             <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted" target="_blank">ASCIIMath</a>
         </p>
 
-        <h3 style="text-align: left; color: green; padding-top: 25px; padding-left: 5px;">Expression examples</h3>
-        <p style="text-align: left; padding-top: 7px; padding-left: 8px;">In this section there are some examples of the most important expression you can get in touch with SciQ.
-            <br> <b>System of equations</b>
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Expression</h6>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Image</h6>
-                </div>
-            </div>
-            <br> <b>Integral definite/indefinite</b>
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Expression</h6>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Image</h6>
-                </div>
-            </div>
-            <br> <b>Derivatives - Partial derivatives</b>
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Expression</h6>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Image</h6>
-                </div>
-            </div>
-            <br> <b>Work with vector, matrix and so on..</b>
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Expression</h6>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Image</h6>
-                </div>
-            </div>
-            <br> <b>Other</b>
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Expression</h6>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Image</h6>
-                </div>
+        <h4 style="text-align: left; color: green; font-weight: bold;">py-ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">As said above, we built a parser to convert <b>ASCIIMath</b> expression to <b>LateX</b> expressions.
+            <br>We decided to develop our own parser because we think that <b>ASCIIMath</b> is a more simple syntax to write Mathematical concepts compared to LateX's syntax.
+            <br>In this way we provide to the user a better experience on SciQ.
+            <br>Why we need LateX? Just because <b>Wolfram|Alpha</b>'s API understand also LateX's syntax.
+            <br>If you wanna go deep into our parser please go to <a href="https://github.com/belerico/py_asciimath"> py-asciimath</a>
         </p>
-    </header>
 
 
-    <footer class="page-footer" id="page-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Additional Information</h6>
+        <h4 style="text-align: left; color: green; font-weight: bold;">Important - Matrices and systems of equations</h4>
+        <p style=" padding-top: 7px; ">For a text to be rendered as a matrix must have a structure like</p>
+        <div class="text-center ">
+            <code>L '[' ... (, ...)* ']', '[' ... (, ...)* ']' (, '[' ... (, ...)* ']' )* R</code>
+            <br> or
+            <br>
+            <code>L '(' ... (, ...)* ')', '(' ... (, ...)* ')' (, '(' ... (, ...)* ')' )* R</code>
+        </div>
+        <p>that is:</p>
+        <ul>
+            <li>It must be delimited by a left (<code>L</code>) and right (<code>R</code>) parenthesis</li>
+            <li>Every row can be separated by <code>[]</code> XOR <code>()</code> (if one starts with <code>[]</code>, every row will be recognized with the same parenthesis, same for <code>()</code>), followed by <code>,</code> and possibly another row</li>
+            <li>Every matrix must contain at least two rows</li>
+            <li>Every rows contains zero or more columns, where <code>...</code> can be any ASCIIMath expression</li>
+            <li>Every row must contain the same number of columns</li>
+        </ul>
+
+        <p>Since <code>L</code> and <code>R</code> can be any left or right parenthesis, and every matrices must have the same number of columns, to render a system of equation one can write something like <code>{[(root n x)/(x) &lt;= 4], [x^2=e^x]:}</code>.
+            <br>On the other hand a matrix can be somenthing like <code>[[(root n x)/(x) &lt;= 4, int x dx], [x^2=e^x, lim_(x to infty) 1 / (x^2)]]</code>.</p>
+
+        <h4 style="text-align: left; color: green; padding-top: 25px; font-weight:bold">Some examples</h4>
+        <p style="text-align: left; padding-top: 7px; ">In this section we provide some examples of the <b>main</b> expressions you can get in touch with SciQ.</p>
+
+
+        <div>
+            <div class="row ">
+                <div class="col-4 ">
+                    <h5 style="font-weight: bold; color:green">Expression type</h5>
+                </div>
+                <div class="col-8 ">
+                    <h5 style="font-weight: bold; color:green">Rendering</h5>
+                </div>
+            </div>
+        </div>
+        <div>
+            <b>System of equations</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>{[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:}</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` {[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:} `</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <b>Integral</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>int_0^1 f(x)dx</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` int_0^1 f(x)dx `</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Matrix</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>[[2, 3], [5,6]]</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> ` [[2, 3], [5,6]] ` </p>
+                </div>
+            </div>
+            <b>Vector</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>( ((root n x)/(x)) , (3) )</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> `( ((root n x)/(x)) , (3) )` </p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Limits</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>lim_(N->oo) sum_(i=0)^N</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">`lim_(N->oo) sum_(i=0)^N`</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer class="page-footer " id="page-footer ">
+        <div class="container ">
+            <div class="row ">
+                <div class="col-lg-8 col-md-8 col-sm-12 ">
+                    <h6 class="text-uppercase font-weight-bold " style="color: green; ">Additional Information</h6>
                     <p>Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.</p>
                     <p>The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.</p>
                     <p>The resolution of the formulas happen through the use of Wolfram|Alpha's API.</p>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Contact</h6>
+                <div class="col-lg-4 col-md-4 col-sm-12 ">
+                    <h6 class="text-uppercase font-weight-bold " style="color: green; ">Contact</h6>
                     <p>Università degli studi di Milano Bicocca
                         <br/>info[at]SciQ.com
                         <br/>c.carta4[at]campus[dot]unimib[dot]it
@@ -196,7 +249,7 @@
                     </p>
                 </div>
             </div>
-            <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
+            <div class="footer-copyright text-center ">© 2020 Copyright: SciQ.com</div>
     </footer>
 </body>
 

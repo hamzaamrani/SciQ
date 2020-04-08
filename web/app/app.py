@@ -10,17 +10,17 @@ from werkzeug.utils import secure_filename
 import os
 import json
 import services
-from prova_costa import Exp, return_object
 
 # TODO: BLUEPRINT FLASK
 # TODO: mysql alchemy
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-username_global = None
+username_global = "Username"
+response_obj = None
 
 @app.route('/')
 def index():
-    return render_template('index.html', alert=False)
+    return render_template('loggedUser.html', alert=False)
 
 
 @app.route('/login', methods=['POST'])
@@ -82,7 +82,7 @@ def submit_expression():
     expression = request.form["symbolic_expression"]
     # parsed = parser_belo(expression)
     # response_obj = compute_expression(parsed, key[optional], id_equation[optional], dir_plots[optional])
-    response_obj = return_object()
+    # response_obj = return_object()
     return render_template("show_results.html", alert = False, query = expression, response_obj = response_obj, username = username_global)
 
 
