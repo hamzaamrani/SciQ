@@ -67,4 +67,4 @@ def get_md5(password):
 
 def loggedUser():
     global username_global
-    return render_template('index.html', name=username_global)
+    return render_template('loggedUser.html', name=username_global)

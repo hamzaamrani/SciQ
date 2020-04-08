@@ -10,7 +10,7 @@ from functools import wraps
 from inspect import getcallargs, getfullargspec
 from collections import OrderedDict
 from itertools import chain
-from utils.utils import flatten
+from web.app.services.utils.utils import flatten
 
 
 class Log(object):

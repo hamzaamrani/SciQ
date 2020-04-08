@@ -4,15 +4,16 @@ from functools import wraps
 
 from lark import Lark, Transformer
 
-from parser.const import (
+from web.app.services.parser.const import (
     binary_functions,
     left_parenthesis,
     right_parenthesis,
     smb,
     unary_functions,
 )
-from utils.log import Log
-from utils.utils import UtilsMat, concat
+
+from web.app.services.utils.log import Log
+from web.app.services.utils.utils import UtilsMat, concat
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 """

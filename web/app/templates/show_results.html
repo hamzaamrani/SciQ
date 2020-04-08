@@ -27,12 +27,6 @@
             }
         };
     </script>
-
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
     <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js">
         MathJax.Hub.Config({
             extensions: ["mml2jax.js"],
@@ -42,6 +36,19 @@
             }
         });
     </script>
+    <script>
+        function render_plot(id, src) {
+
+
+        }
+    </script>
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+
 </head>
 
 <!-- BODY-->
@@ -60,9 +67,6 @@
                     <a class="nav-link" href="{{ url_for('loggedUser')}}"> <strong> Math again </strong> </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('index') }}"> <strong>Log Out</strong></a>
                 </li>
             </ul>
@@ -74,7 +78,7 @@
         <div class="container container-response">
             <div class="row">
                 <div class="col-4">
-                    <p class="res_title"> Query : `{{ query|safe }}` </p>
+                    <p class="res_title"> Query : `{{ query }}` </p>
                 </div>
                 <div class="col-4">
                     <p class="res_title"> Query response : {{ response_obj.success }} </p>
@@ -95,19 +99,23 @@
                     <p class="res_title">Plots : </p>
                 </div>
                 <div class="col">
-                    <img src="data:image/png;base64, {{ response_obj.plots[0] }}">
+                    <img src="data:image/png;base64, {{ response_obj.plots[0] | safe }}">
                 </div>
             </div>
-            <!-- for plot dal secondo-->
+
+            {% set count = 1 %}
+            <!-- for plot dal secondo elemento -->
             {% for tmp in response_obj.plots[1:] %}
             <div class="row">
                 <div class="col-4">
                     <!-- empty -->
                 </div>
                 <div class="col-8">
-                    <img src="data:image/png;base64, {{ tmp }}">
+                    <img src="data:image/png;base64, {{ tmp | safe }}">
                 </div>
             </div>
+            {% set count = count + 1 %}
+            <!-- end for -->
             {% endfor %}
         </div>
         {% endif %}
@@ -272,32 +280,6 @@
         <!-- other -->
         {% endif %}
     </div>
-
-
-    <footer class="page-footer" id="page-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Additional Information</h6>
-                    <p>Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.</p>
-                    <p>The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.</p>
-                    <p>The resolution of the formulas happen through the use of Wolfram|Alpha's API.</p>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <h6 class="text-uppercase font-weight-bold" style="color: green;">Contact</h6>
-                    <p>Università degli studi di Milano Bicocca
-                        <br/>info[at]SciQ.com
-                        <br/>c.carta4[at]campus[dot]unimib[dot]it
-                        <br/>s.ventura6[at]campus[dot]unimib[dot]it
-                        <br/>h.amrani[at]campus[dot]unimib[dot]it
-                        <br/>f.belotti8[at]campus[dot]unimib[dot]it
-                        <br/>g.scarpellini[at]campus[dot]unimib[dot]it
-                    </p>
-                </div>
-            </div>
-            <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
-
-    </footer>
 
 </body>
 
