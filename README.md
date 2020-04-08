@@ -1,10 +1,5 @@
 # SciQ
 
-Il nostro progetto consiste nello sviluppare un'applicazione che permetta il riconoscimento e la successiva risoluzione di formule matematiche simboliche. 
-L'inserimento della formula può avvenire attraverso l'utilizzo di una text area oppure attraverso il caricamento di un'immagine,
-mentre la risoluzione avviene mediante l'utilizzo delle API di Wolfram|Alpha.
-
-
 Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.
 The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.
 The resolution of the formulas happen through the use of Wolphram|Alpha's API.
@@ -21,3 +16,20 @@ To perform test:
 `docker-compose up -d --build && docker exec web python -m unittest -v tests.runner` or run bash file `test.sh` 
 
 If there are changes in code `docker-compose up --build`
+## High-level architecture
+![](images/HighLevelSchema.png)
+
+### REST API handle:
+    * Sign-in
+    * Sign-up
+    * User's expression history
+    
+### OCR API handle:
+    * Delivering of the image getted from the user to the OCR model
+    * Return the output of the model as ASCIIMath
+    
+### PARSER handle:
+    * Convert from ASCIIMath string to LateX
+    
+
+

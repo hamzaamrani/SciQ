@@ -37,7 +37,9 @@ services:
     image: mysql:5.7
     ports:
       - "3306:3306"  
-    command: "--innodb_use_native_aio=0" 
+    #command:
+       #"--innodb_use_native_aio=0" 
+       #- --disable-partition-engine-check
     environment:
       MYSQL_DATABASE: sciq
       MYSQL_USER: user
@@ -51,6 +53,8 @@ services:
       - type: volume
         source: mysql-data
         target: /var/lib/mysql
+      #- ./db:/docker-entrypoint-initdb.d/:ro
+ 
 
 networks:
   backend:
@@ -65,3 +69,4 @@ volumes:
   # migrations-data:
   #  driver: 
   #    local
+
