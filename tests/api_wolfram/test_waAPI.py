@@ -1,5 +1,5 @@
 import unittest
-from waAPI import NoAPIKeyException, waAPI, ExpressionException, Expression
+from web.app.services.api_wolfram.waAPI import NoAPIKeyException, waAPI, ExpressionException, Expression
 
 KEY = 'V2WJ46-EEXEV95WXG'
 

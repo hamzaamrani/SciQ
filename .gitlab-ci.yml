@@ -50,3 +50,13 @@ test-parser:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
     
+test-api-wolfram:
+  stage: test
+  before_script:
+    - apk update
+    - apk add python3
+    - apk add py3-pip
+    - pip3 install -r ./web/requirements.txt
+  script:
+    - echo 'test db'
+    - python3 -m unittest discover tests.api_wolfram -v
