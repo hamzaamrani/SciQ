@@ -1,6 +1,6 @@
 import unittest
-from parser.parser import ASCIIMath2Tex, LatexTransformer
-from parser.const import asciimath_grammar
+from web.services.parser.parser import ASCIIMath2Tex, LatexTransformer
+from web.services.parser.const import asciimath_grammar
 
 
 class TestUtilsMat(unittest.TestCase):
