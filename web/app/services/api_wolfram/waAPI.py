@@ -148,12 +148,12 @@ class Expression(object):
                                 src_plot = subpod['img']['src']
                                 self.plots.append(
                                     base64.b64encode(
-                                        requests.get(src_plot).content))
+                                        requests.get(src_plot).content).decode("utf-8"))
                         else:
                             src_plot = pod['subpods']['img']['src']
                             self.plots.append(
                                 base64.b64encode(
-                                    requests.get(src_plot).content))
+                                    requests.get(src_plot).content).decode("utf-8"))
 
                     if 'AlternateForm' in pod['id']:
                         self.alternate_forms.extend(
