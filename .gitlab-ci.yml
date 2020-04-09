@@ -8,61 +8,55 @@ services:
   - docker:dind
 
 stages:
-  - build
+  # - build
   - test
+
+before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 variables:
   DOCKER_HOST: tcp://docker:2375
+  DOCKER_DEV_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/test-env:latest
   DOCKER_DRIVER: overlay2
 
 
-build-db:
+# build-db:
+#   stage: build
+#   services:
+#     - docker:dind
+#   before_script:
+#     - apk update
+#     - apk add docker docker-compose
+#   script:
+#     - echo 'build db'
+#     - docker-compose up -d --build web
+
+build-test-env:
   stage: build
   services:
-    - docker:dind
-  before_script:
-    - apk update
-    - apk add docker docker-compose
+      - docker:dind
   script:
-    - echo 'build db'
-    - docker-compose up -d --build web
+      - docker pull $DOCKER_DEV_ENV_IMAGE || true
+      - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
+      - docker push $DOCKER_DEV_ENV_IMAGE
 
 test-db:
   stage: test
-  before_script:
-    - apk update
-    - apk add python3
-    - apk add py3-pip
-    - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
-    - pip3 install -r ./web/requirements.txt
+  image: $DOCKER_DEV_ENV_IMAGE
   script:
     - echo 'test db'
     - python3 -m unittest discover tests.db -v
 
 test-parser:
   stage: test
-  before_script:
-    - apk update
-    - apk add python3
-    - apk add py3-pip
-    - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
-    - pip3 install flask
-    - pip3 install git+https://github.com/lark-parser/lark.git@master
+  image: $DOCKER_DEV_ENV_IMAGE
   script:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
     
 test-api-wolfram:
   stage: test
-  before_script:
-    - apk update
-    - apk add python3
-    - apk add py3-pip
-    - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
-    - pip3 install -r ./web/requirements.txt
+  image: $DOCKER_DEV_ENV_IMAGE
   script:
     - echo 'test db'
     - python3 -m unittest discover tests.api_wolfram -v
