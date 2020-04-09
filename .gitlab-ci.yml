@@ -8,7 +8,6 @@ services:
   - docker:dind
 
 stages:
-  # - build
   - test
 
 variables:
