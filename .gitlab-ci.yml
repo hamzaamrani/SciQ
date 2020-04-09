@@ -1,7 +1,7 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
 image:
-  name: alpine:latest
+  name: docker:latest
   entrypoint: ["sh", "-c"]
 
 services:
