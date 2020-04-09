@@ -8,7 +8,7 @@ services:
   - docker:dind
 
 stages:
-  - build
+  # - build
   - test
 
 variables:
@@ -34,7 +34,7 @@ test-db:
     - apk add python3
     - apk add py3-pip
     - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
+    - apk add build-base python3-dev jpeg-dev zlib-dev
     - pip3 install -r ./web/requirements.txt
   script:
     - echo 'test db'
@@ -47,7 +47,7 @@ test-parser:
     - apk add python3
     - apk add py3-pip
     - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
+    - apk add build-base python3-dev jpeg-dev zlib-dev
     - pip3 install flask
     - pip3 install git+https://github.com/lark-parser/lark.git@master
   script:
@@ -61,7 +61,7 @@ test-api-wolfram:
     - apk add python3
     - apk add py3-pip
     - apk add git
-    - apk add build-base python-dev jpeg-dev zlib-dev
+    - apk add build-base python3-dev jpeg-dev zlib-dev
     - pip3 install -r ./web/requirements.txt
   script:
     - echo 'test db'
