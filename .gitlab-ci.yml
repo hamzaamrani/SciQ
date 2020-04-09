@@ -25,8 +25,7 @@ build-webapp:
   services:
     - docker:dind
   before_script:
-    - apt-get update
-    - apt-get install docker-compose
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make && pip install docker-compose
   script:
     - echo 'build webapp'
     - docker-compose build
