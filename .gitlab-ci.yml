@@ -20,16 +20,16 @@ variables:
   DOCKER_DRIVER: overlay2
 
 
-# build-db:
-#   stage: build
-#   services:
-#     - docker:dind
-#   before_script:
-#     - apk update
-#     - apk add docker docker-compose
-#   script:
-#     - echo 'build db'
-#     - docker-compose up -d --build web
+build-webapp:
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - apt-get update
+    - apt-get install docker-compose
+  script:
+    - echo 'build webapp'
+    - docker-compose build
 
 build-test-env:
   stage: build
