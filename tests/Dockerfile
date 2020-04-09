@@ -3,7 +3,7 @@ RUN apk update
 RUN apk add python3
 RUN apk add py3-pip
 RUN apk add git
-RUN apk add build-base python-dev jpeg-dev zlib-dev
+RUN apk add build-base python3-dev jpeg-dev zlib-dev
 COPY . tests
 WORKDIR /tests
 RUN pip3 install --upgrade pip
