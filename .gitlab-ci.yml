@@ -33,6 +33,7 @@ test-db:
     - apk update
     - apk add python3
     - apk add py3-pip
+    - apk add git
     - pip3 install -r ./web/requirements.txt
   script:
     - echo 'test db'
