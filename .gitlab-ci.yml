@@ -59,3 +59,10 @@ test-api-wolfram:
   script:
     - echo 'test db'
     - python3 -m unittest discover tests.api_wolfram -v
+
+test-services:
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test services'
+    - python3 -m unittest discover tests.services -v
