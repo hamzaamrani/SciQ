@@ -12,6 +12,7 @@ services:
       - db
     ports:
       - "5000:5000"
+
     env_file: 
       - ./web/.env
     restart: 
@@ -30,8 +31,6 @@ services:
       #- type: volume
       #  source: migrations-data
       #  target: /usr/src/sciq/migrations
-      
-
   db:
     container_name: 'db'
     image: mysql:5.7

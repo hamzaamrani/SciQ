@@ -4,6 +4,7 @@ Our project aim to develop an application that allow the recognition and further
 The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.
 The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 
+
 ## Database
 To use app:
 
@@ -16,6 +17,7 @@ To perform test:
 `docker-compose up -d --build && docker exec web python -m unittest -v tests.runner` or run bash file `test.sh` 
 
 If there are changes in code `docker-compose up --build`
+
 ## High-level architecture
 ![](images/HighLevelSchema.png)
 
