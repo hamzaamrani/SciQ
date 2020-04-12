@@ -9,7 +9,7 @@ services:
 
 stages:
   - build
-#  - test
+  - test
   - deploy
 
 before_script:
@@ -61,12 +61,12 @@ test-api-wolfram:
     - echo 'test api wolfram'
     - python3 -m unittest discover tests.api_wolfram -v
 
-test-services:
-  stage: test
-  image: $DOCKER_DEV_ENV_IMAGE
-  script:
-    - echo 'test services'
-    - python3 -m unittest discover tests.services -v
+#test-services:
+#  stage: test
+#  image: $DOCKER_DEV_ENV_IMAGE
+#  script:
+#    - echo 'test services'
+#    - python3 -m unittest discover tests.services -v
 
 deploy:
     stage: deploy
