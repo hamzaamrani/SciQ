@@ -70,6 +70,7 @@ test-api-wolfram:
 
 deploy:
     stage: deploy
+    image: ruby:latest
     before_script:
         - apt-get update -qy
         - apt-get install -y ruby-dev
