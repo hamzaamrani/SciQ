@@ -82,10 +82,6 @@ class waAPI(object):
             url = '%s?input=%s&podstate%s&output=%s&appid=%s&format=mathml,image' % (
                 API_URL, urllib.parse.quote(query), 'Result__Step-by-step+solution', self.response_format, key)
 
-            #r = urllib.request.urlopen(url)
-            #result = xmltodict.parse(r, dict_constructor=dict)['queryresult']
-            # return result
-
             r = requests.get(url)
             r = r.json()
             return r['queryresult']
@@ -217,7 +213,8 @@ class Expression(object):
             filename_img = str(id_equation) + '_' + str(i) + '.png'
             path_img = os.path.join(dir_plots, filename_img)
 
-            im = Image.open(BytesIO(base64.b64decode(self.plots[i])))
+            img_base64 = bytes(self.plots[i], 'utf-8')
+            im = Image.open(BytesIO(base64.b64decode( img_base64 )))
             im.save(path_img, 'PNG')
 
             self.plots[i] = path_img
@@ -260,6 +257,7 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         \int x^2 dx
     """
     client_api = waAPI(key)
+    query = '\left( ' + query + '\right)'
     results_json = client_api.full_results(query=query)
     obj_expression = Expression(
         query=query,
