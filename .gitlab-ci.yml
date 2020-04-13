@@ -68,14 +68,26 @@ test-api-wolfram:
 #    - echo 'test services'
 #    - python3 -m unittest discover tests.services -v
 
-deploy:
-    stage: deploy
-    image: docker:latest
-    before_script:
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-    script:
-        - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
-    only:
-        - sprint1
+#deploy:
+#    stage: deploy
+#    image: docker:latest
+#    before_script:
+#        - apt-get update -qy
+#        - apt-get install -y ruby-dev
+#        - gem install dpl
+#    script:
+#        - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
+#    only:
+#        - sprint1
+
+deploy_staging:
+  stage: deploy
+  script:
+    - git remote add heroku https://heroku:$HEROKU_SECRET_KEY@git.heroku.com/sciq-unimib.git
+    - git push heroku master
+    - echo "Deployed to Staging Server https://flask-api-staging.herokuapp.com"
+  environment:
+    name: staging
+    url: https://sciq-unimib.herokuapp.com/
+  only:
+    - master
