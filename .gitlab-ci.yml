@@ -80,14 +80,14 @@ test-api-wolfram:
 #    only:
 #        - sprint1
 
-deploy:
+deploy_staging:
   stage: deploy
   script:
     - git remote add heroku https://heroku:$HEROKU_SECRET_KEY@git.heroku.com/sciq-unimib.git
     - git push heroku master
     - echo "Deployed to Staging Server https://sciq-unimib.herokuapp.com"
   environment:
-    name: deploy
+    name: staging
     url: https://sciq-unimib.herokuapp.com/
   only:
     - master
