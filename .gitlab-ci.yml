@@ -10,7 +10,6 @@ services:
 stages:
   - build
   - test
-  - deploy
 
 before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -61,21 +60,9 @@ test-api-wolfram:
     - echo 'test api wolfram'
     - python3 -m unittest discover tests.api_wolfram -v
 
-#test-services:
-#  stage: test
-#  image: $DOCKER_DEV_ENV_IMAGE
-#  script:
-#    - echo 'test services'
-#    - python3 -m unittest discover tests.services -v
-
-deploy:
-    stage: deploy
-    image: docker:latest
-    before_script:
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-    script:
-        - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
-    only:
-        - sprint1
+test-services:
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test services'
+    - python3 -m unittest discover tests.services -v
