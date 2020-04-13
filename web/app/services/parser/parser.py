@@ -54,36 +54,16 @@ class LatexTransformer(Transformer):
         return decorator
 
     @_log
-    def remove_parenthesis(self, s: str):
+    def remove_parenthesis(self, s):
         return re.sub(self.start_end_par_pattern, r"\2", s)
 
     @_log
-    def exp_par(self, items):
-        yeah_mat = False
-        s = ", ".join(items[1:-1])
-        if s.startswith("\\left"):
-            yeah_mat, row_par = UtilsMat.check_mat(s)
-            if yeah_mat:
-                s = UtilsMat.get_mat(s, row_par)
-        lpar = left_parenthesis[concat(items[0])]
-        rpar = right_parenthesis[concat(items[-1])]
-        if lpar == "\\langle":
-            left = "\\left" + lpar + " "
-        elif lpar == "{:":
-            left = "\\left."
-        else:
-            left = "\\left" + lpar
-        if rpar == "\\rangle":
-            right = " \\right" + rpar
-        elif rpar == ":}":
-            right = "\\right."
-        else:
-            right = "\\right" + rpar
-        return (
-            left
-            + ("\\begin{matrix}" + s + "\\end{matrix}" if yeah_mat else s)
-            + right
-        )
+    def exp(self, items):
+        return " ".join(items)
+
+    @_log
+    def exp_interm(self, items):
+        return items[0]
 
     @_log
     def exp_frac(self, items):
@@ -102,22 +82,26 @@ class LatexTransformer(Transformer):
         return items[0] + "^{" + items[1] + "}"
 
     @_log
-    def exp_interm(self, items):
-        return items[0]
-
-    @_log
     def exp_under_super(self, items):
         items[1] = self.remove_parenthesis(items[1])
         items[2] = self.remove_parenthesis(items[2])
         return items[0] + "_{" + items[1] + "}^{" + items[2] + "}"
 
     @_log
-    def symbol(self, items):
-        return smb[concat(items[0])]
-
-    @_log
-    def const(self, items):
-        return items[0].value
+    def exp_par(self, items):
+        yeah_mat = False
+        s = ", ".join(items[1:-1])
+        if s.startswith("\\left"):
+            yeah_mat, row_par = UtilsMat.check_mat(s)
+            if yeah_mat:
+                s = UtilsMat.get_mat(s, row_par)
+        lpar = "\\left" + left_parenthesis[concat(items[0])]
+        rpar = "\\right" + right_parenthesis[concat(items[-1])]
+        return (
+            lpar
+            + ("\\begin{matrix}" + s + "\\end{matrix}" if yeah_mat else s)
+            + rpar
+        )
 
     @_log
     def exp_unary(self, items):
@@ -145,12 +129,18 @@ class LatexTransformer(Transformer):
             return binary + "{" + items[1] + "}" + "{" + items[2] + "}"
 
     @_log
-    def q_str(self, items):
-        return "\\text{" + items[0] + "}"
+    def symbol(self, items):
+        if concat(items[0]) == '"\\"':
+            return "\\setminus"
+        return smb[concat(items[0])]
 
     @_log
-    def exp(self, items):
-        return " ".join(items)
+    def const(self, items):
+        return items[0].value
+
+    @_log
+    def q_str(self, items):
+        return "\\text{" + items[0] + "}"
 
 
 class ASCIIMath2Tex(object):
