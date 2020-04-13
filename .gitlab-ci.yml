@@ -80,7 +80,7 @@ test-api-wolfram:
 #    only:
 #        - sprint1
 
-deploy_staging:
+deploy:
   stage: deploy
   script:
     - git remote add heroku https://heroku:$HEROKU_SECRET_KEY@git.heroku.com/sciq-unimib.git
