@@ -37,7 +37,7 @@ class UtilsMat(object):
     """
 
     @classmethod
-    def get_row_par(cls, s: str):
+    def get_row_par(cls, s):
         """Given a string, it returns the first index i such that the char in
         position i of the string is a left parenthesis, '(' or '[', and the
         open-close parenthesis couple, needed to identify matrix
@@ -46,7 +46,7 @@ class UtilsMat(object):
         Parameters:
         - s: str
 
-        Return:
+        Returns:
         - i: int, [left_par, right_par]: list
         """
 
@@ -56,15 +56,15 @@ class UtilsMat(object):
         return -1, []
 
     @classmethod
-    def check_mat(cls, s: str):
+    def check_mat(cls, s):
         """Given a string, runs a matrix-structure check.
-        Return True if the string s has a matrix-structure-like,
+        Returns True if the string s has a matrix-structure-like,
         False otherwise. It returns also the row delimiters.
 
         Parameters:
         - s: str
 
-        Return:
+        Returns:
         - b: bool
         - [l_par, r_par]: list
         """
@@ -75,7 +75,7 @@ class UtilsMat(object):
         par_stack = []
         transitions = 0
         i, row_par = cls.get_row_par(s)
-        if i != -1:
+        if i != -1 or row_par == []:
             for c in s[i:]:
                 # c is a left par
                 if c == row_par[0]:
@@ -102,14 +102,21 @@ class UtilsMat(object):
                     if len(par_stack) == 1 and par_stack[-1] == row_par[0]:
                         cols = cols + 1
                     elif len(par_stack) == 0:
+                        # If the comma is not at the and of the string
+                        # count another row
                         rows = rows + 1
-                        if transitions != rows:
-                            logging.info("NO OPEN-CLOSE PAR BETWEEN TWO COMMAS")
+                        if transitions - rows != 0:
+                            logging.info(
+                                "NO OPEN-CLOSE PAR BETWEEN TWO COMMAS"
+                            )
                             return False, []
             if len(par_stack) != 0:
                 logging.info("UNMATCHED PARS")
                 return False, []
-            elif rows == 0 or transitions - rows != 1:
+            elif transitions < 2:
+                logging.info("NOT ENOUGH ROWS: AT LEAST 2")
+                return False, []
+            elif rows == 0 or transitions - rows > 1:
                 logging.info("MISSING COMMA OR EMPTY ROW")
                 return False, []
             return True, row_par
@@ -117,7 +124,7 @@ class UtilsMat(object):
             return False, []
 
     @classmethod
-    def get_mat(cls, s: str, row_par=["[", "]"]):
+    def get_mat(cls, s, row_par=["[", "]"]):
         """Given a known matrix-structured string, translate it into the
         matrix LaTeX format.
 
@@ -126,51 +133,55 @@ class UtilsMat(object):
         - max_cols: int. How many columns per rows
         - row_par: list. Row delimiters
 
-        Return:
+        Returns:
         - mat: str
         """
 
-        def is_empty_col(s: str):
-            for c in s[::-1]:
-                if c == "&" or c == "\\":
-                    return True
-                elif not c.isspace():
-                    return False
-            return True
-
+        i = 0
         empty_col = True
         stack_par = []
         mat = ""
-        for i, c in enumerate(s):
-            if c == row_par[0]:
-                stack_par.append(c)
-                if len(stack_par) > 1:
-                    mat = mat + c
-            elif c == row_par[1]:
-                stack_par.pop()
-                if len(stack_par) > 0:
-                    mat = mat + c
-                else:
-                    # Remove '\\right' from the last parenthesis
-                    mat = mat[: len(mat) - 6]
-                    # Need to go backward after \\right removal
-                    # and check if col is empty
-                    if is_empty_col(mat):
-                        mat = mat + "\\null"
+        if row_par != []:
+            while i < len(s):
+                c = s[i]
+                if c == row_par[0]:
+                    stack_par.append(c)
+                    if len(stack_par) > 1:
+                        mat = mat + c
+                elif c == row_par[1]:
+                    stack_par.pop()
+                    if len(stack_par) > 0:
+                        mat = mat + c
+                    else:
+                        if empty_col:
+                            mat = mat + "\\null"
+                        empty_col = True
+                elif c == ",":
+                    if len(stack_par) == 1:
+                        mat = mat + (" & " if not empty_col else "\\null & ")
+                    elif len(stack_par) == 0:
+                        mat = mat + " \\\\ "
                     empty_col = True
-            elif c == "," and len(stack_par) == 1:
-                mat = mat + (" & " if not empty_col else "\\null & ")
-            elif c == "," and len(stack_par) == 0:
-                mat = mat + " \\\\ "
-            else:
-                # Does not include \\left in the result string
-                if len(stack_par) > 0:
-                    if not c.isspace():
-                        empty_col = False
-                    mat = mat + c
-        return mat
+                else:
+                    # Does not include \\left in the result string
+                    if len(stack_par) == 0 and s[i: i + 5] == "\\left":
+                        i = i + 4
+                    # Does not include \\right in the result string
+                    elif (
+                        len(stack_par) == 1
+                        and s[i: i + 7] == "\\right" + row_par[1]
+                    ):
+                        i = i + 5
+                    else:
+                        if not c.isspace():
+                            empty_col = False
+                        mat = mat + c
+                i = i + 1
+            return mat
+        else:
+            return s
 
 
 if __name__ == "__main__":
-    s = "\\left[\\right] , \\left[\\right]"
-    print(UtilsMat.get_mat(s, ["[", "]"]))
+    s = UtilsMat.get_mat("\\left[,\\right] , \\left[,\\right]")
+    print(s)
