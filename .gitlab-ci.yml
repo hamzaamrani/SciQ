@@ -78,4 +78,4 @@ deploy:
     script:
         - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
     only:
-        - sprint1
+        - 55-do-set-baseline-cd
