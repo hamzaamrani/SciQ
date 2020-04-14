@@ -24,7 +24,8 @@ def create_app(config_name):
     logging.info("Upload folder = " + os.path.join(os.path.abspath(os.path.dirname(__file__)), '/usr/src/sciq/web/app/static/uploads'))
 
     db.init_app(app)
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     ma.init_app(app)
     heroku.init_app(app)
 
