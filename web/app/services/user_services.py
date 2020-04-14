@@ -3,8 +3,6 @@ from web.app.config import DB_CONFIG_PROD
 import json
 import mysql.connector
 from flask import current_app
-
-FLASK_ENV = current_app['FLASK_ENV']
                         
 # TODO: BLUEPRINT FLASK
 # TODO: mysql alchemy
@@ -13,7 +11,7 @@ class UserService:
     def __init__(self):
         print("Connecting")
         
-        if FLASK_ENV == 'development':
+        if current_app['FLASK_ENV'] == 'development':
             self.connection = mysql.connector.connect(**DB_CONFIG_DEV)
         else:
             self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
