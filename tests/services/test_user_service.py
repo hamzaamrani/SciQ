@@ -22,7 +22,8 @@ class TestCase(unittest.TestCase):
     def setUp(self):
         app = Flask(__name__)
         app.config["FLASK_ENV"] = "development"
-        self.user_service = services.UserService()
+        with app.app_context():
+            self.user_service = services.UserService()
 
     def test_check_exists(self):
         cursor = MagicMock()
