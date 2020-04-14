@@ -20,7 +20,7 @@ class UserService:
     
     def check_credentials(self, username, password):
         cursor = self.connection.cursor()
-        query = f"select * from user where username='{username}' and password='{password}'"
+        query = f"SELECT * FROM user WHERE username='{username}' and password='{password}'"
         cursor.execute(query)
         results = [user for user in cursor]
         cursor.close()
