@@ -26,19 +26,19 @@ class TestCase(unittest.TestCase):
         self.user_service.connection.cursor.return_value = cursor
         
         username_test = 'user1'
-        right_query = f'SELECT * FROM User WHERE username="{username_test}"'
+        right_query = f'SELECT * FROM user WHERE username="{username_test}"'
 
         self.assertTrue(self.user_service.check_exist(username_test))
         cursor.execute.assert_called_once()
         cursor.execute.assert_called_with(right_query)
-
+        
     def test_check_exists_failed(self):            
         cursor = MagicMock()
         cursor.__len__ = 0
         self.user_service.connection.cursor.return_value = cursor
         
         username_test = 'user1'
-        right_query = f'SELECT * FROM User WHERE username="{username_test}"'
+        right_query = f'SELECT * FROM user WHERE username="{username_test}"'
 
         cursor.return_value=[]
         cursor.execute.side_effect = None
@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
         
         username_test = 'user1'
         psw_test = 'password'
-        right_query = f"SELECT * FROM User WHERE username='{username_test}' and password='{psw_test}'"
+        right_query = f"SELECT * FROM user WHERE username='{username_test}' and password='{psw_test}'"
         
         self.assertTrue(self.user_service.check_credentials(username_test, psw_test))
         cursor.execute.assert_called_once()
@@ -71,7 +71,7 @@ class TestCase(unittest.TestCase):
         username_test = 'user1'
         psw_test = 'password'
         
-        right_query = f"SELECT * FROM User WHERE username='{username_test}' and password='{psw_test}'"
+        right_query = f"SELECT * FROM user WHERE username='{username_test}' and password='{psw_test}'"
 
         cursor.return_value=[]
         cursor.execute.side_effect = None
@@ -88,7 +88,7 @@ class TestCase(unittest.TestCase):
 
         username_test = 'user1'
         psw_test = 'password'
-        right_query = f'INSERT INTO User (username, password) VALUES ("{username_test}", "{psw_test}")'
+        right_query = f'INSERT INTO user (username, password) VALUES ("{username_test}", "{psw_test}")'
         
         self.assertTrue(self.user_service.signup(username_test, psw_test))
         self.assertEqual(cursor.execute.call_count, 2)
