@@ -18,7 +18,6 @@ const Keyboard = {
     object: {
         input_text: null,
         output: null,
-        RenderHelper: null
     },
 
     init() {
@@ -44,7 +43,12 @@ const Keyboard = {
                 element.value = this.object.input_text.value
                 this.open(element.value, currentValue => {
                     element.value = currentValue;
-                    this.object.RenderHelper.convert();
+                    // Trigger input event on keyboard button pressed 
+                    var event = new Event('input', {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    this.object.input_text.dispatchEvent(event);
                 });
             });
         });
@@ -285,11 +289,8 @@ window.addEventListener("DOMContentLoaded", function() {
     Keyboard.init();
     var input_text = document.getElementById('symbolic_expression');
     var output = document.getElementById('MathOutput');
-    RenderHelper = new renderHelper();
     Keyboard.object.input_text = input_text;
     Keyboard.object.output = output;
-    Keyboard.object.RenderHelper = RenderHelper;
-
     input_text.addEventListener('keyup', function(event) {
         switch (event.key) {
             case "Backspace":
@@ -299,7 +300,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 console.log("Pressed backspace");
                 console.log("Keyboard value = " + Keyboard.properties.value);
                 console.log("Input te value = " + Keyboard.object.input_text.value);
-                RenderHelper.convert();
                 break;
             case "Spacebar":
                 Keyboard.properties.value = "";
@@ -308,7 +308,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 console.log("Pressed spacebar");
                 console.log("Keyboard value = " + Keyboard.properties.value);
                 console.log("Input te value = " + Keyboard.object.input_text.value);
-                RenderHelper.convert();
                 break;
             default:
                 if (event.key != "CapsLock" && event.key != "Shift" && event.key != "Tab" && event.key != "Shift" && event.key != "Enter" && event.key != "Control" && event.key != "ArrowUp" && event.key != "ArrowDown" && event.key != "ArrowLeft" && event.key != "ArrowRight" && event.key != "NumLock" && event.key != "F1" && event.key != "F2" && event.key != "F3" && event.key != "F4" && event.key != "F5" && event.key != "F6" && event.key != "F7" && event.key != "F8" && event.key != "F9" && event.key != "F10" && event.key != "F11" && event.key != "F12" && event.key != "Insert") {
@@ -318,7 +317,6 @@ window.addEventListener("DOMContentLoaded", function() {
                     console.log("Pressed = " + event.key);
                     console.log("Keyboard value = " + Keyboard.properties.value);
                     console.log("Input te value = " + Keyboard.object.input_text.value);
-                    RenderHelper.convert();
                 }
                 break;
         }

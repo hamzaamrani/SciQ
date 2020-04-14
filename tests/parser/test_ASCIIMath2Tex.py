@@ -20,7 +20,7 @@ class TestUtilsMat(unittest.TestCase):
         s = self.parser.asciimath2tex("[[int x dx], [log(x+1)]]")
         self.assertEqual(
             s,
-            r"\left[\begin{matrix}\int x dx \\ \log \left(x + 1\right)\end{matrix}\right]",
+            r"\left[\begin{matrix}\int x dx  \\  \log \left(x + 1\right)\end{matrix}\right]",
         )
 
     def test_asciimath2tex_ok_2(self):
