@@ -10,6 +10,7 @@ services:
 stages:
   - build
   - test
+  - deploy
 
 before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -20,52 +21,52 @@ variables:
   DOCKER_DRIVER: overlay2
 
 
-# build-webapp:
-#   stage: build
-#   services:
-#     - docker:dind
-#   before_script:
-#     - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make && pip install docker-compose
-#   script:
-#     - echo 'build webapp'
-#     - docker-compose build
+build-webapp:
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make && pip install docker-compose
+  script:
+    - echo 'build webapp'
+    - docker-compose build
 
-# build-test-env:
-#   stage: build
-#   services:
-#       - docker:dind
-#   script:
-#       - docker pull $DOCKER_DEV_ENV_IMAGE || true
-#       - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
-#       - docker push $DOCKER_DEV_ENV_IMAGE
+build-test-env:
+  stage: build
+  services:
+      - docker:dind
+  script:
+      - docker pull $DOCKER_DEV_ENV_IMAGE || true
+      - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
+      - docker push $DOCKER_DEV_ENV_IMAGE
 
-# test-db:
-#   stage: test
-#   image: $DOCKER_DEV_ENV_IMAGE
-#   script:
-#     - echo 'test db'
-#     - python3 -m unittest discover tests.db -v
+test-db:
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test db'
+    - python3 -m unittest discover tests.db -v
 
-# test-parser:
-#   stage: test
-#   image: $DOCKER_DEV_ENV_IMAGE
-#   script:
-#     - echo 'test parser'
-#     - python3 -m unittest discover tests.parser -v
+test-parser:
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test parser'
+    - python3 -m unittest discover tests.parser -v
     
-# test-api-wolfram:
-#   stage: test
-#   image: $DOCKER_DEV_ENV_IMAGE
-#   script:
-#     - echo 'test api wolfram'
-#     - python3 -m unittest discover tests.api_wolfram -v
+test-api-wolfram:
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test api wolfram'
+    - python3 -m unittest discover tests.api_wolfram -v
 
-#test-services:
-#  stage: test
-#  image: $DOCKER_DEV_ENV_IMAGE
-#  script:
-#    - echo 'test services'
-#    - python3 -m unittest discover tests.services -v
+test-services:
+ stage: test
+ image: $DOCKER_DEV_ENV_IMAGE
+ script:
+   - echo 'test services'
+   - python3 -m unittest discover tests.services -v
 
 deploy:
     stage: deploy
@@ -77,4 +78,4 @@ deploy:
     script:
         - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
     only:
-        - 55-do-set-baseline-cd
+        - sprint1
