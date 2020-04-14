@@ -45,7 +45,7 @@ def signup():
                 flash("User created! You can login now")
                 return render_template('index.html', alert=True)
             else:
-                flash("Something went wrong!")
+                flash("Username already taken!")
                 return render_template('index.html', alert=True)
         else:
             # Passwords are not equals

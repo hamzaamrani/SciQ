@@ -30,8 +30,7 @@ class UserService:
     def signup(self, username, password):
         cursor = self.connection.cursor()
         if self.check_exist(username):
-            raise Exception("Username already taken!")
-
+            return False
         query = f'INSERT INTO user (username, password) VALUES ("{username}", "{password}")'
         cursor = self.connection.cursor()
         cursor.execute(query)
