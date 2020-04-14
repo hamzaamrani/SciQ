@@ -68,26 +68,14 @@ test-api-wolfram:
 #    - echo 'test services'
 #    - python3 -m unittest discover tests.services -v
 
-# deploy:
-#     stage: deploy
-#     image: ruby:latest
-#     before_script:
-#         - apt-get update -qy
-#         - apt-get install -y ruby-dev
-#         - gem install dpl
-#     script:
-#         - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
-#     only:
-#         - 55-do-set-baseline-cd
-
-deploy_staging:
-  stage: deploy
-  script:
-    - git remote add heroku https://heroku:$HEROKU_SECRET_KEY@git.heroku.com/sciq-unimib.git
-    - git push heroku master
-    - echo "Deployed to Staging Server https://sciq-unimib.herokuapp.com"
-  environment:
-    name: staging
-    url: https://sciq-unimib.herokuapp.com/
-  only:
-    - 55-do-set-baseline-cd
+deploy:
+    stage: deploy
+    image: ruby:latest
+    before_script:
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
+        - gem install dpl
+    script:
+        - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
+    only:
+        - 55-do-set-baseline-cd

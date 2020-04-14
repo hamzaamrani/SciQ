@@ -29,6 +29,7 @@ class ProductionConfig(Config):
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI_PROD')
     FLASK_ENV = 'production'
+    FLASK_APP = 'run_prod.py'
 
 
 config = {'development': DevelopmentConfig,
@@ -45,9 +46,9 @@ DB_CONFIG_DEV = {
 }
 
 DB_CONFIG_PROD = {
-    'user': 'luvzoslbokdnbv',
-    'password': 'a97aed297d1261ae174cd50d4d38dbddfc0a4941d25407a0fc4e9d79367d232b',
-    'host': 'ec2-54-228-251-117.eu-west-1.compute.amazonaws.com',
-    'port': '5432',
-    'database': 'd3ru9nusr6mhni'
+    'user': 'bc723c98218203',
+    'password': 'e9caa73c',
+    'host': 'eu-cdbr-west-02.cleardb.net,
+    'port': '3306',
+    'database': 'heroku_62e37664534fe76'
 }
