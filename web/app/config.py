@@ -48,7 +48,7 @@ DB_CONFIG_DEV = {
 DB_CONFIG_PROD = {
     'user': 'bc723c98218203',
     'password': 'e9caa73c',
-    'host': 'eu-cdbr-west-02.cleardb.net,
+    'host': 'eu-cdbr-west-02.cleardb.net',
     'port': '3306',
     'database': 'heroku_62e37664534fe76'
 }
