@@ -1,17 +1,71 @@
-version: "2"
+version: "3.3"
 services:
-  app:
-    build: ./app
-    links:
+  web:
+    container_name: 'web'
+    build: 
+      context: $PWD
+      dockerfile: $PWD/web/Dockerfile
+      #args: 
+        #MIGRATE: ${MIGRATE}
+    image: web
+    links: 
       - db
     ports:
       - "5000:5000"
 
+    env_file: 
+      - ./web/.env
+    restart: 
+      always
+    networks: 
+      - backend
+    volumes:
+      # volume for store plot 
+      - type: volume
+        source: plot-expression
+        target: /usr/src/siq/app/api/plot
+      # volume for mapping host folder to container 
+      - type: bind
+        source: ./web/migrations
+        target: /usr/src/sciq/migrations
+      #- type: volume
+      #  source: migrations-data
+      #  target: /usr/src/sciq/migrations
   db:
+    container_name: 'db'
     image: mysql:5.7
     ports:
-      - "32000:3306"
+      - "3306:3306"  
+    #command:
+       #"--innodb_use_native_aio=0" 
+       #- --disable-partition-engine-check
     environment:
+      MYSQL_DATABASE: sciq
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
       MYSQL_ROOT_PASSWORD: root
+    restart: 
+      always
+    networks: 
+      - backend
     volumes:
-      - ./db:/docker-entrypoint-initdb.d/:ro
+      - type: volume
+        source: mysql-data
+        target: /var/lib/mysql
+      #- ./db:/docker-entrypoint-initdb.d/:ro
+ 
+
+networks:
+  backend:
+
+volumes: 
+  mysql-data:
+    driver: 
+      local
+  plot-expression:
+    driver:
+      local
+  # migrations-data:
+  #  driver: 
+  #    local
+
