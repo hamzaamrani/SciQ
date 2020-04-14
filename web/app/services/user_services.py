@@ -1,15 +1,20 @@
-from web.app.config import connection_string, DB_CONFIG
 import json
+
 import mysql.connector
-                        
-# TODO: BLUEPRINT FLASK
-# TODO: mysql alchemy
+from flask import current_app
+
+from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD
+
 
 class UserService:
     def __init__(self):
         print("Connecting")
-        self.connection = mysql.connector.connect(**DB_CONFIG)
-        
+
+        if current_app.config["FLASK_ENV"] == "development":
+            self.connection = mysql.connector.connect(**DB_CONFIG_DEV)
+        else:
+            self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
+
     def check_exist(self, username):
         cursor = self.connection.cursor()
         query = f'SELECT * FROM user WHERE username="{username}"'
@@ -17,7 +22,7 @@ class UserService:
         results = [user for user in cursor]
         cursor.close()
         return len(results) > 0
-    
+
     def check_credentials(self, username, password):
         cursor = self.connection.cursor()
         query = f"select * from user where username='{username}' and password='{password}'"
@@ -25,7 +30,6 @@ class UserService:
         results = [user for user in cursor]
         cursor.close()
         return len(results) > 0
-
 
     def signup(self, username, password):
         cursor = self.connection.cursor()
@@ -36,7 +40,5 @@ class UserService:
         cursor = self.connection.cursor()
         cursor.execute(query)
         self.connection.commit()
-        cursor.close()        
+        cursor.close()
         return True
-
-

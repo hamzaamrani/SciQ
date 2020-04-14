@@ -4,7 +4,9 @@ click==7.1.1
 entrypoints==0.3
 flake8==3.7.9
 Flask==1.1.1
+flask-heroku
 flask-marshmallow==0.11.0
+flask-script
 Flask-Migrate==2.4.0
 Flask-SQLAlchemy==2.4.0
 itsdangerous==1.1.0
@@ -27,3 +29,4 @@ mysql-connector
 pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
+gunicorn
