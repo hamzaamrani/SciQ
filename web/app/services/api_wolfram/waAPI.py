@@ -244,17 +244,17 @@ class Expression(object):
         Print content of the expression.
         """
         logging.info("\nExpression information")
-        logging.info("Success: ", self.success)
-        logging.info("Query: ", raw(self.query))
-        logging.info("Execution time: ", self.execution_time)
-        logging.info("Plots: ", self.plots)
-        logging.info("Alternate forms: ", self.alternate_forms)
-        logging.info("Results: ", self.results)
-        logging.info("Solutions: ", self.solutions)
-        logging.info("Symbolic Solutions: ", self.symbolic_solutions)
-        logging.info("Limit: ", self.limits)
-        logging.info("Partial derivatives: ", self.partial_derivatives)
-        logging.info("Integral: ", self.integral)
+        logging.info("Success: {}".format(self.success))
+        logging.info("Query: {}".format(raw(self.query)))
+        logging.info("Execution time: {}".format(self.execution_time))
+        logging.info("Plots: {}".format(self.plots))
+        logging.info("Alternate forms: {}".format(self.alternate_forms))
+        logging.info("Results: {}".format(self.results))
+        logging.info("Solutions: {}".format(self.solutions))
+        logging.info("Symbolic Solutions: {}".format(self.symbolic_solutions))
+        logging.info("Limit: {}".format(self.limits))
+        logging.info("Partial derivatives: {}".format(self.partial_derivatives))
+        logging.info("Integral: {}".format(self.integral))
 
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
