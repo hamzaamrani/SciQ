@@ -1,10 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_heroku import Heroku
 from flask_migrate import Migrate
 import logging, os
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
+heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
@@ -21,9 +23,9 @@ def create_app(config_name):
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), '/usr/src/sciq/web/app/static/uploads')
     logging.info("Upload folder = " + os.path.join(os.path.abspath(os.path.dirname(__file__)), '/usr/src/sciq/web/app/static/uploads'))
 
-    heroku.init_app(app)
     db.init_app(app)
     ma.init_app(app)
+    heroku.init_app(app)
 
     from web.app.models import User, Expression
     migrate.init_app(app, db)
