@@ -79,3 +79,4 @@ deploy:
         - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
     only:
         - sprint1
+        - master
