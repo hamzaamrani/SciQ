@@ -1,11 +1,13 @@
 import base64
-import json
 import os.path
 import urllib.parse
 import urllib.request
 from io import BytesIO
 from flask import Markup
 import logging
+import requests
+from PIL import Image
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
@@ -32,21 +34,16 @@ def raw(text):
     return text
 
 
-
 def to_mathml(text_mml):
     """
     Return the correct mathml visualization of the expression returned from wolfram|alpha
     """
-    symbols_dict = {'integral': '&int;'}
+    symbols_dict = {"integral": "&int;"}
 
     for k, v in symbols_dict.items():
         text_mml = text_mml.replace(k, v)
 
     return text_mml
-    
-
-
-
 
 
 class NoAPIKeyException(Exception):
@@ -266,7 +263,9 @@ class Expression(object):
         logging.info("Solutions: {}".format(self.solutions))
         logging.info("Symbolic Solutions: {}".format(self.symbolic_solutions))
         logging.info("Limit: {}".format(self.limits))
-        logging.info("Partial derivatives: {}".format(self.partial_derivatives))
+        logging.info(
+            "Partial derivatives: {}".format(self.partial_derivatives)
+        )
         logging.info("Integral: {}".format(self.integral))
 
 
