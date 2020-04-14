@@ -19,6 +19,7 @@ def submit_expression():
     expression = request.form["symbolic_expression"]
     parsed = parse_2_latex(expression)
     response_obj = compute_expression(parsed)
+    response_obj.print_expression()
     return render_template("show_results.html", alert=False, query=expression, response_obj= response_obj)
 
 

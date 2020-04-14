@@ -7,7 +7,8 @@ import os.path
 from PIL import Image
 from io import BytesIO
 from flask import Markup
-
+import logging
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = 'https://api.wolframalpha.com/v2/query'
 API_SIGNUP_PAGE = 'https://developer.wolframalpha.com'
@@ -29,6 +30,23 @@ def raw(text):
         text = text.replace(k, v)
 
     return text
+
+
+
+def to_mathml(text_mml):
+    """
+    Return the correct mathml visualization of the expression returned from wolfram|alpha
+    """
+    symbols_dict = {'integral': '&int;'}
+
+    for k, v in symbols_dict.items():
+        text_mml = text_mml.replace(k, v)
+
+    return text_mml
+    
+
+
+
 
 
 class NoAPIKeyException(Exception):
@@ -196,11 +214,13 @@ class Expression(object):
             for subpod in pod['subpods']:
                 ml = subpod['mathml']
                 ml = ml.replace("\n", "")
+                ml = to_mathml(ml)
                 ml = Markup(ml)
                 mathml.append(ml)
         else:
             ml = pod['subpods']['mathml']
             ml = ml.replace("\n", "")
+            ml = to_mathml(ml)
             ml = Markup(ml)
             mathml.append(ml)
         return mathml
@@ -223,18 +243,18 @@ class Expression(object):
         """
         Print content of the expression.
         """
-        print("\nExpression information")
-        print("Success: ", self.success)
-        print("Query: ", raw(self.query))
-        print("Execution time: ", self.execution_time)
-        print("Plots: ", self.plots)
-        print("Alternate forms: ", self.alternate_forms)
-        print("Results: ", self.results)
-        print("Solutions: ", self.solutions)
-        print("Symbolic Solutions: ", self.symbolic_solutions)
-        print("Limit: ", self.limits)
-        print("Partial derivatives: ", self.partial_derivatives)
-        print("Integral: ", self.integral)
+        logging.info("\nExpression information")
+        logging.info("Success: ", self.success)
+        logging.info("Query: ", raw(self.query))
+        logging.info("Execution time: ", self.execution_time)
+        logging.info("Plots: ", self.plots)
+        logging.info("Alternate forms: ", self.alternate_forms)
+        logging.info("Results: ", self.results)
+        logging.info("Solutions: ", self.solutions)
+        logging.info("Symbolic Solutions: ", self.symbolic_solutions)
+        logging.info("Limit: ", self.limits)
+        logging.info("Partial derivatives: ", self.partial_derivatives)
+        logging.info("Integral: ", self.integral)
 
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
