@@ -1,5 +1,5 @@
 import unittest
-from web.app import services
+from web.app.services import web_services as services
 from unittest.mock import Mock, MagicMock
 import mysql.connector
 
