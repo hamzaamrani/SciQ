@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 from flask import Flask
 
-from web.app import services
+from web.app.services.web_services import user_services as services
 
 
 class MockDb:

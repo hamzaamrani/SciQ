@@ -1,23 +1,16 @@
-import hashlib
-import json
 import logging
 import os
 
 from flask import (
-    abort,
     current_app,
     flash,
     jsonify,
-    redirect,
     render_template,
     request,
-    send_from_directory,
-    url_for,
 )
 from werkzeug.utils import secure_filename
 
-from web.app.services import user_services
-from web.app.services.api_wolfram.waAPI import Expression, compute_expression
+from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
 

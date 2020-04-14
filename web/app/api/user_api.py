@@ -1,20 +1,12 @@
 import hashlib
-import json
-import os
 
 from flask import (
-    abort,
     flash,
-    jsonify,
-    redirect,
     render_template,
     request,
-    send_from_directory,
-    url_for,
 )
-from werkzeug.utils import secure_filename
 
-from web.app.services import user_services
+from web.app.services.web_services import user_services
 
 global username_global
 
@@ -58,7 +50,7 @@ def signup():
                 return render_template("index.html", alert=True)
             else:
                 flash("Username already taken!")
-                return render_template('index.html', alert=True)
+                return render_template("index.html", alert=True)
         else:
             # Passwords are not equals
             flash("You have inserted two different password! Please, retry")
