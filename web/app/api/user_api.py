@@ -72,7 +72,6 @@ def get_md5(password):
     m = hashlib.md5()
     m.update(password.encode())
     md5_password = m.hexdigest()
-    print("Password = " + password + " and md5 is = " + md5_password)
     return md5_password
 
 

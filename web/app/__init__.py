@@ -37,8 +37,9 @@ def create_app(config_name):
     )
 
     db.init_app(app)
-    # with app.app_context():
-    #     db.create_all()
+    if app.config["FLASK_ENV"] == "development":
+        with app.app_context():
+            db.create_all()
     ma.init_app(app)
     heroku.init_app(app)
 
