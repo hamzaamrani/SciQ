@@ -12,41 +12,9 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-    <script>
-        MathJax = {
-            loader: {
-                load: ['input/asciimath']
-            },
-            asciimath: {
-                delimiters: [
-                    ['`', '`']
-                ]
-            },
-            svg: {
-                fontCache: 'global'
-            }
-        };
-    </script>
-    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js">
-        MathJax.Hub.Config({
-            extensions: ["mml2jax.js"],
-            jax: ["input/MathML", "output/HTML-CSS"],
-            CommonHTML: {
-                scale: 130
-            }
-        });
-    </script>
-    <script>
-        function render_plot(id, src) {
-
-
-        }
-    </script>
-
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
 
 </head>
@@ -78,13 +46,13 @@
         <div class="container container-response">
             <div class="row">
                 <div class="col-4">
-                    <p class="res_title"> Query : `{{ query }}` </p>
+                    <p class="res_title" style="vertical-align: middle;"> Query : `{{ query }}` </p>
                 </div>
                 <div class="col-4">
-                    <p class="res_title"> Query response : {{ response_obj.success }} </p>
+                    <p class="res_title" style="vertical-align: middle;"> Query response : {{ response_obj.success }} </p>
                 </div>
                 <div class="col-4">
-                    <p class="res_title"> Execution Time : {{ response_obj.execution_time }} </p>
+                    <p class="res_title" style="vertical-align: middle;"> Execution Time : {{ response_obj.execution_time }} </p>
                 </div>
             </div>
         </div>

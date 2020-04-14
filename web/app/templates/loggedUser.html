@@ -14,30 +14,32 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-
-    <script>
-        MathJax = {
-            loader: {
-                load: ['input/asciimath']
-            },
-            asciimath: {
-                delimiters: [
-                    ['`', '`']
-                ]
-            },
-            svg: {
-                fontCache: 'global'
-            }
-        };
-    </script>
-
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/mml-chtml.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ASCIIMathML.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/original-keyboard2.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+
+    <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
+    <script>
+        window.MathJax = {
+            "fast-preview": {
+                disabled: true
+            },
+            AuthorInit: function() {
+                MathJax.Hub.Register.StartupHook('End', function() {
+                    MathJax.Hub.processSectionDelay = 0
+                    var demoSource = document.getElementById('symbolic_expression')
+                    var demoRendering = document.getElementById('MathOutput')
+                    var math = MathJax.Hub.getAllJax('MathOutput')[0]
+                    demoSource.addEventListener('input', function() {
+                        MathJax.Hub.Queue(['Text', math, demoSource.value])
+                    })
+                })
+            }
+        }
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
+
 </head>
 
 
@@ -80,8 +82,8 @@
             <h1 style="padding-bottom: 10px;">Enter your expression</h1>
             <div class="container container-fluid">
                 <form class="enter-equation" method="POST" action="/submit_expression">
-                    <input required id="symbolic_expression" onkeyup="" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" placeholder="Hey {{name}}, enter what you want to calculate">
-                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression" onclick="">
+                    <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" value="sum_(i=1)^n i^3=((n(n+1))/2)^2">
+                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression">
                     <img src="{{ url_for('static', filename='images/done.svg') }}">   
                     </button>
                 </form>
@@ -90,10 +92,12 @@
     </div>
 
 
+
+
     <div class="text-center" style="padding-bottom: 10px;">
         <div class="container container-fluid">
             <div class="box" id="box">
-                <div id="MathOutput" class="output">` `</div>
+                <div id="MathOutput" class="output">` sum_(i=1)^n i^3=((n(n+1))/2)^2 `</div>
             </div>
         </div>
     </div>
