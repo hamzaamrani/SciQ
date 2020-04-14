@@ -1,1 +1,1 @@
-web: python web.run_prod db migrate; gunicorn web.run_prod:app
+web: python -m web.run_prod db upgrade; gunicorn web.run_prod:app
