@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_heroku import Heroku
+from flask.ext.heroku import Heroku
 from flask_migrate import Migrate
 import logging, os
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
