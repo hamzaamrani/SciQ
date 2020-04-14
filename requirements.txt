@@ -5,6 +5,8 @@ entrypoints==0.3
 flake8==3.7.9
 Flask==1.1.1
 flask-heroku
+flask-script
+flask-migrate
 flask-marshmallow==0.11.0
 Flask-Migrate==2.4.0
 Flask-SQLAlchemy==2.4.0

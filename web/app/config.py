@@ -15,15 +15,20 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI_DEV')
+    FLASK_ENV = 'development'
 
 
 class TestingConfig(Config):
     TESTING = os.environ.get('TESTING')
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    FLASK_ENV = 'development'
 
 
 class ProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI_PROD')
+    FLASK_ENV = 'production'
 
 
 config = {'development': DevelopmentConfig,
@@ -31,7 +36,7 @@ config = {'development': DevelopmentConfig,
           'production': ProductionConfig,
           'default': DevelopmentConfig}
           
-DB_CONFIG = {
+DB_CONFIG_DEV = {
     'user': 'root',
     'password': 'root',
     'host': 'db',
@@ -39,4 +44,10 @@ DB_CONFIG = {
     'database': 'sciq'
 }
 
-connection_string = "mysql://root:root@db:3306/sciq"
+DB_CONFIG_PROD = {
+    'user': 'luvzoslbokdnbv',
+    'password': 'a97aed297d1261ae174cd50d4d38dbddfc0a4941d25407a0fc4e9d79367d232b',
+    'host': 'ec2-54-228-251-117.eu-west-1.compute.amazonaws.com',
+    'port': '5432',
+    'database': 'd3ru9nusr6mhni'
+}

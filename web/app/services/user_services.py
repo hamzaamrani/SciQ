@@ -1,6 +1,10 @@
-from web.app.config import connection_string, DB_CONFIG
+from web.app.config import DB_CONFIG_DEV
+from web.app.config import DB_CONFIG_PROD
 import json
 import mysql.connector
+from flask import current_app
+
+FLASK_ENV = current_app['FLASK_ENV']
                         
 # TODO: BLUEPRINT FLASK
 # TODO: mysql alchemy
@@ -8,7 +12,11 @@ import mysql.connector
 class UserService:
     def __init__(self):
         print("Connecting")
-        self.connection = mysql.connector.connect(**DB_CONFIG)
+        
+        if FLASK_ENV == 'development':
+            self.connection = mysql.connector.connect(**DB_CONFIG_DEV)
+        else:
+            self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
         
     def check_exist(self, username):
         cursor = self.connection.cursor()
