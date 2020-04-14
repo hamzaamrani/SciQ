@@ -1,1 +1,1 @@
-web: python -m web.run_prod db upgrade; gunicorn web.run_prod:app
+web: sh ./web/docker-entrypoint.sh; gunicorn web.run_prod:app
