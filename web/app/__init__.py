@@ -37,7 +37,8 @@ def create_app(config_name):
     )
 
     db.init_app(app)
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     ma.init_app(app)
     heroku.init_app(app)
 
