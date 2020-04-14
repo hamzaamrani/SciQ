@@ -1,1 +1,1 @@
-web: sh ./web/docker-entrypoint.sh; gunicorn web.run_prod:app
+web: sh ./web/heroku-entrypoint.sh; gunicorn web.run_prod:app
