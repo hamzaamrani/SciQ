@@ -1,7 +1,8 @@
-from web.app import db, ma
-from sqlalchemy import event
 from sqlalchemy import *
+from sqlalchemy import event
 from sqlalchemy.orm import *
+
+from web.app import db, ma
 
 user_expression = db.Table(
     "user_expression",
