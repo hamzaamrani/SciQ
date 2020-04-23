@@ -30,7 +30,7 @@ class PreProductionConfig(Config):
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
     FLASK_ENV = "production"
-    FLASK_APP = "run_dev.py"
+    FLASK_APP = "run_prod.py"
     
 
 
@@ -68,9 +68,8 @@ DB_CONFIG_PROD = {
 
 DB_CONFIG_PRE_PROD = {
     "user": "bdd2e662bdbe1b",
-    "password": "2e134689 ",
+    "password": "2e134689",
     "host": "eu-cdbr-west-03.cleardb.net",
     "port": "3306",
     "database": "heroku_8c7f90193d110bd",
 }
-
