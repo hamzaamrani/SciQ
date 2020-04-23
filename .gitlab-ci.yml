@@ -72,7 +72,7 @@ deploy-prod:
     stage: deploy
     image: ruby:latest
     variables:
-        - STEP : 'production'
+        STEP : 'production'
     before_script:
         - apt-get update -qy
         - apt-get install -y ruby-dev
@@ -86,7 +86,7 @@ deploy-dev:
     stage: deploy
     image: ruby:latest
     variables:
-        - STEP : 'staging'
+        STEP : 'staging'
     before_script:
         - apt-get update -qy
         - apt-get install -y ruby-dev
