@@ -1,8 +1,9 @@
 import mysql.connector
 from flask import current_app
 
-from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD
+from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD, DB_CONFIG_PRE_PROD
 
+import os
 
 class UserService:
     def __init__(self):
@@ -11,7 +12,11 @@ class UserService:
         if current_app.config["FLASK_ENV"] == "development":
             self.connection = mysql.connector.connect(**DB_CONFIG_DEV)
         else:
-            self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
+            if os.environ['STEP'] == 'production':
+                self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
+            else:
+                self.connection = mysql.connector.connect(**DB_CONFIG_PRE_PROD)
+
 
     def check_exist(self, username):
         cursor = self.connection.cursor()

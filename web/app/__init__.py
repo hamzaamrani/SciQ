@@ -15,13 +15,12 @@ ma = Marshmallow()
 migrate = Migrate()
 
 
+
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
 
-    logging.info("In create app; current path is  = " + os.getcwd())
-
     from web.app.config import config
-
+    
     app.config.from_object(config[config_name])
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),

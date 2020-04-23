@@ -3,7 +3,14 @@ from flask_script import Manager
 
 from web.app import create_app
 
-app = create_app("production")
+import os
+
+
+if os.environ['STEP'] == 'staging':
+    app = create_app("pre_prod")
+else: 
+    app = create_app("production")
+
 manager = Manager(app)
 manager.add_command("db", MigrateCommand)
 

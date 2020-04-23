@@ -25,6 +25,15 @@ class TestingConfig(Config):
     FLASK_ENV = "development"
 
 
+class PreProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
+    FLASK_ENV = "production"
+    FLASK_APP = "run_dev.py"
+    
+
+
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
@@ -38,6 +47,7 @@ config = {
     "testing": TestingConfig,
     "production": ProductionConfig,
     "default": DevelopmentConfig,
+    "pre_prod" : PreProductionConfig,
 }
 
 DB_CONFIG_DEV = {
@@ -55,3 +65,12 @@ DB_CONFIG_PROD = {
     "port": "3306",
     "database": "heroku_62e37664534fe76",
 }
+
+DB_CONFIG_PRE_PROD = {
+    "user": "bdd2e662bdbe1b",
+    "password": "2e134689 ",
+    "host": "eu-cdbr-west-03.cleardb.net",
+    "port": "3306",
+    "database": "heroku_8c7f90193d110bd",
+}
+
