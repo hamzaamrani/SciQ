@@ -3,10 +3,10 @@ from flask_script import Manager
 
 from web.app import create_app
 
-import os
+from os import environ
 
 
-if os.environ['STEP'] == 'staging':
+if environ.get('STEP') == 'staging':
     app = create_app("pre_prod")
 else: 
     app = create_app("production")

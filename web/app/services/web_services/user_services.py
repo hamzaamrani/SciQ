@@ -3,7 +3,7 @@ from flask import current_app
 
 from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD, DB_CONFIG_PRE_PROD
 
-import os
+from os import environ
 
 class UserService:
     def __init__(self):
@@ -12,7 +12,7 @@ class UserService:
         if current_app.config["FLASK_ENV"] == "development":
             self.connection = mysql.connector.connect(**DB_CONFIG_DEV)
         else:
-            if os.environ['STEP'] == 'production':
+            if environ.get('STEP') == 'production':
                 self.connection = mysql.connector.connect(**DB_CONFIG_PROD)
             else:
                 self.connection = mysql.connector.connect(**DB_CONFIG_PRE_PROD)
