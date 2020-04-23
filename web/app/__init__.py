@@ -16,7 +16,6 @@ migrate = Migrate()
 
 
 def create_app(config_name):
-    # app = Flask(__name__)
     app = Flask(__name__, static_url_path="")
 
     logging.info("In create app; current path is  = " + os.getcwd())
@@ -37,9 +36,6 @@ def create_app(config_name):
     )
 
     db.init_app(app)
-    # if app.config["FLASK_ENV"] == "development":
-    #     with app.app_context():
-    #         db.create_all()
     ma.init_app(app)
     heroku.init_app(app)
 
@@ -50,11 +46,22 @@ def create_app(config_name):
     # Definitions of route API
     from web.app.api import user_api
 
-    app.add_url_rule("/", methods=["GET"], view_func=user_api.index)
-    app.add_url_rule("/login", methods=["POST"], view_func=user_api.login)
-    app.add_url_rule("/signup", methods=["POST"], view_func=user_api.signup)
+    app.add_url_rule("/", 
+        methods=["GET"], 
+        view_func=user_api.index)
+
+    app.add_url_rule("/login",
+        methods=["POST"],
+        view_func=user_api.login)
+
+    app.add_url_rule("/signup",
+        methods=["POST"],
+        view_func=user_api.signup)
+
     app.add_url_rule(
-        "/loggedUser", methods=["GET"], view_func=user_api.loggedUser
+        "/loggedUser",
+        methods=["GET"],
+        view_func=user_api.loggedUser
     )
 
     from web.app.api import expression_api
@@ -64,11 +71,17 @@ def create_app(config_name):
         methods=["POST"],
         view_func=expression_api.submit_expression,
     )
+
     app.add_url_rule(
-        "/sendfile", methods=["POST"], view_func=expression_api.send_file
+        "/sendfile",
+        methods=["POST"],
+        view_func=expression_api.send_file
     )
+    
     app.add_url_rule(
-        "/filenames", methods=["GET"], view_func=expression_api.get_filenames
+        "/filenames",
+        methods=["GET"],
+        view_func=expression_api.get_filenames
     )
 
     return app

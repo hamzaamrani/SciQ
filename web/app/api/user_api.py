@@ -15,7 +15,6 @@ def index():
     return render_template("index.html", alert=False)
 
 
-# @app.route('/login', methods=['POST'])
 def login():
     global username_global
     try:
@@ -34,7 +33,6 @@ def login():
         flash(valerr)
 
 
-# @app.route('/signup', methods=['POST'])
 def signup():
     try:
         username = request.form["username_signup"]
