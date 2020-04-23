@@ -72,39 +72,39 @@ test-api-wolfram:
     - master
 
 test-services:
- stage: test
- image: $DOCKER_DEV_ENV_IMAGE
- script:
-   - echo 'test services'
-   - python3 -m unittest discover tests.services -v
+  stage: test
+  image: $DOCKER_DEV_ENV_IMAGE
+  script:
+    - echo 'test services'
+    - python3 -m unittest discover tests.services -v
   only:
-  - master
+    - master
 
 deploy-prod:
-    stage: deploy
-    image: ruby:latest
-    variables:
-        STEP : 'production'
-    before_script:
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-    script:
-        - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
-    only:
-        - master
+  stage: deploy
+  image: ruby:latest
+  variables:
+      STEP : 'production'
+  before_script:
+      - apt-get update -qy
+      - apt-get install -y ruby-dev
+      - gem install dpl
+  script:
+      - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
+  only:
+      - master
 
 deploy-dev:
-    stage: deploy
-    image: ruby:latest
-    variables:
-        STEP : 'staging'
-    before_script:
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-    script:
-        - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
-    only:
-        - sprint2
+  stage: deploy
+  image: ruby:latest
+  variables:
+      STEP : 'staging'
+  before_script:
+      - apt-get update -qy
+      - apt-get install -y ruby-dev
+      - gem install dpl
+  script:
+      - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
+  only:
+      - sprint2
         
