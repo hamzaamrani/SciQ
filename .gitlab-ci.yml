@@ -97,13 +97,10 @@ deploy-prod:
 deploy-dev:
   stage: deploy
   image: ruby:latest
-  variables:
-      STEP : 'staging'
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
-      - echo $STEP
   script:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
