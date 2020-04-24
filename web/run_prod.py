@@ -3,17 +3,25 @@
 
 from web.app import create_app
 
+import os
 from os import environ
 
 # to del
-print(environ.get('STEP'))
+print(os.getenv('STEP'))
 
-
+'''
 if environ.get('STEP') == 'staging':
     app = create_app("pre_prod")
 else: 
     app = create_app("production")
-    
+'''   
+
+if os.getenv('STEP') == 'staging':
+    app = create_app("pre_prod")
+else: 
+    app = create_app("production")
+
+
 print("URI database: ", app.config['SQLALCHEMY_DATABASE_URI'])
 
 #manager = Manager(app)
