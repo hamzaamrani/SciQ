@@ -89,7 +89,7 @@ deploy-prod:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
-      - export STEP=production
+      - export STEP="production"
   script:
       - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
@@ -104,7 +104,7 @@ deploy-dev:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
-      - export STEP=staging
+      - export STEP="staging"
   script:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
