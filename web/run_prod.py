@@ -5,6 +5,9 @@ from web.app import create_app
 
 from os import environ
 
+# to del
+print(environ.get('STEP'))
+
 
 if environ.get('STEP') == 'staging':
     app = create_app("pre_prod")
