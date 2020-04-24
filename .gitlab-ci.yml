@@ -83,8 +83,6 @@ test-services:
 deploy-prod:
   stage: deploy
   image: ruby:latest
-  variables:
-      STEP : 'production'
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
