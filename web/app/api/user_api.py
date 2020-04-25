@@ -20,8 +20,10 @@ def index():
 def login():
     #global username_global
     try:
-        username = request.form["username_login"]
-        password = request.form["password_login"]
+        _json = request.json
+        print(_json)
+        username = _json["username_login"]
+        password = _json["password_login"]
 
         if username and password:
             md5_password = get_md5(password)
@@ -29,9 +31,9 @@ def login():
             result = user_service.check_credentials(username, md5_password)
             if result:
                 #return render_template("logged_user.html", name=username_global)
-                return make_response(jsonify({'results': "Success"},{'username': username}), 200)
+                return make_response(jsonify({'results': "Success"},{'username': username}))
             else:
-                return make_response(jsonify({'results': "Username or password incorrect!"}), 401)
+                return make_response(jsonify({'results': "Username or password incorrect!"}))
                 #return render_template("index.html", alert=True)
         else:
             return make_response(jsonify({"error": "Missing data!"}))
