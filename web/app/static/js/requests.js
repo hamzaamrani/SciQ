@@ -1,9 +1,10 @@
 $(document).ready(function(){
     
+
+
+    // On login click
     $("#submit_login").on("click", function(event){
         event.preventDefault();
-        console.log("Username = " + $('#username_login').val() + "and Password is = " + $('#password_login').val());
-
         var username = $('#username_login').val();
         var password = $('#password_login').val();
         console.log("username = " + username + " and password = " + password);
@@ -41,4 +42,9 @@ $(document).ready(function(){
             $('#success_alert').hide(); 
         }
     });
+
+    // On signup click
+
+
+
 });
