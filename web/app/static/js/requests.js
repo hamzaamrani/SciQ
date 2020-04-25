@@ -10,19 +10,22 @@ $(document).ready(function(){
             url : '/login',
             success: function(data) {
                 if(data.error){
+                    console.log("Error : " + data.error)
                     $('#error_alert').text(data.error).show();
                     $('#success_alert').hide();
                 }else{
                     if(data.results == "Username or password incorrect!"){
+                        console.log("Error : " + data.results)
                         $('#error_alert').text(data.results).show();
                         $('#success_alert').hide(); 
                     }else{
+                        console.log("Success! : " + data.results)
                         window.location.href = "logged_user.html";
                     }
                 }
             },
             error: function(err) {
-                console.log(err);
+                console.log("General error"+ err);
             }
         });
     });
