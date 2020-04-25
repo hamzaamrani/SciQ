@@ -33,13 +33,13 @@ def login():
                 #return render_template("logged_user.html", name=username_global)
                 return jsonify({'results': "Success"},{'username': username})
             else:
-                return make_response(jsonify({'results': "Username or password incorrect!"}))
+                return jsonify({'results': "Username or password incorrect!"})
                 #return render_template("index.html", alert=True)
         else:
             return jsonify({"error": "Missing data!"})
 
     except ValueError as valerr:
-        flash(valerr)
+        return jsonify({"error": valerr})
 
 
 def signup():
