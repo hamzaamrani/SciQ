@@ -1,13 +1,12 @@
 import logging
 import os
 
-
 from flask import (
     current_app,
     flash,
     jsonify,
     render_template,
-    request,
+    request
 )
 from werkzeug.utils import secure_filename
 

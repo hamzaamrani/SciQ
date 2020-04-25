@@ -28,6 +28,5 @@ $(document).ready(function(){
             .fail(function(err) {
                 console.log("General error"+ err);
             });
-            event.preventDefault()
     });
 });
