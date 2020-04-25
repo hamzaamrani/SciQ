@@ -17,6 +17,9 @@ $(document).ready(function(){
                     $('#error_alert').hide();  
                 }
                 window.location.href = "logged_user.html";
+            },
+            error: function(err) {
+                console.log(err);
             }
         });
         event.preventDefault();
