@@ -1,5 +1,5 @@
 import hashlib
-
+import logging
 from flask import (
     flash,
     render_template,
@@ -21,7 +21,7 @@ def login():
     #global username_global
     try:
         _json = request.json
-        print(_json)
+        logging.info(_json)
         username = _json["username"]
         password = _json["password"]
 
