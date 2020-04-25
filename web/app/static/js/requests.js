@@ -64,8 +64,8 @@ $(document).ready(function(){
                             $('#success_alert').hide();
                         }else{
                             console.log("Success! : " + data.results)
-                            $('#signUpModal').modal('hide');
-                            $('#loginModal').modal('show');
+                            $('#signUpModal').modal('toggle');
+                            $('#loginModal').modal();
                             $('#success_alert').text(data.results).show();
                             $('#error_alert').hide();
                             $('#username_login').val(username);
