@@ -20,7 +20,7 @@ def index():
 def login():
     try:
         _json = request.json
-        logging.info("JSON = " + _json)
+        logging.info("JSON = " + str(_json))
         username = _json["username"]
         password = _json["password"]
         logging.info("Received on flask, Username = " + username + " and Password = " + password)
