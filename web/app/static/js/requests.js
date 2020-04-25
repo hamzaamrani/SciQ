@@ -1,13 +1,14 @@
 $(document).ready(function(){
 
-    $("#login_form").on("submit", function(event){
+    $("#login_form").bind("submit", function(event){
         $.ajax({
             data: {
                 username : $('#username_login').val(),
                 password : $('#password_login').val()
             },
-            method : "POST",
+            method : 'POST',
             url : '/login',
+            datatype : 'json',
             success: function(data) {
                 if(data.error){
                     console.log("Error : " + data.error)
