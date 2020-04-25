@@ -19,8 +19,10 @@ def index():
 
 def login():
     try:
-        username = request.form["username_login"]
-        password = request.form["password_login"]
+        _json = request.json
+        logging.info("JSON = " + _json)
+        username = _json["username"]
+        password = _json["password"]
         logging.info("Received on flask, Username = " + username + " and Password = " + password)
 
         if username and password:
