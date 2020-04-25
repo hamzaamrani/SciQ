@@ -6,10 +6,11 @@ $(document).ready(function(){
                 username : $('#username_login').val(),
                 password : $('#password_login').val()
             },
-            method : 'POST',
+            type : 'POST',
             url : '/login',
-            datatype : 'json',
-            success: function(data) {
+            datatype : 'json'
+        }).done(function(data) {
+        
                 if(data.error){
                     console.log("Error : " + data.error)
                     $('#error_alert').text(data.error).show();
@@ -23,10 +24,10 @@ $(document).ready(function(){
                         console.log("Success! : " + data.results)
                     }
                 }
-            },
-            error: function(err) {
+            })
+            .fail(function(err) {
                 console.log("General error"+ err);
-            }
-        });
+            });
+            event.preventDefault()
     });
 });
