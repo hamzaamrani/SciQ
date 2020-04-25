@@ -10,7 +10,6 @@ $(document).ready(function(){
             url : '/login',
             datatype : 'json'
         }).done(function(data) {
-        
                 if(data.error){
                     console.log("Error : " + data.error)
                     $('#error_alert').text(data.error).show();

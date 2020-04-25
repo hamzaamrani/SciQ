@@ -22,8 +22,8 @@ def login():
     try:
         _json = request.json
         print(_json)
-        username = _json["username_login"]
-        password = _json["password_login"]
+        username = _json["username"]
+        password = _json["password"]
 
         if username and password:
             md5_password = get_md5(password)
