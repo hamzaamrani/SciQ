@@ -13,15 +13,17 @@ $(document).ready(function(){
                     $('#error_alert').text(data.error).show();
                     $('#success_alert').hide();
                 }else{
-                    $('#success_alert').text(data.results).show();
-                    $('#error_alert').hide();  
+                    if(data.results == "Username or password incorrect!"){
+                        $('#error_alert').text(data.results).show();
+                        $('#success_alert').hide(); 
+                    }else{
+                        window.location.href = "logged_user.html";
+                    }
                 }
-                window.location.href = "logged_user.html";
             },
             error: function(err) {
                 console.log(err);
             }
         });
-        event.preventDefault();
     });
 });
