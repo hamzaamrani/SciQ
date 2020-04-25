@@ -58,9 +58,9 @@ def create_app(config_name):
         view_func=user_api.signup)
 
     app.add_url_rule(
-        "/loggedUser",
+        "/logged_user",
         methods=["GET"],
-        view_func=user_api.loggedUser
+        view_func=user_api.logged_user
     )
 
     from web.app.api import expression_api

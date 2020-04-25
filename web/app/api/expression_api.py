@@ -37,7 +37,6 @@ def parse_2_latex(expression):
 
 
 def send_file():
-    logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)

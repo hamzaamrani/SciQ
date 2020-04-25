@@ -4,11 +4,13 @@ from flask import (
     flash,
     render_template,
     request,
+    make_response,
+    jsonify
 )
 
 from web.app.services.web_services import user_services
 
-global username_global
+#global username_global
 
 
 def index():
@@ -16,19 +18,24 @@ def index():
 
 
 def login():
-    global username_global
+    #global username_global
     try:
         username = request.form["username_login"]
         password = request.form["password_login"]
-        md5_password = get_md5(password)
-        user_service = user_services.UserService()
-        result = user_service.check_credentials(username, md5_password)
-        if result:
-            username_global = username
-            return render_template("loggedUser.html", name=username_global)
+
+        if username and password:
+            md5_password = get_md5(password)
+            user_service = user_services.UserService()
+            result = user_service.check_credentials(username, md5_password)
+            if result:
+                #return render_template("logged_user.html", name=username_global)
+                return make_response(jsonify({'results': "Success"},{'username': username}), 200)
+            else:
+                return make_response(jsonify({'results': "Username or password incorrect!"}), 401)
+                #return render_template("index.html", alert=True)
         else:
-            flash("Username or password are incorrect!")
-            return render_template("index.html", alert=True)
+            return make_response(jsonify({"error": "Missing data!"}))
+
     except ValueError as valerr:
         flash(valerr)
 
@@ -65,6 +72,5 @@ def get_md5(password):
     return md5_password
 
 
-def loggedUser():
-    global username_global
-    return render_template("loggedUser.html", name=username_global)
+def logged_user():
+    return render_template("logged_user.html")
