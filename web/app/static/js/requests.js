@@ -21,6 +21,7 @@ $(document).ready(function(){
                         $('#success_alert').hide(); 
                     }else{
                         console.log("Success! : " + data.results)
+                        window.location.replace("http://sciq-unimib-dev.herokuapp.com/logged_user")
                     }
                 }
             })

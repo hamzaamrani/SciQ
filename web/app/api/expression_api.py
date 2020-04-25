@@ -1,6 +1,7 @@
 import logging
 import os
 
+
 from flask import (
     current_app,
     flash,
@@ -18,6 +19,8 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 def submit_expression():
+    user_agent = request.headers.get('User-Agent')
+    print(user_agent)
     expression = request.form["symbolic_expression"]
     parsed = parse_2_latex(expression)
     response_obj = compute_expression(parsed)
