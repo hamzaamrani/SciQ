@@ -1,6 +1,7 @@
 $(document).ready(function(){
-
+    
     $("#login_form").on("submit", function(event){
+        console.log("Username = " + $('#username_login').val() + "and Password is = " + $('#password_login').val());
         $.ajax({
             data: {
                 username : $('#username_login').val(),

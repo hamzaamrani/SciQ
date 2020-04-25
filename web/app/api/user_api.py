@@ -19,10 +19,9 @@ def index():
 
 def login():
     try:
-        _json = request.json
-        logging.info("Input JSON = " + _json)
-        username = _json["username_login"]
-        password = _json["password_login"]
+        username = request.form["username_login"]
+        password = request.form["password_login"]
+        logging.info("Received on flask, Username = " + username + " and Password = " + password)
 
         if username and password:
             md5_password = get_md5(password)
