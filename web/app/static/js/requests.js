@@ -60,12 +60,12 @@ $(document).ready(function(){
                     success: function(data) {
                         if(data.error){
                             console.log("Error : " + data.error)
-                            $('#error_alert').text(data.error).show();
-                            $('#success_alert').hide();
+                            $('#error_alert_signup').text(data.error).show();
+                            $('#success_alert_signup').hide();
                         }else{
                             console.log("Success! : " + data.results)
-                            $('#success_alert').text(data.results).show();
-                            $('#error_alert').hide();
+                            $('#success_alert_signup').text(data.results).show();
+                            $('#error_alert_signup').hide();
                         }
                     },
                     error: function(err) {
@@ -74,12 +74,12 @@ $(document).ready(function(){
                 });
 
             }else{
-                $('#error_alert').text("Passwords must be equals!").show();
-                $('#success_alert').hide(); 
+                $('#error_alert_signup').text("Passwords must be equals!").show();
+                $('#success_alert_signup').hide(); 
             }
         }else{
-            $('#error_alert').text("Username or password empty!").show();
-            $('#success_alert').hide(); 
+            $('#error_alert_signup').text("Username or password empty!").show();
+            $('#success_alert_signup').hide(); 
         }
         
     })
