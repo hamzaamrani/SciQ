@@ -10,6 +10,7 @@ $(document).ready(function(){
             type : 'POST',
             url : '/login'
         }).done(function(data){
+            console.log(data)
             if(data.error){
                 $('#error_alert').text(data.error).show();
                 $('#success_alert').hide();

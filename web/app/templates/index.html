@@ -41,8 +41,6 @@
         </div>
     </nav>
 
-    <div id="success_alert" class="alert alert-success" role="alert" style="display: none;"></div>
-    <div id="error_alert" class="alert alert-danger" role="alert" style="display: none;"></div>
 
     <!-- Carousel START-->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -93,7 +91,9 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body">                    
+                    <div id="success_alert" class="alert alert-success" role="alert" style="display: none;"></div>
+                    <div id="error_alert" class="alert alert-danger" role="alert" style="display: none;"></div>
                     <form name="loginData" id="login_form">
                         <div class=".form-control">
                             <label for="username_login"> Username </label>
