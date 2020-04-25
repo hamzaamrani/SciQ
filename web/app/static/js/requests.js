@@ -20,7 +20,6 @@ $(document).ready(function(){
                         $('#success_alert').hide(); 
                     }else{
                         console.log("Success! : " + data.results)
-                        window.location.href = "logged_user.html";
                     }
                 }
             },
