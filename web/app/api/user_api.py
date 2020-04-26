@@ -9,7 +9,7 @@ from flask import (
 )
 
 from web.app.services.web_services import user_services
-
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 def index():
@@ -19,7 +19,7 @@ def index():
 def login():
     try:
         _json = request.json
-        logging.info("Login JSON = " + str(_json))
+        #logging.info("Login JSON = " + str(_json))
         username = _json["username"]
         password = _json["password"]
 
@@ -40,7 +40,7 @@ def login():
 def signup():
     try:
         _json = request.json
-        logging.info("Signup JSON = " + str(_json))
+        #logging.info("Signup JSON = " + str(_json))
         username = _json["username"]
         password_1 = _json["password1"]
         password_2 = _json["password2"]

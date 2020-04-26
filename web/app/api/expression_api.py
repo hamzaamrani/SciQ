@@ -19,7 +19,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 def submit_expression():
     user_agent = request.headers.get('User-Agent')
-    logging.info("User agent = " + user_agent)
+    logging.info("User agent = " + str(user_agent))
     expression = request.form["symbolic_expression"]
     parsed = parse_2_latex(expression)
     response_obj = compute_expression(parsed)
@@ -54,6 +54,10 @@ def send_file():
 # GET NAMES OF UPLOADED FILES
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
+
+    if not os.path.exists(current_app.config["UPLOAD_FOLDER"]):
+        os.makedirs(current_app.config["UPLOAD_FOLDER"])
+
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):
