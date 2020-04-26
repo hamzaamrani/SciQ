@@ -9,6 +9,7 @@ from flask import (
     request
 )
 from werkzeug.utils import secure_filename
+from user_agents import parse
 
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
@@ -18,17 +19,18 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 def submit_expression():
-    user_agent = request.headers.get('User-Agent')
-    logging.info("User agent = " + str(user_agent))
-    expression = request.form["symbolic_expression"]
-    parsed = parse_2_latex(expression)
-    response_obj = compute_expression(parsed)
-    return render_template(
-        "show_results.html",
-        alert=False,
-        query=expression,
-        response_obj=response_obj,
-    )
+    user_agent = parse(request.headers.get('User-Agent'))
+    if(user_agent.is_pc):
+        logging.info("PC User agent")
+        expression = request.form["symbolic_expression"]
+        parsed = parse_2_latex(expression)
+        response_obj = compute_expression(parsed)
+        return render_template(
+            "show_results.html",
+            alert=False,
+            query=expression,
+            response_obj=response_obj,
+        )
 
 
 def parse_2_latex(expression):
