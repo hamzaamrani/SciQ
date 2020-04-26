@@ -77,10 +77,6 @@ def create_app(config_name):
         view_func=expression_api.send_file
     )
     
-    app.add_url_rule(
-        "/filenames",
-        methods=["GET"],
-        view_func=expression_api.get_filenames
-    )
+    #app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
 
     return app
