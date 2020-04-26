@@ -21,7 +21,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 def submit_expression():
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
-        logging.info("PC User agent")
+        logging.info("Requests from Desktop")
         expression = request.form["symbolic_expression"]
         parsed = parse_2_latex(expression)
         response_obj = compute_expression(parsed)
@@ -32,7 +32,7 @@ def submit_expression():
             response_obj=response_obj,
         )
     else:
-        logging.info("Mobile user agent")
+        logging.info("Request from mobile")
 
 
 def parse_2_latex(expression):
