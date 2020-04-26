@@ -31,6 +31,8 @@ def submit_expression():
             query=expression,
             response_obj=response_obj,
         )
+    else:
+        logging.info("Mobile user agent")
 
 
 def parse_2_latex(expression):
