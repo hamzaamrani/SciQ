@@ -55,9 +55,6 @@ def send_file():
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
 
-    if not os.path.exists(current_app.config["UPLOAD_FOLDER"]):
-        os.makedirs(current_app.config["UPLOAD_FOLDER"])
-
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):

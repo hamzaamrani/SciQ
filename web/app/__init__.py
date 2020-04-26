@@ -24,13 +24,13 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
-        "/usr/src/sciq/web/app/static/uploads",
+        "/web/app/static/uploads",
     )
     logging.info(
         "Upload folder = "
         + os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
-            "/usr/src/sciq/web/app/static/uploads",
+            "/web/app/static/uploads",
         )
     )
 
