@@ -5,18 +5,8 @@ The insertion of the formulas could happen through the use of a predefined text-
 The resolution of the formulas happen through the use of Wolphram|Alpha's API.
 
 
-## Database
-To use app:
-
-`docker-compose up --build`, if there isn't a local DB mapped to volume the DB will be created
-
-**on windows system the url isn't 0.0.0.0 but docker engine IP**
-
-To perform test:
-
-`docker-compose up -d --build && docker exec web python -m unittest -v tests.runner` or run bash file `test.sh` 
-
-If there are changes in code `docker-compose up --build`
+## Web App
+The web application is reachable at : [SciQ](https://sciq-unimib.herokuapp.com/)
 
 ## High-level architecture
 ![](images/HighLevelSchema.png)
