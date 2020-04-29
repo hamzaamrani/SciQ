@@ -16,12 +16,14 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_DEV")
+    MONGO_URI = os.environ.get("MONGO_URI")
     FLASK_ENV = "development"
 
 
 class TestingConfig(Config):
     TESTING = os.environ.get("TESTING")
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    # MONGO_URI =
     FLASK_ENV = "development"
 
 
@@ -29,10 +31,10 @@ class PreProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
+    # MONGO_URI =
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
     
-
 
 class ProductionConfig(Config):
     DEBUG = False

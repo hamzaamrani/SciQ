@@ -8,8 +8,17 @@ from flask import (
 
 from web.app.services.web_services import user_services
 
+from web.app import mongo
+
 global username_global
 
+def trova_mongo():
+
+    pippo = request.json
+    mongo.db.prova.expression.insert_one(pippo)
+
+
+    return "ok"
 
 def index():
     return render_template("index.html", alert=False)

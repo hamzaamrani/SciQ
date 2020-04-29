@@ -28,3 +28,5 @@ mysql-connector
 pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
+pymongo
+Flask-PyMongo

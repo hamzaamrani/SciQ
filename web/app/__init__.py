@@ -6,6 +6,7 @@ from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_pymongo import PyMongo
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -13,7 +14,7 @@ heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
-
+mongo = PyMongo()
 
 
 def create_app(config_name):
@@ -37,13 +38,18 @@ def create_app(config_name):
     db.init_app(app)
     ma.init_app(app)
     heroku.init_app(app)
+    mongo.init_app(app)
 
-    from web.app.models import User, Expression
+    from web.app.models import User
 
     migrate.init_app(app, db)
 
     # Definitions of route API
     from web.app.api import user_api
+
+    app.add_url_rule("/prova", 
+        methods=["POST"], 
+        view_func=user_api.trova_mongo)
 
     app.add_url_rule("/", 
         methods=["GET"], 

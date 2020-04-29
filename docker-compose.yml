@@ -5,11 +5,10 @@ services:
     build: 
       context: $PWD
       dockerfile: $PWD/web/Dockerfile
-      #args: 
-        #MIGRATE: ${MIGRATE}
     image: web
     links: 
       - db
+      - mongodb
     ports:
       - "5000:5000"
 
@@ -20,25 +19,16 @@ services:
     networks: 
       - backend
     volumes:
-      # volume for store plot 
-      - type: volume
-        source: plot-expression
-        target: /usr/src/siq/app/api/plot
       # volume for mapping host folder to container 
       - type: bind
         source: ./web/migrations
-        target: /usr/src/sciq/migrations
-      #- type: volume
-      #  source: migrations-data
-      #  target: /usr/src/sciq/migrations
+        target: /usr/src/sciq/web/migrations
+
   db:
     container_name: 'db'
     image: mysql:5.7
     ports:
       - "3306:3306"  
-    #command:
-       #"--innodb_use_native_aio=0" 
-       #- --disable-partition-engine-check
     environment:
       MYSQL_DATABASE: sciq
       MYSQL_USER: user
@@ -52,9 +42,27 @@ services:
       - type: volume
         source: mysql-data
         target: /var/lib/mysql
-      #- ./db:/docker-entrypoint-initdb.d/:ro
- 
 
+
+  mongodb:
+    image: mongo:4.0.8
+    ports:
+      - "27017:27017"
+    container_name: mongodb
+    restart: always
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user_mongo
+      MONGO_INITDB_ROOT_PASSWORD: root_mongo
+      MONGO_INITDB_DATABASE: sciq_mongo
+    networks:
+      - backend
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+
+ 
 networks:
   backend:
 
@@ -62,10 +70,9 @@ volumes:
   mysql-data:
     driver: 
       local
-  plot-expression:
+  mongodb-data:
     driver:
       local
-  # migrations-data:
-  #  driver: 
-  #    local
+
+
 
