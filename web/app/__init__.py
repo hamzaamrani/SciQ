@@ -6,14 +6,21 @@ from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
+LIMIT = "5 per hour"
 
 heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
-
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=[LIMIT]
+)
 
 
 def create_app(config_name):
@@ -36,9 +43,10 @@ def create_app(config_name):
 
     db.init_app(app)
     ma.init_app(app)
+    limiter.init_app(app)
     heroku.init_app(app)
 
-    from web.app.models import User, Expression
+    from web.app.models import User
 
     migrate.init_app(app, db)
 
@@ -63,6 +71,17 @@ def create_app(config_name):
         view_func=user_api.loggedUser
     )
 
+    app.add_url_rule(
+        "/login_token",
+        methods=['POST'],
+        view_func=user_api.prova_login_token
+    )
+
+    app.add_url_rule(
+        "/submitToken",
+        methods=['POST'],
+        view_func=user_api.prova_token
+    )
     from web.app.api import expression_api
 
     app.add_url_rule(

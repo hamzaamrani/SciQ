@@ -1,12 +1,19 @@
 import hashlib
-
+import jwt
 from flask import (
     flash,
     render_template,
     request,
+    jsonify
 )
 
+import logging
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 from web.app.services.web_services import user_services
+from web.app.services.utils.limit_request import get_user_type
+from web.app import limiter, LIMIT
+from flask import current_app as app
 
 global username_global
 
@@ -15,6 +22,19 @@ def index():
     return render_template("index.html", alert=False)
 
 
+def prova_login_token():
+    _json = request.get_json()
+
+    payload = {"username": _json['username']}
+
+    access_token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS512')
+    logging.info(access_token)
+    return jsonify(access_token=access_token.decode("utf-8") ), 200
+
+@limiter.limit(LIMIT, exempt_when=lambda: get_user_type(request))
+def prova_token():
+    return 'ok'
+    
 def login():
     global username_global
     try:
