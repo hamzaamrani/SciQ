@@ -9,24 +9,37 @@ from flask import (
     request,
 )
 from werkzeug.utils import secure_filename
+from user_agents import parse
 
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
+from web.app.services.utils.limit_request import get_user_type
+from web.app import limiter, LIMIT
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
+@limiter.limit(LIMIT, exempt_when=lambda: get_user_type(request))
 def submit_expression():
-    expression = request.form["symbolic_expression"]
-    parsed = parse_2_latex(expression)
-    response_obj = compute_expression(parsed)
-    return render_template(
-        "show_results.html",
-        alert=False,
-        query=expression,
-        response_obj=response_obj,
-    )
+    user_agent = parse(request.headers.get('User-Agent'))
+    if(user_agent.is_pc):
+        logging.info("Requests from Desktop")
+        expression = request.form["symbolic_expression"]
+        parsed = parse_2_latex(expression)
+        response_obj = compute_expression(parsed, "web")
+        return render_template(
+            "show_results.html",
+            alert=False,
+            query=expression,
+            response_obj=response_obj,
+        )
+    else:
+        #logging.info("Request from mobile")
+        #response_obj = compute_expression(parsed, "mobile").to_json
+        #return jsonify({"results" : response_obj})
+        return 'ok', 200
+
 
 
 def parse_2_latex(expression):

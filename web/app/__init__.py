@@ -29,6 +29,7 @@ def create_app(config_name):
     from web.app.config import config
     
     app.config.from_object(config[config_name])
+    '''
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
         "/usr/src/sciq/web/app/static/uploads",
@@ -40,7 +41,7 @@ def create_app(config_name):
             "/usr/src/sciq/web/app/static/uploads",
         )
     )
-
+    '''
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
@@ -66,22 +67,11 @@ def create_app(config_name):
         view_func=user_api.signup)
 
     app.add_url_rule(
-        "/loggedUser",
+        "/logged_user",
         methods=["GET"],
         view_func=user_api.loggedUser
     )
 
-    app.add_url_rule(
-        "/login_token",
-        methods=['POST'],
-        view_func=user_api.prova_login_token
-    )
-
-    app.add_url_rule(
-        "/submitToken",
-        methods=['POST'],
-        view_func=user_api.prova_token
-    )
     from web.app.api import expression_api
 
     app.add_url_rule(
