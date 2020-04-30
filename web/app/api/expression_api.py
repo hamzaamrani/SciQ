@@ -24,7 +24,7 @@ def submit_expression():
         logging.info("Requests from Desktop")
         expression = request.form["symbolic_expression"]
         parsed = parse_2_latex(expression)
-        response_obj = compute_expression(parsed)
+        response_obj = compute_expression(parsed, "web")
         return render_template(
             "show_results.html",
             alert=False,
@@ -33,6 +33,8 @@ def submit_expression():
         )
     else:
         logging.info("Request from mobile")
+        response_obj = compute_expression(parsed, "mobile").to_json
+        return jsonify({"results" : response_obj})
 
 
 def parse_2_latex(expression):
