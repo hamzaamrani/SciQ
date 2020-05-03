@@ -30,3 +30,4 @@ pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
 gunicorn
+Flask-Limiter
