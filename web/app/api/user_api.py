@@ -6,9 +6,9 @@ from flask import (
     request,
     jsonify
 )
-
 import logging
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+import datetime
 
 from web.app.services.web_services import user_services
 from web.app.services.utils.limit_request import get_user_type
@@ -30,7 +30,10 @@ def login():
             user_service = user_services.UserService()
             result = user_service.check_credentials(username, md5_password)
             if result:
-                payload = {"username": username}
+                payload = {
+                    "sub": username,
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=4),
+                }
                 access_token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS512').decode("utf-8")
                 logging.info("Token {} create con username {}".format(access_token, username))
                 return jsonify({"results": "Success", 
@@ -79,6 +82,6 @@ def get_md5(password):
     md5_password = m.hexdigest()
     return md5_password
 
-
+@limiter.exempt
 def loggedUser():
-    return render_template("loggedUser.html")
+    return render_template("loggedUser.html", alert_limit=False)

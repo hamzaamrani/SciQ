@@ -1,17 +1,18 @@
 import logging
 import os
 
-from flask import Flask
+from flask import Flask, render_template, jsonify, request
 from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from user_agents import parse
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
-LIMIT = "5 per hour"
+LIMIT = "2 per hour"
 
 heroku = Heroku()
 db = SQLAlchemy()
@@ -29,7 +30,7 @@ def create_app(config_name):
     from web.app.config import config
     
     app.config.from_object(config[config_name])
-    '''
+    
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
         "/usr/src/sciq/web/app/static/uploads",
@@ -41,7 +42,7 @@ def create_app(config_name):
             "/usr/src/sciq/web/app/static/uploads",
         )
     )
-    '''
+    
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
@@ -91,5 +92,14 @@ def create_app(config_name):
         methods=["GET"],
         view_func=expression_api.get_filenames
     )
+
+    @app.errorhandler(429)
+    def reached_limit_requests(error):
+        user_agent = parse(request.headers.get('User-Agent'))
+        if(user_agent.is_pc):
+            logging.info("handler limit request")
+            return render_template("loggedUser.html", alert_limit=True)
+        else:
+            return jsonify({'error': 'limit request'})
 
     return app

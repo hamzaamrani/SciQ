@@ -29,6 +29,10 @@ $(document).ready(function(){
                         }else{
                             console.log("Success! : " + data.results)
                             console.log("Token: " + data.access_token)
+                            localStorage.setItem(
+                                'access_token',
+                                data.access_token
+                            )
                             window.location.replace("http://0.0.0.0:5000/logged_user")
                         }
                     }

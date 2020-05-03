@@ -20,25 +20,28 @@ from web.app import limiter, LIMIT
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
-@limiter.limit(LIMIT, exempt_when=lambda: get_user_type(request))
+@limiter.limit( LIMIT, 
+                exempt_when=lambda: get_user_type(request),
+                error_message="limit reached")
 def submit_expression():
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
         logging.info("Requests from Desktop")
+        logging.info(request.form)
         expression = request.form["symbolic_expression"]
+        logging.info(expression)
         parsed = parse_2_latex(expression)
         response_obj = compute_expression(parsed, "web")
         return render_template(
             "show_results.html",
             alert=False,
             query=expression,
-            response_obj=response_obj,
-        )
+            response_obj=response_obj
+        ), 200
     else:
-        #logging.info("Request from mobile")
+        logging.info("Request from mobile")
         #response_obj = compute_expression(parsed, "mobile").to_json
-        #return jsonify({"results" : response_obj})
-        return 'ok', 200
+        return jsonify({"results" : "ok"})
 
 
 
