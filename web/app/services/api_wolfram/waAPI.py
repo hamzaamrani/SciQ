@@ -269,7 +269,9 @@ class Expression(object):
         logging.info("Integral: {}".format(self.integral))
 
 
-def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
+def compute_expression(
+    query, key=KEY, id_equation=None, dir_plots=None, response_format=None
+):
     """
     Returns an Expression object containing the query results
 
@@ -290,7 +292,9 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
     """
     client_api = waAPI(key)
     query = "\left( " + query + "\right)"
-    results_json = client_api.full_results(query=query)
+    results_json = client_api.full_results(
+        response_format=response_format, query=query
+    )
     obj_expression = Expression(
         query=query,
         results=results_json,

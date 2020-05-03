@@ -7,6 +7,11 @@ from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+# Definitions of route API
+from web.app.api import expression_api, user_api
+from web.app.api.expression_api import solve_exp
+from web.app.api.parser_api import exp2json
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 heroku = Heroku()
@@ -15,12 +20,11 @@ ma = Marshmallow()
 migrate = Migrate()
 
 
-
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
 
     from web.app.config import config
-    
+
     app.config.from_object(config[config_name])
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
@@ -38,32 +42,17 @@ def create_app(config_name):
     ma.init_app(app)
     heroku.init_app(app)
 
-    from web.app.models import User, Expression
-
     migrate.init_app(app, db)
 
-    # Definitions of route API
-    from web.app.api import user_api
+    app.add_url_rule("/", methods=["GET"], view_func=user_api.index)
 
-    app.add_url_rule("/", 
-        methods=["GET"], 
-        view_func=user_api.index)
+    app.add_url_rule("/login", methods=["POST"], view_func=user_api.login)
 
-    app.add_url_rule("/login",
-        methods=["POST"],
-        view_func=user_api.login)
-
-    app.add_url_rule("/signup",
-        methods=["POST"],
-        view_func=user_api.signup)
+    app.add_url_rule("/signup", methods=["POST"], view_func=user_api.signup)
 
     app.add_url_rule(
-        "/loggedUser",
-        methods=["GET"],
-        view_func=user_api.loggedUser
+        "/loggedUser", methods=["GET"], view_func=user_api.loggedUser
     )
-
-    from web.app.api import expression_api
 
     app.add_url_rule(
         "/submit_expression",
@@ -72,15 +61,15 @@ def create_app(config_name):
     )
 
     app.add_url_rule(
-        "/sendfile",
-        methods=["POST"],
-        view_func=expression_api.send_file
+        "/sendfile", methods=["POST"], view_func=expression_api.send_file
     )
-    
+
     app.add_url_rule(
-        "/filenames",
-        methods=["GET"],
-        view_func=expression_api.get_filenames
+        "/filenames", methods=["GET"], view_func=expression_api.get_filenames
     )
+
+    app.add_url_rule("/api/v1/parser", methods=["get"], view_func=exp2json)
+
+    app.add_url_rule("/api/v1/solver", methods=["get"], view_func=solve_exp)
 
     return app

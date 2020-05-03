@@ -11,15 +11,21 @@ from flask import (
 from werkzeug.utils import secure_filename
 
 from web.app.services.api_wolfram.waAPI import compute_expression
-from web.app.services.parser.const import asciimath_grammar
-from web.app.services.parser.parser import ASCIIMath2Tex
+from web.app.api.parser_api import exp2latex
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
+def solve_exp():
+    exp = request.args.get("expression")
+    parsed = exp2latex(exp)
+    solved = compute_expression(parsed, response_format=".json")
+    return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
+
+
 def submit_expression():
     expression = request.form["symbolic_expression"]
-    parsed = parse_2_latex(expression)
+    parsed = exp2latex(expression)
     response_obj = compute_expression(parsed)
     return render_template(
         "show_results.html",
@@ -27,13 +33,6 @@ def submit_expression():
         query=expression,
         response_obj=response_obj,
     )
-
-
-def parse_2_latex(expression):
-    parser = ASCIIMath2Tex(
-        asciimath_grammar, inplace=True, parser="lalr", lexer="contextual"
-    )
-    return parser.asciimath2tex(expression)
 
 
 def send_file():
