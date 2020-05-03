@@ -1,21 +1,17 @@
 import logging
 import os
 
-from flask import (
-    current_app,
-    flash,
-    jsonify,
-    render_template,
-    request,
-)
+from flask import current_app, flash, jsonify, render_template, request
 from werkzeug.utils import secure_filename
 
-from web.app.services.api_wolfram.waAPI import compute_expression
+from web.app import limiter
 from web.app.api.parser_api import exp2latex
+from web.app.services.api_wolfram.waAPI import compute_expression
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
+@limiter.limit("200 per day;50 per hour")
 def solve_exp():
     exp = request.args.get("expression")
     parsed = exp2latex(exp)

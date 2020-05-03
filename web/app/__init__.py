@@ -7,6 +7,11 @@ from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+
 # Definitions of route API
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
@@ -40,6 +45,7 @@ def create_app(config_name):
 
     db.init_app(app)
     ma.init_app(app)
+    limiter.init_app(app)
     heroku.init_app(app)
 
     migrate.init_app(app, db)
