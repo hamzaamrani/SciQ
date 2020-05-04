@@ -14,7 +14,7 @@ heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
-mongo = PyMongo()
+mongo = PyMongo() 
 
 
 def create_app(config_name):
@@ -47,9 +47,9 @@ def create_app(config_name):
     # Definitions of route API
     from web.app.api import user_api
 
-    app.add_url_rule("/prova", 
-        methods=["POST"], 
-        view_func=user_api.trova_mongo)
+    # app.add_url_rule("/prova", 
+    #     methods=["POST"], 
+    #     view_func=user_api.trova_mongo)
 
     app.add_url_rule("/", 
         methods=["GET"], 
@@ -87,6 +87,12 @@ def create_app(config_name):
         "/filenames",
         methods=["GET"],
         view_func=expression_api.get_filenames
+    )
+
+    app.add_url_rule(
+        "/save_expression_to_db",
+        methods=["GET"],
+        view_func=expression_api.save_expression_to_db
     )
 
     return app

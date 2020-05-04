@@ -102,5 +102,6 @@ deploy-dev:
   script:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
-      - sprint2
+      - 144-em-collections-for-expression
+      # - sprint2
         

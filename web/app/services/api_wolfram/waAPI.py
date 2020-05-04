@@ -7,6 +7,7 @@ from flask import Markup
 import logging
 import requests
 from PIL import Image
+import json
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -102,6 +103,8 @@ class waAPI(object):
                     key,
                 )
             )
+
+            logging.info(url)
 
             r = requests.get(url)
             r = r.json()
@@ -268,6 +271,26 @@ class Expression(object):
         )
         logging.info("Integral: {}".format(self.integral))
 
+    def to_json(self):
+        """
+        Convert expression object to json
+        """
+        json_object = {}
+        json_object['success'] = self.success
+        json_object['query'] = self.query
+        json_object['execution_time'] = self.execution_time
+        json_object['plots'] = self.plots
+        json_object['alternate_forms'] = self.alternate_forms
+        json_object['results'] = self.results
+        json_object['solutions'] = self.solutions
+        json_object['symbolic_solutions'] = self.symbolic_solutions
+        json_object['limits'] = self.limits
+        json_object['partial_derivatives'] = self.partial_derivatives
+        json_object['integral'] = self.integral
+
+        return json.dumps(json_object)
+
+
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
     """
@@ -298,3 +321,6 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         dir_plots=dir_plots,
     )
     return obj_expression
+
+obj = compute_expression('\int x^2 dx')
+# obj.print_expression()
