@@ -3,10 +3,8 @@ services:
   web:
     container_name: 'web'
     build: 
-      context: $PWD
-      dockerfile: $PWD/web/Dockerfile
-      #args: 
-        #MIGRATE: ${MIGRATE}
+      context: .
+      dockerfile: ./web/Dockerfile
     image: web
     links: 
       - db
@@ -19,26 +17,19 @@ services:
       always
     networks: 
       - backend
-    volumes:
-      # volume for store plot 
-      - type: volume
-        source: plot-expression
-        target: /usr/src/siq/app/api/plot
-      # volume for mapping host folder to container 
-      - type: bind
-        source: ./web/migrations
-        target: /usr/src/sciq/migrations
-      #- type: volume
-      #  source: migrations-data
-      #  target: /usr/src/sciq/migrations
+    #volumes:
+      # volume for mapping host migrations folder to container 
+      #- type: bind
+        #source: ./web/migrations
+        #target: /usr/src/sciq/web/migrations
+
   db:
     container_name: 'db'
     image: mysql:5.7
     ports:
       - "3306:3306"  
-    #command:
-       #"--innodb_use_native_aio=0" 
-       #- --disable-partition-engine-check
+    command:
+      --innodb-use-native-aio=0
     environment:
       MYSQL_DATABASE: sciq
       MYSQL_USER: user
@@ -52,7 +43,6 @@ services:
       - type: volume
         source: mysql-data
         target: /var/lib/mysql
-      #- ./db:/docker-entrypoint-initdb.d/:ro
  
 
 networks:
@@ -62,10 +52,3 @@ volumes:
   mysql-data:
     driver: 
       local
-  plot-expression:
-    driver:
-      local
-  # migrations-data:
-  #  driver: 
-  #    local
-

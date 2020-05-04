@@ -16,6 +16,8 @@ limiter = Limiter(key_func=get_remote_address)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
+from web.app.config import config
+
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -27,8 +29,6 @@ migrate = Migrate()
 
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
-
-    from web.app.config import config
 
     app.config.from_object(config[config_name])
     app.config["UPLOAD_FOLDER"] = os.path.join(
@@ -42,6 +42,8 @@ def create_app(config_name):
             "/usr/src/sciq/web/app/static/uploads",
         )
     )
+
+    from web.app.models import User
 
     db.init_app(app)
     ma.init_app(app)
@@ -72,6 +74,10 @@ def create_app(config_name):
 
     app.add_url_rule(
         "/filenames", methods=["GET"], view_func=expression_api.get_filenames
+    )
+
+    app.add_url_rule(
+        "/developer", methods=["GET"], view_func=user_api.developer
     )
 
     app.add_url_rule("/api/v1/parser", methods=["get"], view_func=exp2json)

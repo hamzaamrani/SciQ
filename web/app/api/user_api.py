@@ -68,3 +68,10 @@ def get_md5(password):
 def loggedUser():
     global username_global
     return render_template("loggedUser.html", name=username_global)
+
+
+def developer():
+    # token = request.args.get("token")
+    # decode token and get the username
+    user = "belerico"
+    return render_template("developer.html", alert=False, name=user)
