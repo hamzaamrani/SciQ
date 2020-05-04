@@ -27,8 +27,9 @@ def submit_expression():
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
         logging.info("Requests from Desktop")
-        # expression = request.form["symbolic_expression"]
-        expression = 'x^3 + x^2 + 4 = 0'
+        _json = request.get_json()
+        logging.info(_json)
+        expression = _json["symbolic_expression"]
         logging.info('Expression received from client: ' + expression)
         parsed = parse_2_latex(expression)
         response_obj = compute_expression(parsed)

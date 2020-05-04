@@ -3,7 +3,7 @@ $(document).ready(function(){
     // On search-button click
     $("#search-button").on("click", function(event){
         event.preventDefault();
-        var expression = $('#symbolic_expression').value;
+        var expression = $('#symbolic_expression').val();
         console.log("expression " + expression);
 
         if(expression != ""){
@@ -13,8 +13,8 @@ $(document).ready(function(){
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('access_token')
                 },
-                data: `symbolic_expression=${expression}`,
-                contentType: 'application/x-www-form-urlencoded',
+                data: JSON.stringify({'symbolic_expression': expression}),
+                contentType: 'application/json;charset=UTF-8',
                 success:function(response){ 
                     document.write(response); 
                 },
