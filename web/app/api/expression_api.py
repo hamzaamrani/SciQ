@@ -14,8 +14,12 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 @limiter.limit("200 per day;50 per hour")
 def solve_exp():
     exp = request.args.get("expression")
+    pods_format = request.args.get("output")
+    output_result = request.args.get("result")
     parsed = exp2latex(exp)
-    solved = compute_expression(parsed, response_format=".json")
+    solved = compute_expression(
+        parsed, pods_format=pods_format, output_result=output_result
+    )
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
 
 
