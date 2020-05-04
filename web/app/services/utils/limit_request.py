@@ -33,13 +33,17 @@ def get_user_type(request):
         if auth_header:
             try:
                 auth_token = auth_header.split(' ')[1]
-                decode = jwt.decode(auth_token.encode(), app.config['SECRET_KEY'], algorithms=['HS512'])
-                logging.info("Token ricevuto da client {}".format(decode))
-                if User.query.filter_by(username=decode['sub']).first():
-                    logging.info("sono unlimited")
-                    return True
+                logging.info("Token ricevuto da client {}".format(auth_token))
+                if auth_token != 'null':
+                    decode = jwt.decode(auth_token.encode(), app.config['SECRET_KEY'], algorithms=['HS512'])
+                    logging.info("Token ricevuto da client {}".format(decode))
+                    if User.query.filter_by(username=decode['sub']).first():
+                        logging.info("sono unlimited")
+                        return True
+                    else:
+                        logging.info("token non valido")
+                        return False
                 else:
-                    logging.info("token non valido")
                     return False
             except IndexError:
                 return False

@@ -15,9 +15,11 @@ from web.app.services.utils.limit_request import get_user_type
 from web.app import limiter, LIMIT
 from flask import current_app as app
 
+@limiter.exempt
 def index():
     return render_template("index.html", alert=False)
-    
+
+@limiter.exempt   
 def login():
     try:
         _json = request.json
@@ -47,7 +49,7 @@ def login():
         return jsonify({"error": valerr})
 
 
-
+@limiter.exempt
 def signup():
     try:
         _json = request.json

@@ -33,7 +33,7 @@ $(document).ready(function(){
                                 'access_token',
                                 data.access_token
                             )
-                            window.location.replace("http://0.0.0.0:5000/logged_user")
+                            window.location.replace("/logged_user")
                         }
                     }
                 },

@@ -27,17 +27,18 @@ def submit_expression():
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
         logging.info("Requests from Desktop")
-        logging.info(request.form)
-        expression = request.form["symbolic_expression"]
-        logging.info(expression)
+        # expression = request.form["symbolic_expression"]
+        expression = 'x^3 + x^2 + 4 = 0'
+        logging.info('Expression received from client: ' + expression)
         parsed = parse_2_latex(expression)
-        response_obj = compute_expression(parsed, "web")
+        response_obj = compute_expression(parsed)
+        logging.info('dovrei ritornare template risultati')
         return render_template(
             "show_results.html",
             alert=False,
             query=expression,
             response_obj=response_obj
-        ), 200
+        )
     else:
         logging.info("Request from mobile")
         #response_obj = compute_expression(parsed, "mobile").to_json
@@ -51,7 +52,7 @@ def parse_2_latex(expression):
     )
     return parser.asciimath2tex(expression)
 
-
+@limiter.exempt
 def send_file():
     logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
@@ -67,6 +68,7 @@ def send_file():
 
 
 # GET NAMES OF UPLOADED FILES
+@limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
