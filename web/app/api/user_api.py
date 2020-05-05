@@ -4,14 +4,17 @@ from flask import (
     flash,
     render_template,
     request,
-    jsonify
+    jsonify,
+    make_response
 )
 from flask import current_app as app
 from flask_jwt_extended import (
     create_access_token, 
     set_access_cookies, 
     jwt_required, 
-    unset_jwt_cookies
+    unset_jwt_cookies,
+    jwt_optional,
+    get_jwt_identity
 )
 
 import logging
@@ -19,12 +22,12 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 import datetime
 
 from web.app.services.web_services import user_services
-from web.app.services.utils.limit_request import get_user_type
 from web.app import limiter, LIMIT
+
 
 @limiter.exempt
 def index():
-    return render_template("index.html", alert=False)
+    return render_template('index.html')
  
 @limiter.exempt
 def login():
@@ -44,7 +47,7 @@ def login():
                 resp = jsonify({'login': True})
                 set_access_cookies(resp, access_token)
 
-                return resp, 200
+                return resp
 
             else:
                 return jsonify({'results': "Username or password incorrect!"})
@@ -55,7 +58,8 @@ def login():
 
 @limiter.exempt
 def logout():
-    resp = jsonify({'logout': True})
+    # TODO make logout unique for web and mobile
+    resp = make_response(render_template('index.html'))
     unset_jwt_cookies(resp)
     return resp, 200
 

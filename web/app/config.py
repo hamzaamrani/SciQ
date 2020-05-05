@@ -21,7 +21,7 @@ class Config(object):
 
     # configuration for cookie
     JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
-    JWT_ACCESS_COOKIE_PATH = '/submit_expression' # TODO modify
+    JWT_ACCESS_COOKIE_PATH = '/' # TODO modify
     JWT_REFRESH_COOKIE_PATH = '/token/refresh'
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_COOKIE_SECURE = False

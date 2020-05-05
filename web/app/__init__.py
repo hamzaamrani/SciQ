@@ -66,7 +66,7 @@ def create_app(config_name):
         view_func=user_api.login)
 
     app.add_url_rule("/logout",
-        methods=['POST'],
+        methods=['GET'],
         view_func=user_api.logout)
 
     app.add_url_rule("/signup",

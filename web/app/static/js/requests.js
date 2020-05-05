@@ -17,23 +17,41 @@ $(document).ready(function(){
                 data: JSON.stringify({'username' : username, 'password' : password }),
                 dataType: "json",
                 success: function(data) {
+
+                            console.log(data);
+
+                            if(data.login){
+                                window.location.replace("/logged_user");
+                            }
+
                             if(data.error){
                                 console.log("Error : " + data.error)
                                 $('#error_alert').text(data.error).show();
                                 $('#success_alert').hide();
                             }
-                            else
-                                if(data.results == "Username or password incorrect!"){
-                                    console.log("Error : " + data.results)
-                                    $('#error_alert').text(data.results).show();
-                                    $('#success_alert').hide(); 
-                                }
+
+                            if(data.results == "Username or password incorrect!"){
+                                console.log("Error : " + data.results)
+                                $('#error_alert').text(data.results).show();
+                                $('#success_alert').hide(); 
+                            }
                 },
+                /*
                 statusCode:{
                     200: function(){
                         window.location.replace("/logged_user")
+                    },
+                    401: function(data){
+                        console.log(data.responseJSON);
+                        $('#error_alert').text(data.results).show();
+                        $('#success_alert').hide();                       
+                    },
+                    400: function(data){
+                        $('#error_alert').text(data.error).show();
+                        $('#success_alert').hide();                       
                     }
                 },
+                */
                 error: function(err) {
                     console.log("General error"+ err);
                 }
@@ -86,15 +104,12 @@ $(document).ready(function(){
         
     });
 
+    /*
     $("#logoutButton").on("click", function(event){
         event.preventDefault();
         $.ajax({
             type: "POST",
             url: '/logout',
-            contentType: 'text/plain',
-            success: function(data){
-                window.location.replace("/")
-            },
             statusCode: {
                 200: function(){
                     window.location.replace("/")
@@ -105,5 +120,6 @@ $(document).ready(function(){
             }
         })
     });
+    */
 
 });

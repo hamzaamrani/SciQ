@@ -15,7 +15,6 @@ from flask_jwt_extended import jwt_optional, get_jwt_identity
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
-from web.app.services.utils.limit_request import get_user_type
 from web.app import limiter, LIMIT
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
