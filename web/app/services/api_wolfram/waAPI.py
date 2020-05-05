@@ -239,14 +239,20 @@ class Expression(object):
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
 
-    def compute_full_result(self, results):
+    def compute_full_result(self, results, output="plaintex"):
         for pod in results["pods"]:
             subpods = []
-            for subpod in pod["subpods"]:
-                if subpod["title"] != "":
-                    subpods.append({subpod["title"]: subpod["plaintext"]})
+            if isinstance(pod["subpods"], list):
+                for subpod in pod["subpods"]:
+                    if subpod["title"] != "":
+                        subpods.append({subpod["title"]: subpod[output]})
+                    else:
+                        subpods.append(subpod[output])
+            else:
+                if pod["subpods"]["title"] != "":
+                    subpods.append({pod["subpods"]["title"]: subpod[output]})
                 else:
-                    subpods.append(subpod["plaintext"])
+                    subpods.append(pod["subpods"][output])
             if pod["id"] != "Plot":
                 setattr(self, "" + pod["id"] + "", subpods)
 
