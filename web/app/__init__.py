@@ -2,19 +2,20 @@ import logging
 import os
 
 from flask import Flask, render_template, jsonify, request
-from flask_heroku import Heroku
+#from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from user_agents import parse
+from flask_jwt_extended import JWTManager
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
-LIMIT = "2 per hour"
+LIMIT = "1 per hour"
 
-heroku = Heroku()
+#heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
@@ -22,7 +23,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=[LIMIT]
 )
-
+jwt = JWTManager()
 
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
@@ -46,7 +47,8 @@ def create_app(config_name):
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
-    heroku.init_app(app)
+    #heroku.init_app(app)
+    jwt.init_app(app)
 
     from web.app.models import User
 
@@ -62,6 +64,10 @@ def create_app(config_name):
     app.add_url_rule("/login",
         methods=["POST"],
         view_func=user_api.login)
+
+    app.add_url_rule("/logout",
+        methods=['POST'],
+        view_func=user_api.logout)
 
     app.add_url_rule("/signup",
         methods=["POST"],

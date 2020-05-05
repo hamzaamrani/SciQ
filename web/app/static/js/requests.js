@@ -17,28 +17,25 @@ $(document).ready(function(){
                 data: JSON.stringify({'username' : username, 'password' : password }),
                 dataType: "json",
                 success: function(data) {
-                    if(data.error){
-                        console.log("Error : " + data.error)
-                        $('#error_alert').text(data.error).show();
-                        $('#success_alert').hide();
-                    }else{
-                        if(data.results == "Username or password incorrect!"){
-                            console.log("Error : " + data.results)
-                            $('#error_alert').text(data.results).show();
-                            $('#success_alert').hide(); 
-                        }else{
-                            console.log("Success! : " + data.results)
-                            console.log("Token: " + data.access_token)
-                            localStorage.setItem(
-                                'access_token',
-                                data.access_token
-                            )
-                            window.location.replace("/logged_user")
-                        }
+                            if(data.error){
+                                console.log("Error : " + data.error)
+                                $('#error_alert').text(data.error).show();
+                                $('#success_alert').hide();
+                            }
+                            else
+                                if(data.results == "Username or password incorrect!"){
+                                    console.log("Error : " + data.results)
+                                    $('#error_alert').text(data.results).show();
+                                    $('#success_alert').hide(); 
+                                }
+                },
+                statusCode:{
+                    200: function(){
+                        window.location.replace("/logged_user")
                     }
                 },
                 error: function(err) {
-                console.log("General error"+ err);
+                    console.log("General error"+ err);
                 }
             });
 
@@ -87,8 +84,26 @@ $(document).ready(function(){
             $('#success_alert_signup').hide(); 
         }
         
-    })
+    });
 
-
+    $("#logoutButton").on("click", function(event){
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: '/logout',
+            contentType: 'text/plain',
+            success: function(data){
+                window.location.replace("/")
+            },
+            statusCode: {
+                200: function(){
+                    window.location.replace("/")
+                }
+            },
+            error: function(data){
+                console.log("General error"+ data.error);
+            }
+        })
+    });
 
 });

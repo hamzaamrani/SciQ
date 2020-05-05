@@ -6,6 +6,14 @@ from flask import (
     request,
     jsonify
 )
+from flask import current_app as app
+from flask_jwt_extended import (
+    create_access_token, 
+    set_access_cookies, 
+    jwt_required, 
+    unset_jwt_cookies
+)
+
 import logging
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 import datetime
@@ -13,13 +21,12 @@ import datetime
 from web.app.services.web_services import user_services
 from web.app.services.utils.limit_request import get_user_type
 from web.app import limiter, LIMIT
-from flask import current_app as app
 
 @limiter.exempt
 def index():
     return render_template("index.html", alert=False)
-
-@limiter.exempt   
+ 
+@limiter.exempt
 def login():
     try:
         _json = request.json
@@ -32,15 +39,13 @@ def login():
             user_service = user_services.UserService()
             result = user_service.check_credentials(username, md5_password)
             if result:
-                payload = {
-                    "sub": username,
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=4),
-                }
-                access_token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS512').decode("utf-8")
-                logging.info("Token {} create con username {}".format(access_token, username))
-                return jsonify({"results": "Success", 
-                                "username": username,
-                                "access_token": access_token})
+                access_token = create_access_token(identity=username)
+
+                resp = jsonify({'login': True})
+                set_access_cookies(resp, access_token)
+
+                return resp, 200
+
             else:
                 return jsonify({'results': "Username or password incorrect!"})
         else:
@@ -48,6 +53,11 @@ def login():
     except ValueError as valerr:
         return jsonify({"error": valerr})
 
+@limiter.exempt
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200
 
 @limiter.exempt
 def signup():

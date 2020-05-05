@@ -17,7 +17,6 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/submit_expression.js') }}"></script> 
     <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/renderHelper.js') }}"></script> -->
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
     
 
@@ -62,42 +61,32 @@
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Log out</strong></a>
+                    <a class="nav-link" href="#" id="logoutButton"> <strong>Log out</strong></a>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <!-- Alert template; user can see alert only if there are messages from the server -->
-    <div class="container">
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-
 
     <div class="text-center">
         <div class="container container-fluid">
             <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
             <h1 style="padding-bottom: 10px;">Enter your expression</h1>
             <div class="container container-fluid">
-               <form class="enter-equation">
+                <form class="enter-equation" method="POST" action="/submit_expression">
                     <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" value="x^3 + x^2 + 4 = 0">
-                    <button type="button" id="search-button" aria-label="compute" class="btn-outline-success equals-key" title="Submit expression">
+                    <button type="submit" id="search-button" aria-label="compute" class="btn-outline-success equals-key" title="Submit expression">
                         <img src="{{ url_for('static', filename='images/done.svg') }}">   
                     </button>
                 </form>
             </div>
             {% if alert_limit is sameas true%}
-                <div class="alert alert-warning" role="alert" id="error_alert">
+                <div class="alert alert-warning" role="alert">
                    <p>Limit reached</p> 
                 </div>
             {% endif %}
+
         </div>
     </div>
-
 
     <div class="text-center" style="padding-bottom: 10px;">
         <div class="container container-fluid">
@@ -117,6 +106,23 @@
             </div>
         </div>
     </div>
+
+    <div id="result" class="container container-fluid response_global" style="padding-left: 5px; display: none;">
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p id="query" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="success" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="execution_time" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 
 

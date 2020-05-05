@@ -1,7 +1,3 @@
-from sqlalchemy import *
-from sqlalchemy import event
-from sqlalchemy.orm import *
-
 from web.app import db, ma
 
 class User(db.Model):
