@@ -18,7 +18,7 @@ def index():
 
 def login():
     try:
-        _json = request.get_json()
+        _json = request.get_json
         logging.info("Login JSON = " + str(_json))
         username = _json["username"]
         password = _json["password"]
@@ -33,7 +33,7 @@ def login():
         else:
             return jsonify({"error": "Missing data!"})
     except ValueError as valerr:
-        return jsonify({"error": valerr})
+        logging.info(str(valerr))
 
 
 def signup():
