@@ -19,10 +19,9 @@ def index():
 def login():
     try:
         _json = request.json
-        #logging.info("Login JSON = " + str(_json))
+        logging.info("Login JSON = " + str(_json))
         username = _json["username"]
         password = _json["password"]
-
         if username and password:
             md5_password = get_md5(password)
             user_service = user_services.UserService()
