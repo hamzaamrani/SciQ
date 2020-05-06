@@ -288,8 +288,8 @@ class Expression(object):
         json_object['partial_derivatives'] = self.partial_derivatives
         json_object['integral'] = self.integral
 
-        return json.dumps(json_object)
-
+        # return json.dumps(json_object)
+        return json_object
 
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):

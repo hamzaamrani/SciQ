@@ -54,9 +54,12 @@
                     <p class="res_title" style="vertical-align: middle;"> Execution Time : {{ response_obj.execution_time }} </p>
                 </div>
                 <div class="col-3">
-                    <form role="form" method="GET" action="{{ url_for('save_expression_to_db') }}">
+                    <!-- <form role="form" method="GET" action="{{ url_for('save_expression_to_db') }}">
                         <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
+                    </form> -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal">
+                        Save Expression
+                    </button>
                 </div>
             </div>
         </div>
@@ -253,6 +256,40 @@
         {% endif %}
     </div>
 
+    <!-- BEGIN SAVE expression Modal -->
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title" id="saveModalLabel">
+                Choose collection where to save the expression
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="btn-group" role="group" aria-label="Basic example" id="collection_name" name="collection_name">
+                    {% for collection in collections_names %}
+                        <button type="button" class="btn btn-pill btn-info">{{collection}}</button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <form role="form" method="GET" action="{{ url_for('save_expression_to_db') }}">
+                <button type="submit" class="btn btn-primary">Save</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+    </div>
+
+    <!-- END SAVE expression Modal -->
 </body>
 
 </html>
