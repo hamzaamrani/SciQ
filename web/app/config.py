@@ -48,6 +48,7 @@ class PreProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
+    JWT_COOKIE_SECURE = True
     
 
 
@@ -57,6 +58,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
+    JWT_COOKIE_SECURE = True
 
 
 config = {
