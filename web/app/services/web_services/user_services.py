@@ -44,8 +44,3 @@ class UserService:
         self.connection.commit()
         cursor.close()
         return True
-
-    # TODO
-    #def auth_encode():
-
-    #def auth_decode():
