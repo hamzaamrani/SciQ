@@ -19,6 +19,7 @@ def index():
 def login():
     try:
         if(request.is_json):
+            logging.info("Request.data = " + str(request.data))
             logging.info("Is json  = " + str(request.is_json))
             _json = request.json
             logging.info("Input type = " + type(_json))
@@ -36,7 +37,7 @@ def login():
             else:
                 return jsonify({"error": "Missing data!"})
         else:
-            return 404
+            return "Request was not JSON", 400
     except ValueError as valerr:
         logging.info("Errore porco schifo, err = " + str(valerr))
 
