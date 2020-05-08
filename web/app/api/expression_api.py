@@ -33,7 +33,11 @@ def submit_expression():
         )
     else:
         logging.info("Request from mobile")
-        response_obj = compute_expression(parsed).to_json
+        _json = request.get_json()
+        expression = _json["symbolic_expression"]
+        logging.info("Expression = " + expression)
+        parsed = parse_2_latex(expression)
+        response_obj = compute_expression(parsed).to_json()
         return jsonify({"results" : response_obj})
 
 
