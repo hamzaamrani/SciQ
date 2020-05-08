@@ -28,9 +28,9 @@ services:
       - type: bind
         source: ./web/migrations
         target: /usr/src/sciq/migrations
-      - type: volume
-        source: migrations-data
-        target: /usr/src/sciq/migrations
+      # - type: volume
+      #   source: migrations-data
+      #   target: /usr/src/sciq/migrations
   db:
     container_name: 'db'
     image: mysql:5.7

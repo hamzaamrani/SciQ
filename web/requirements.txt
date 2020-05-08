@@ -31,3 +31,4 @@ requests
 git+https://github.com/lark-parser/lark.git@master
 gunicorn
 user-agents
+Flask-Limiter
