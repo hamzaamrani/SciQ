@@ -36,22 +36,6 @@ $(document).ready(function(){
                                 $('#success_alert').hide(); 
                             }
                 },
-                /*
-                statusCode:{
-                    200: function(){
-                        window.location.replace("/logged_user")
-                    },
-                    401: function(data){
-                        console.log(data.responseJSON);
-                        $('#error_alert').text(data.results).show();
-                        $('#success_alert').hide();                       
-                    },
-                    400: function(data){
-                        $('#error_alert').text(data.error).show();
-                        $('#success_alert').hide();                       
-                    }
-                },
-                */
                 error: function(err) {
                     console.log("General error"+ err);
                 }
@@ -104,11 +88,12 @@ $(document).ready(function(){
         
     });
 
-    /*
+    
     $("#logoutButton").on("click", function(event){
         event.preventDefault();
+        console.log('click on log out');
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: '/logout',
             statusCode: {
                 200: function(){
@@ -120,6 +105,5 @@ $(document).ready(function(){
             }
         })
     });
-    */
-
+    
 });

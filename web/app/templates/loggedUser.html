@@ -17,6 +17,7 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
     
 
     <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
@@ -60,7 +61,7 @@
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}"> <strong>Log out</strong></a>
+                    <a class="nav-link" href="#" id="logoutButton"> <strong>Log out</strong></a>
                 </li>
             </ul>
         </div>
@@ -78,9 +79,9 @@
                     </button>
                 </form>
             </div>
-            {% if alert_limit is sameas true%}
+            {% if alert is sameas true%}
                 <div class="alert alert-warning" role="alert">
-                   <p>Limit reached</p> 
+                   <p>{{ error }}</p> 
                 </div>
             {% endif %}
 

@@ -104,8 +104,10 @@ def create_app(config_name):
         user_agent = parse(request.headers.get('User-Agent'))
         if(user_agent.is_pc):
             logging.info("handler limit request")
-            return render_template("loggedUser.html", alert_limit=True)
+            return render_template( "loggedUser.html", 
+                                    alert=True, 
+                                    error='Limit reached for a not logged user'), 429
         else:
-            return jsonify({'error': 'limit request'})
+            return jsonify({'error': 'limit request'}), 429
 
     return app

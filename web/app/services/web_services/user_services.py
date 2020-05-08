@@ -1,5 +1,7 @@
 import mysql.connector
 from flask import current_app
+import logging
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD, DB_CONFIG_PRE_PROD
 
@@ -32,7 +34,11 @@ class UserService:
         cursor.execute(query)
         results = [user for user in cursor]
         cursor.close()
-        return len(results) > 0
+        if len(results)>0:
+            id_user = results[0][0]
+        else:
+            id_user = 0
+        return len(results) > 0, id_user
 
     def signup(self, username, password):
         cursor = self.connection.cursor()

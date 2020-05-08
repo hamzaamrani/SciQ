@@ -16,6 +16,7 @@ from flask_jwt_extended import (
     jwt_optional,
     get_jwt_identity
 )
+from user_agents import parse
 
 import logging
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
@@ -40,11 +41,13 @@ def login():
         if username and password:
             md5_password = get_md5(password)
             user_service = user_services.UserService()
-            result = user_service.check_credentials(username, md5_password)
+            result, id_user = user_service.check_credentials(username, md5_password)
             if result:
-                access_token = create_access_token(identity=username)
+                payload = { 'username': username,
+                            'id_user': id_user}
+                access_token = create_access_token(identity=payload)
 
-                resp = jsonify({'login': True})
+                resp = jsonify({'login': True, 'access_token': access_token})
                 set_access_cookies(resp, access_token)
 
                 return resp
@@ -58,10 +61,9 @@ def login():
 
 @limiter.exempt
 def logout():
-    # TODO make logout unique for web and mobile
-    resp = make_response(render_template('index.html'))
+    resp = jsonify({'logout': True})
     unset_jwt_cookies(resp)
-    return resp, 200
+    return resp, 200       
 
 @limiter.exempt
 def signup():
@@ -100,4 +102,4 @@ def get_md5(password):
 
 @limiter.exempt
 def loggedUser():
-    return render_template("loggedUser.html", alert_limit=False)
+    return render_template("loggedUser.html", alert=False)

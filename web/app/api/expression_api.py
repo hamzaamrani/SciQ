@@ -28,16 +28,19 @@ def submit_expression():
             logging.info("Requests from Desktop")
             expression = request.form["symbolic_expression"]
             parsed = parse_2_latex(expression)
-            response_obj = compute_expression(parsed)        
+            response_obj = compute_expression(parsed)    
             return render_template(
                 "show_results.html",
                 query=expression,
                 response_obj=response_obj
             )
-        except:
-            return jsonify({
-                'error': 'something goes wrong'
-            })
+        except Exception as e: 
+            logging.info(e)
+            return render_template(
+                'loggedUser.html',
+                alert=True,
+                error='something goes wrong'
+            )
         
     else:
         logging.info("Request from mobile")
