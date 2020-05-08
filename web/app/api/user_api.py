@@ -18,21 +18,25 @@ def index():
 
 def login():
     try:
-        logging.info("Is json  = " + str(request.is_json))
-        _json = request.get_json()
-        logging.info("Login JSON = " + str(_json))
-        username = _json["username"]
-        password = _json["password"]
-        if username and password:
-            md5_password = get_md5(password)
-            user_service = user_services.UserService()
-            result = user_service.check_credentials(username, md5_password)
-            if result:
-                return jsonify({'results': "Success", "username": username})
+        if(request.is_json):
+            logging.info("Is json  = " + str(request.is_json))
+            _json = request.json
+            logging.info("Input type = " + type(_json))
+            logging.info("Login JSON = " + str(_json))
+            username = _json["username"]
+            password = _json["password"]
+            if username and password:
+                md5_password = get_md5(password)
+                user_service = user_services.UserService()
+                result = user_service.check_credentials(username, md5_password)
+                if result:
+                    return jsonify({'results': "Success", "username": username})
+                else:
+                    return jsonify({'results': "Username or password incorrect!"})
             else:
-                return jsonify({'results': "Username or password incorrect!"})
+                return jsonify({"error": "Missing data!"})
         else:
-            return jsonify({"error": "Missing data!"})
+            return 404
     except ValueError as valerr:
         logging.info("Errore porco schifo, err = " + str(valerr))
 
