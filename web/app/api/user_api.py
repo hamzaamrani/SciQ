@@ -18,7 +18,7 @@ def index():
 
 def login():
     try:
-        logging.info("Is json  = " + request.is_json)
+        logging.info("Is json  = " + str(request.is_json))
         _json = request.get_json()
         logging.info("Login JSON = " + str(_json))
         username = _json["username"]
