@@ -91,7 +91,7 @@ def create_app(config_name):
 
     app.add_url_rule(
         "/save_expression_to_db",
-        methods=["GET"],
+        methods=["POST"],
         view_func=expression_api.save_expression_to_db
     )
 
