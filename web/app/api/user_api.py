@@ -1,10 +1,8 @@
 import hashlib
+import logging
+import secrets
 
-from flask import (
-    flash,
-    render_template,
-    request,
-)
+from flask import flash, render_template, request, jsonify, redirect, url_for
 
 from web.app.services.web_services import user_services
 
@@ -68,6 +66,38 @@ def get_md5(password):
 def loggedUser():
     global username_global
     return render_template("loggedUser.html", name=username_global)
+
+
+def add_application():
+    userid = request.get_json()["userid"]
+    appid = request.get_json()["appid"]
+    appname = request.get_json()["appname"]
+    result = user_services.UserService().add_application(
+        userid, appid, appname
+    )
+    logging.info(request.get_json())
+    logging.info(result)
+    return jsonify(
+        result=result,
+        msg="Application created! You can now use your AppID "
+        + appid
+        + " to request an API without limitations"
+        if result
+        else "AppID already taken! Refresh the page",
+        error=True if not result else False,
+    )
+
+
+def get_applications():
+    userid = request.args.get("userid")
+    result = user_services.UserService().get_applications(userid)
+    logging.info(request.get_json())
+    logging.info(result)
+    return render_template("applications.html")
+
+
+def get_appid():
+    return jsonify(success=True, appid=secrets.token_urlsafe(16))
 
 
 def developer():

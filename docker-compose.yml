@@ -17,11 +17,11 @@ services:
       always
     networks: 
       - backend
-    #volumes:
+    volumes:
       # volume for mapping host migrations folder to container 
-      #- type: bind
-        #source: ./web/migrations
-        #target: /usr/src/sciq/web/migrations
+      - type: bind
+        source: ./web/migrations
+        target: /usr/src/sciq/web/migrations
 
   db:
     container_name: 'db'

@@ -80,8 +80,24 @@ def create_app(config_name):
         "/developer", methods=["GET"], view_func=user_api.developer
     )
 
-    app.add_url_rule("/api/v1/parser", methods=["get"], view_func=exp2json)
+    app.add_url_rule(
+        "/applications",
+        methods=["GET"],
+        view_func=user_api.get_applications,
+    )
 
-    app.add_url_rule("/api/v1/solver", methods=["get"], view_func=solve_exp)
+    app.add_url_rule(
+        "/applications/add",
+        methods=["POST"],
+        view_func=user_api.add_application,
+    )
+
+    app.add_url_rule(
+        "/api/v1/appid", methods=["GET"], view_func=user_api.get_appid
+    )
+
+    app.add_url_rule("/api/v1/parser", methods=["GET"], view_func=exp2json)
+
+    app.add_url_rule("/api/v1/solver", methods=["GET"], view_func=solve_exp)
 
     return app

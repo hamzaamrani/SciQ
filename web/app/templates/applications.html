@@ -25,14 +25,6 @@
 
     <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
     <script>
-        $.ajax({
-            url: "/api/v1/appid",
-            method: 'GET',
-            dataType: 'json', // added data type
-            success: function (res) {
-                $("#appid").val(res.appid).attr("readonly", true);
-            }
-        });
         $(document).ready(function () {
             $("#submit_app").on("click", function (event) {
                 event.preventDefault();

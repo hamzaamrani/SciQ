@@ -24,4 +24,6 @@ class Applications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     appid = db.Column(db.String(128), index=True, unique=True, nullable=False)
     name = db.Column(db.String(128), index=True, unique=False, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
+    username_fk = db.Column(
+        db.Integer, db.ForeignKey("user.id"), index=True
+    )

@@ -7,15 +7,28 @@ from werkzeug.utils import secure_filename
 from web.app import limiter
 from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
+from web.app.services.web_services.user_services import UserService
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
-@limiter.limit("200 per day;50 per hour")
+def rate_limit_from_config():
+    appid = request.args.get("appid")
+    username = request.args.get("username")
+    if appid and username:
+        return True
+    else:
+        return False
+
+
+@limiter.limit("1 per day", exempt_when=rate_limit_from_config)
 def solve_exp():
     exp = request.args.get("expression")
     pods_format = request.args.get("output")
     output_result = request.args.get("result")
+    appid = request.args.get("appid")
+    userid = request.args.get("userid")
+    logging.info(UserService().check_appid(userid, appid))
     parsed = exp2latex(exp)
     solved = compute_expression(
         parsed, pods_format=pods_format, output_result=output_result
