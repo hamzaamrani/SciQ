@@ -1,7 +1,6 @@
 $(document).ready(function(){
     
 
-
     // On login click
     $("#submit_login").on("click", function(event){
         event.preventDefault();
