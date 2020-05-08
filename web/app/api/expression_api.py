@@ -3,6 +3,7 @@ import os
 
 from flask import current_app, flash, jsonify, render_template, request
 from werkzeug.utils import secure_filename
+from user_agents import parse
 
 from web.app import limiter
 from web.app.api.parser_api import exp2latex
@@ -37,19 +38,29 @@ def solve_exp():
 
 
 def submit_expression():
-    expression = request.form["symbolic_expression"]
-    parsed = exp2latex(expression)
-    response_obj = compute_expression(parsed)
-    return render_template(
-        "show_results.html",
-        alert=False,
-        query=expression,
-        response_obj=response_obj,
-    )
+    user_agent = parse(request.headers.get("User-Agent"))
+    if user_agent.is_pc:
+        logging.info("Requests from Desktop")
+        expression = request.form["symbolic_expression"]
+        parsed = exp2latex(expression)
+        response_obj = compute_expression(parsed)
+        return render_template(
+            "show_results.html",
+            alert=False,
+            query=expression,
+            response_obj=response_obj,
+        )
+    else:
+        logging.info("Request from mobile")
+        _json = request.get_json()
+        expression = _json["symbolic_expression"]
+        logging.info("Expression = " + expression)
+        parsed = exp2latex(expression)
+        response_obj = compute_expression(parsed).to_json()
+        return jsonify({"results": response_obj})
 
 
 def send_file():
-    logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
@@ -65,6 +76,7 @@ def send_file():
 # GET NAMES OF UPLOADED FILES
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
+
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):

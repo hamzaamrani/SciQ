@@ -7,6 +7,8 @@ from flask import Markup
 import logging
 import requests
 from PIL import Image
+import json
+
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -320,6 +322,26 @@ class Expression(object):
             "Partial derivatives: {}".format(self.partial_derivatives)
         )
         logging.info("Integral: {}".format(self.integral))
+
+    def to_json(self):
+        """
+        Convert expression object to json
+        """
+        expression = {}
+        expression['success'] = self.success
+        expression['query'] = self.query
+        expression['execution_time'] = self.execution_time
+        expression['plots'] = self.plots
+        expression['alternate_forms'] = self.alternate_forms
+        expression['results'] = self.results
+        expression['solutions'] = self.solutions
+        expression['symbolic_solutions'] = self.symbolic_solutions
+        expression['limits'] = self.limits
+        expression['partial_derivatives'] = self.partial_derivatives
+        expression['integral'] = self.integral
+
+        return json.dumps(expression)
+
 
 
 def compute_expression(

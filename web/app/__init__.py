@@ -33,13 +33,13 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
-        "/usr/src/sciq/web/app/static/uploads",
+        "/web/app/static/uploads",
     )
     logging.info(
         "Upload folder = "
         + os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
-            "/usr/src/sciq/web/app/static/uploads",
+            "/web/app/static/uploads",
         )
     )
 
@@ -59,7 +59,9 @@ def create_app(config_name):
     app.add_url_rule("/signup", methods=["POST"], view_func=user_api.signup)
 
     app.add_url_rule(
-        "/loggedUser", methods=["GET"], view_func=user_api.loggedUser
+        "/math",
+        methods=["GET"],
+        view_func=user_api.math
     )
 
     app.add_url_rule(
@@ -91,6 +93,8 @@ def create_app(config_name):
         methods=["POST"],
         view_func=user_api.add_application,
     )
+    
+    #app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
 
     app.add_url_rule(
         "/api/v1/appid", methods=["GET"], view_func=user_api.get_appid
