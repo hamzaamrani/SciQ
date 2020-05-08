@@ -29,3 +29,4 @@ pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
 user_agents
+Flask-Limiter

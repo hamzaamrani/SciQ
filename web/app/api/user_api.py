@@ -108,10 +108,10 @@ def add_application():
 
 def get_applications():
     userid = request.args.get("userid")
-    result = user_services.UserService().get_applications(userid)
+    results = user_services.UserService().get_applications(userid)
     logging.info(request.get_json())
-    logging.info(result)
-    return render_template("applications.html")
+    logging.info(results)
+    return render_template("applications.html", results=results)
 
 
 def get_appid():

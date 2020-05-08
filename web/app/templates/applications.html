@@ -26,33 +26,6 @@
     <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
     <script>
         $(document).ready(function () {
-            $("#submit_app").on("click", function (event) {
-                event.preventDefault();
-                console.log($("#appid").val())
-                $.ajax({
-                    url: "/applications/add",
-                    method: 'POST',
-                    data: JSON.stringify({ "userid": 1, "appid": $("#appid").val(), "appname": $("#appname").val() }),
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function (data) {
-                        console.log(data)
-                        if (data.error == true) {
-                            console.log("Error : " + data.msg)
-                            $('#app_created').modal('toggle');
-                            $('#error_alert').text(data.msg).show();
-                            $('#success_alert').hide();
-                        } else {
-                            console.log("Success! : " + data.result)
-                            $('#app_created').modal('toggle');
-                            $('#success_alert').text(data.msg + "\nYou will be redirected in 3 sec").show();
-                            $('#error_alert').hide();
-                            timer = setTimeout(function () {
-                                window.location = '/'
-                            }, 3000);
-                        }
-                    },
-                });
-            });
         })
     </script>
 
@@ -86,41 +59,27 @@
         </div>
     </nav>
 
-    <div class="modal fade" id="app_created" tabindex="-1" role="dialog" aria-labelledby="app_created"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Result</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="success_alert" class="alert alert-success" role="alert" style="display: none;">
-                    </div>
-                    <div id="error_alert" class="alert alert-danger" role="alert" style="display: none;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
-        <form>
-            <div class="form-group row">
-                <label for="appid" class="col-sm-2 col-form-label">Application ID</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="appid" value="">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="appname" class="col-sm-2 col-form-label">Application name</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="appname" placeholder="Application name" required>
-                </div>
-            </div>
-            <button id="submit_app" type="button" class="btn btn-primary">Submit</button>
-        </form>
+        <div class="col-8 mx-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Application name</th>
+                        <th scope="col">Application ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ result[1] }}</td>
+                        <td>{{ result[0] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <footer class="page-footer " id="page-footer">
