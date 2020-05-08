@@ -74,5 +74,5 @@ def get_md5(password):
     return md5_password
 
 
-def logged_user():
-    return render_template("logged_user.html")
+def math():
+    return render_template("math.html")
