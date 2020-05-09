@@ -28,17 +28,20 @@ class UserService:
         cursor.close()
         return len(results) > 0
 
-    def check_credentials(self, username, password):
+    def check_credentials(self, username, password, id=False):
         cursor = self.connection.cursor()
         query = f"SELECT * FROM user WHERE username='{username}' and password='{password}'"
         cursor.execute(query)
         results = [user for user in cursor]
         cursor.close()
-        if len(results)>0:
-            id_user = results[0][0]
+        if id:
+            if len(results)>0:
+                id_user = results[0][0]
+            else:
+                id_user = 0
+            return len(results) > 0, id_user
         else:
-            id_user = 0
-        return len(results) > 0, id_user
+            return len(results) > 0
 
     def signup(self, username, password):
         cursor = self.connection.cursor()

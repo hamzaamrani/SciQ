@@ -38,14 +38,13 @@ def index():
 def login():
     try:
         _json = request.json
-        #logging.info("Login JSON = " + str(_json))
         username = _json["username"]
         password = _json["password"]
 
         if username and password:
             md5_password = get_md5(password)
             user_service = user_services.UserService()
-            result, id_user = user_service.check_credentials(username, md5_password)
+            result, id_user = user_service.check_credentials(username, md5_password, id=True)
             if result:
                 payload = { 'username': username,
                             'id_user': id_user}
@@ -53,9 +52,6 @@ def login():
 
                 resp = make_response(jsonify({  'login':True, 
                                                 'access_token':access_token}))
-
-                #resp = jsonify({'login': True, 'access_token': access_token})
-                #set_access_cookies(resp, access_token)
 
                 resp.set_cookie(    key='access_token_cookie',
                                     value=access_token,
