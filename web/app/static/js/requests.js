@@ -1,7 +1,5 @@
 $(document).ready(function(){
     
-
-
     // On login click
     $("#submit_login").on("click", function(event){
         event.preventDefault();
@@ -17,24 +15,21 @@ $(document).ready(function(){
                 data: JSON.stringify({'username' : username, 'password' : password }),
                 dataType: "json",
                 success: function(data) {
-
-                            console.log(data);
-
-                            if(data.login){
-                                window.location.replace("/logged_user");
-                            }
-
-                            if(data.error){
-                                console.log("Error : " + data.error)
-                                $('#error_alert').text(data.error).show();
-                                $('#success_alert').hide();
-                            }
-
-                            if(data.results == "Username or password incorrect!"){
-                                console.log("Error : " + data.results)
-                                $('#error_alert').text(data.results).show();
-                                $('#success_alert').hide(); 
-                            }
+                    
+                    if(data.error){
+                        console.log("Error : " + data.error)
+                        $('#error_alert').text(data.error).show();
+                        $('#success_alert').hide();
+                    }else{
+                        if(data.results == "Username or password incorrect!"){
+                            console.log("Error : " + data.results)
+                            $('#error_alert').text(data.results).show();
+                            $('#success_alert').hide(); 
+                        }else{
+                            console.log("Success! : " + data.results)
+                            window.location.replace("/math")
+                        }
+                    }
                 },
                 error: function(err) {
                     console.log("General error"+ err);
@@ -88,7 +83,6 @@ $(document).ready(function(){
         
     });
 
-    
     $("#logoutButton").on("click", function(event){
         event.preventDefault();
         console.log('click on log out');

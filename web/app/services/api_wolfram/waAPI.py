@@ -9,6 +9,7 @@ import requests
 from PIL import Image
 import json
 
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
@@ -287,6 +288,7 @@ class Expression(object):
         expression['integral'] = self.integral
 
         return json.dumps(expression)
+
 
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):

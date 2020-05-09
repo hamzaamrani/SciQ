@@ -6,7 +6,7 @@ from flask import (
     flash,
     jsonify,
     render_template,
-    request,
+    request
 )
 from werkzeug.utils import secure_filename
 from user_agents import parse
@@ -43,10 +43,12 @@ def submit_expression():
             )
     else:
         logging.info("Request from mobile")
-        #response_obj = compute_expression(parsed, "mobile").to_json
-        return jsonify({"results" : "ok"})
-
-
+        _json = request.get_json()
+        expression = _json["symbolic_expression"]
+        logging.info("Expression = " + expression)
+        parsed = parse_2_latex(expression)
+        response_obj = compute_expression(parsed).to_json()
+        return jsonify({"results" : response_obj})
 
 def parse_2_latex(expression):
     parser = ASCIIMath2Tex(
@@ -57,7 +59,6 @@ def parse_2_latex(expression):
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
 def send_file():
-    logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
@@ -74,6 +75,7 @@ def send_file():
 @limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
+
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):
