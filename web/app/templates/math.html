@@ -21,6 +21,9 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+    
 
     <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
     <script>
@@ -42,42 +45,34 @@
         }
     </script>
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
-
 </head>
 
 
-<body>
+<body onLoad="checkCookie();">
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-md">
-        <a class="navbar-brand" href="#"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" /> </a>
+        <a class="navbar-brand" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" /> </a>
         <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
         <div class="collapse navbar-collapse" id="main-navigation">
             <ul class="navbar-nav">
+                <li class="nav-item" id="li_developer" style="display: none;">   
+                    <a class="nav-link" href="#"> <strong>Developer</strong></a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#AsciMathInfo"> <strong>Read Me!</strong></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Log out</strong></a>
+                <li class="nav-item" id="li_logout" style="display: none;">
+                    <a class="nav-link" href="#" id="logoutButton"> <strong>Log out</strong></a>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <!-- Alert template; user can see alert only if there are messages from the server -->
-    <div class="container">
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-
 
     <div class="text-center">
         <div class="container container-fluid">
@@ -85,17 +80,20 @@
             <h1 style="padding-bottom: 10px;">Enter your expression</h1>
             <div class="container container-fluid">
                 <form class="enter-equation" method="POST" action="/submit_expression">
-                    <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" value="sum_(i=1)^n i^3=((n(n+1))/2)^2">
-                    <button type="submit" id="search-button" aria-label="compute" href="#submit-equation" class="btn-outline-success equals-key" title="Submit expression">
-                    <img src="{{ url_for('static', filename='images/done.svg') }}">   
+                    <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off" class="use-keyboard-input input-equation" value="x^3 + x^2 + 4 = 0">
+                    <button type="submit" id="search-button" aria-label="compute" class="btn-outline-success equals-key" title="Submit expression">
+                        <img src="{{ url_for('static', filename='images/done.svg') }}">   
                     </button>
                 </form>
             </div>
+            {% if alert is sameas true%}
+                <div class="alert alert-warning" role="alert">
+                   <p>{{ error }}</p> 
+                </div>
+            {% endif %}
+
         </div>
     </div>
-
-
-
 
     <div class="text-center" style="padding-bottom: 10px;">
         <div class="container container-fluid">
@@ -115,6 +113,23 @@
             </div>
         </div>
     </div>
+
+    <div id="result" class="container container-fluid response_global" style="padding-left: 5px; display: none;">
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p id="query" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="success" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="execution_time" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 
 

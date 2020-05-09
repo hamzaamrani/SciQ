@@ -1,35 +1,62 @@
 import hashlib
-import logging
+import jwt
 from flask import (
     flash,
     render_template,
     request,
-    make_response,
-    jsonify
+    jsonify,
+    make_response
 )
+from flask import current_app as app
+from flask_jwt_extended import (
+    create_access_token, 
+    jwt_required, 
+    unset_jwt_cookies,
+    jwt_optional,
+    get_jwt_identity
+)
+from user_agents import parse
+
+import logging
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+import datetime
 
 from web.app.services.web_services import user_services
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+from web.app import limiter, LIMIT
 
-
+@jwt_optional
+@limiter.exempt
 def index():
-    return render_template("index.html", alert=False)
-
-
+    if get_jwt_identity() == None:
+        return render_template('index.html')
+    else:
+        return render_template('math.html')
+ 
+@limiter.exempt
 def login():
     try:
         if(request.is_json):
-            logging.info("Request.data = " + str(request.data))
-            _json = request.get_json()
-            logging.info("Login JSON = " + str(_json))
+            _json = request.json
             username = _json["username"]
             password = _json["password"]
+    
             if username and password:
                 md5_password = get_md5(password)
                 user_service = user_services.UserService()
-                result = user_service.check_credentials(username, md5_password)
+                result, id_user = user_service.check_credentials(username, md5_password, id=True)
                 if result:
-                    return jsonify({'results': "Success", "username": username})
+                    payload = { 'username': username,
+                                'id_user': id_user}
+                    access_token = create_access_token(identity=payload)
+    
+                    resp = make_response(jsonify({  'results': 'success', 
+                                                    'access_token':access_token}))
+    
+                    resp.set_cookie(    key='access_token_cookie',
+                                        value=access_token,
+                                        path='/',
+                                        httponly=False)
+                    return resp
                 else:
                     return jsonify({'results': "Username or password incorrect!"})
             else:
@@ -37,9 +64,15 @@ def login():
         else:
             return "Request was not JSON", 400
     except ValueError as valerr:
-        logging.info("Errore porco schifo, err = " + str(valerr))
+        return jsonify({"error": valerr})
 
+@limiter.exempt
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200       
 
+@limiter.exempt
 def signup():
     try:
         _json = request.json
@@ -66,13 +99,13 @@ def signup():
     except ValueError as valerr:
         return jsonify({"error" : valerr})
 
-
 def get_md5(password):
     m = hashlib.md5()
     m.update(password.encode())
     md5_password = m.hexdigest()
     return md5_password
 
-
+@limiter.exempt
 def math():
-    return render_template("math.html")
+    return render_template("math.html", alert=False)
+    

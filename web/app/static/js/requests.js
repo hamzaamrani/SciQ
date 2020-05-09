@@ -1,6 +1,5 @@
 $(document).ready(function(){
     
-
     // On login click
     $("#submit_login").on("click", function(event){
         event.preventDefault();
@@ -16,6 +15,7 @@ $(document).ready(function(){
                 data: JSON.stringify({'username' : username, 'password' : password }),
                 dataType: "json",
                 success: function(data) {
+                    
                     if(data.error){
                         console.log("Error : " + data.error)
                         $('#error_alert').text(data.error).show();
@@ -32,7 +32,7 @@ $(document).ready(function(){
                     }
                 },
                 error: function(err) {
-                console.log("General error"+ err);
+                    console.log("General error"+ err);
                 }
             });
 
@@ -81,8 +81,23 @@ $(document).ready(function(){
             $('#success_alert_signup').hide(); 
         }
         
-    })
+    });
 
-
-
+    $("#logoutButton").on("click", function(event){
+        event.preventDefault();
+        console.log('click on log out');
+        $.ajax({
+            type: "GET",
+            url: '/logout',
+            statusCode: {
+                200: function(){
+                    window.location.replace("/")
+                }
+            },
+            error: function(data){
+                console.log("General error"+ data.error);
+            }
+        })
+    });
+    
 });

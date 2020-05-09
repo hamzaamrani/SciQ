@@ -30,5 +30,6 @@ pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
 gunicorn
-user_agents
 Flask-Limiter
+user-agents
+flask-jwt-extended

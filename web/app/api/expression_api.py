@@ -10,27 +10,37 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from user_agents import parse
+from flask_jwt_extended import jwt_optional, get_jwt_identity
 
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
+from web.app import limiter, LIMIT
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
-
+@jwt_optional
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
 def submit_expression():
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
-        logging.info("Requests from Desktop")
-        expression = request.form["symbolic_expression"]
-        parsed = parse_2_latex(expression)
-        response_obj = compute_expression(parsed)
-        return render_template(
-            "show_results.html",
-            alert=False,
-            query=expression,
-            response_obj=response_obj,
-        )
+        try:
+            logging.info("Requests from Desktop")
+            expression = request.form["symbolic_expression"]
+            parsed = parse_2_latex(expression)
+            response_obj = compute_expression(parsed)    
+            return render_template(
+                "show_results.html",
+                query=expression,
+                response_obj=response_obj
+            )
+        except Exception as e: 
+            logging.info(e)
+            return render_template(
+                'math.html',
+                alert=True,
+                error='something goes wrong'
+            )
     else:
         logging.info("Request from mobile")
         _json = request.get_json()
@@ -40,14 +50,14 @@ def submit_expression():
         response_obj = compute_expression(parsed).to_json()
         return jsonify({"results" : response_obj})
 
-
 def parse_2_latex(expression):
     parser = ASCIIMath2Tex(
         asciimath_grammar, inplace=True, parser="lalr", lexer="contextual"
     )
     return parser.asciimath2tex(expression)
 
-
+@jwt_optional
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
 def send_file():
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
@@ -62,6 +72,7 @@ def send_file():
 
 
 # GET NAMES OF UPLOADED FILES
+@limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
 
