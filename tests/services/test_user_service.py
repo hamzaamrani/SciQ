@@ -63,7 +63,7 @@ class TestCase(unittest.TestCase):
         right_query = f"SELECT * FROM user WHERE username='{username_test}' and password='{psw_test}'"
 
         self.assertTrue(
-            self.user_service.check_credentials(username_test, psw_test)[0]
+            self.user_service.check_credentials(username_test, psw_test, id=False)[0]
         )
         cursor.execute.assert_called_once()
         cursor.execute.assert_called_with(right_query)
@@ -83,7 +83,7 @@ class TestCase(unittest.TestCase):
         cursor.execute.side_effect = None
 
         self.assertFalse(
-            self.user_service.check_credentials(username_test, psw_test)[0]
+            self.user_service.check_credentials(username_test, psw_test, id=False)[0]
         )
         cursor.execute.assert_called_once()
         cursor.execute.assert_called_with(right_query)

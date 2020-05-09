@@ -106,6 +106,6 @@ def get_md5(password):
     return md5_password
 
 @limiter.exempt
-def loggedUser():
+def math():
     return render_template("math.html", alert=False)
     
