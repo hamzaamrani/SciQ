@@ -16,7 +16,6 @@ return "";
 
 function checkCookie(){
     cookie = getCookie('access_token_cookie');
-    console.log("Valore cookie: " + cookie);
     if (cookie == "") {
         $('#li_logout').hide(); 
         $('#li_developer').hide();
