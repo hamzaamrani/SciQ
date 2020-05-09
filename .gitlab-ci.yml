@@ -90,3 +90,6 @@ deploy-dev:
       - gem install dpl
   script:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
+  only:
+      - sprint2
+      - master
