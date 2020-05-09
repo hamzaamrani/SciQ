@@ -5,7 +5,8 @@ from flask import (
     render_template,
     request,
     jsonify,
-    make_response
+    make_response,
+    Response
 )
 from flask import current_app as app
 from flask_jwt_extended import (
@@ -25,10 +26,13 @@ import datetime
 from web.app.services.web_services import user_services
 from web.app import limiter, LIMIT
 
-
+@jwt_optional
 @limiter.exempt
 def index():
-    return render_template('index.html')
+    if get_jwt_identity() == None:
+        return render_template('index.html')
+    else:
+        return render_template('loggedUser.html')
  
 @limiter.exempt
 def login():
@@ -47,9 +51,16 @@ def login():
                             'id_user': id_user}
                 access_token = create_access_token(identity=payload)
 
-                resp = jsonify({'login': True, 'access_token': access_token})
-                set_access_cookies(resp, access_token)
+                resp = make_response(jsonify({  'login':True, 
+                                                'access_token':access_token}))
 
+                #resp = jsonify({'login': True, 'access_token': access_token})
+                #set_access_cookies(resp, access_token)
+
+                resp.set_cookie(    key='access_token_cookie',
+                                    value=access_token,
+                                    path='/',
+                                    httponly=False)
                 return resp
 
             else:

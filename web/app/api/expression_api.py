@@ -41,7 +41,6 @@ def submit_expression():
                 alert=True,
                 error='something goes wrong'
             )
-        
     else:
         logging.info("Request from mobile")
         #response_obj = compute_expression(parsed, "mobile").to_json
