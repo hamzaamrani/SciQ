@@ -7,7 +7,7 @@ class User(db.Model):
         db.String(128), index=True, unique=True, nullable=False
     )
     password = db.Column(db.String(128), nullable=False)
-    token_cose = db.Column(db.String(128))
+    token = db.Column(db.String(128))
 
     def __repr__(self):
         return "<User {}>".format(self.username)
