@@ -30,7 +30,7 @@ def index():
     if get_jwt_identity() == None:
         return render_template('index.html')
     else:
-        return render_template('loggedUser.html')
+        return render_template('math.html')
  
 @limiter.exempt
 def login():

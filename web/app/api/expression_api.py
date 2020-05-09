@@ -37,7 +37,7 @@ def submit_expression():
         except Exception as e: 
             logging.info(e)
             return render_template(
-                'loggedUser.html',
+                'math.html',
                 alert=True,
                 error='something goes wrong'
             )
