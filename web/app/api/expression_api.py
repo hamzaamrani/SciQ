@@ -11,6 +11,7 @@ from flask import (
 from werkzeug.utils import secure_filename
 from user_agents import parse
 from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_limiter.util import get_remote_address
 
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
@@ -22,6 +23,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
 def submit_expression():
+    logging.info("Identita': " + str(get_jwt_identity()) + " da IP: " + str(get_remote_address()))
     user_agent = parse(request.headers.get('User-Agent'))
     if(user_agent.is_pc):
         try:
