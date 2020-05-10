@@ -15,7 +15,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 LIMIT = "1 per hour"
 
-#heroku = Heroku()
+heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
@@ -47,7 +47,7 @@ def create_app(config_name):
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
-    #heroku.init_app(app)
+    heroku.init_app(app)
     jwt.init_app(app)
 
     from web.app.models import User
@@ -102,7 +102,7 @@ def create_app(config_name):
             logging.info("handler limit request")
             return render_template( "math.html", 
                                     alert=True, 
-                                    error='Limit reached for a not logged user'), 429
+                                    error='Limit reached for a not logged user')
         else:
             return jsonify({'error': 'limit request'}), 429
 
