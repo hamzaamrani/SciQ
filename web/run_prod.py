@@ -2,9 +2,9 @@ from web.app import create_app
 
 from os import environ
 
-if environ.get('STEP') == 'staging':
+if environ.get("STEP") == "staging":
     app = create_app("pre_prod")
-else: 
+else:
     app = create_app("production")
 
 if __name__ == "__main__":

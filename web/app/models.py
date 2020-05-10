@@ -1,4 +1,5 @@
-from web.app import db, ma
+from web.app import db
+
 
 class User(db.Model):
     __tablename__ = "user"
@@ -12,6 +13,10 @@ class User(db.Model):
     def __repr__(self):
         return "<User {}>".format(self.username)
 
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ("username", "password")
+
+class Applications(db.Model):
+    __tablename__ = "application"
+    id = db.Column(db.Integer, primary_key=True)
+    appid = db.Column(db.String(128), index=True, unique=True, nullable=False)
+    name = db.Column(db.String(128), index=True, unique=False, nullable=False)
+    username_fk = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
