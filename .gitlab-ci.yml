@@ -30,7 +30,8 @@ build-webapp:
   script:
     - echo 'build webapp'
     - docker-compose build
-
+  only:
+    - master
 
 build-test-env:
   stage: build
@@ -40,15 +41,17 @@ build-test-env:
       - docker pull $DOCKER_DEV_ENV_IMAGE || true
       - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
       - docker push $DOCKER_DEV_ENV_IMAGE
-
-
+  only:
+    - master
+    
 test-db:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
   script:
     - echo 'test db'
     - python3 -m unittest discover tests.db -v
-
+  only:
+    - master
 
 test-parser:
   stage: test
@@ -56,15 +59,17 @@ test-parser:
   script:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
+  only:
+    - master
 
-    
 test-api-wolfram:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
   script:
     - echo 'test api wolfram'
     - python3 -m unittest discover tests.api_wolfram -v
-
+  only:
+    - master
 
 test-services:
   stage: test
@@ -72,7 +77,8 @@ test-services:
   script:
     - echo 'test services'
     - python3 -m unittest discover tests.services -v
-
+  only:
+    - master
 
 deploy-prod:
   stage: deploy
@@ -83,6 +89,8 @@ deploy-prod:
       - gem install dpl
   script:
       - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
+  only:
+      - master
 
 
 deploy-dev:
@@ -96,5 +104,4 @@ deploy-dev:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
       - sprint2
-      
-        
+      - master

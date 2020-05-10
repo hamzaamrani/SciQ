@@ -3,33 +3,24 @@ import os
 
 from flask import current_app, flash, jsonify, render_template, request
 from werkzeug.utils import secure_filename
-from user_agents import parse
 
-from web.app import limiter
+from flask_jwt_extended import get_jwt_identity, jwt_optional
+from flask_limiter.util import get_remote_address
+from user_agents import parse
+from web.app import LIMIT, limiter
 from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
-from web.app.services.web_services.user_services import UserService
+from web.app.services.utils.utils import exempt_limit, get_limit
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
-def rate_limit_from_config():
-    appid = request.args.get("appid")
-    username = request.args.get("username")
-    if appid and username:
-        return True
-    else:
-        return False
-
-
-@limiter.limit("1 per day", exempt_when=rate_limit_from_config)
+@jwt_optional
+@limiter.limit(get_limit, exempt_when=exempt_limit)
 def solve_exp():
     exp = request.args.get("expression")
     pods_format = request.args.get("output")
     output_result = request.args.get("result")
-    appid = request.args.get("appid")
-    userid = request.args.get("userid")
-    logging.info(UserService().check_appid(userid, appid))
     parsed = exp2latex(exp)
     solved = compute_expression(
         parsed, pods_format=pods_format, output_result=output_result
@@ -37,19 +28,32 @@ def solve_exp():
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
 
 
+@jwt_optional
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def submit_expression():
+    logging.info(
+        "Identita': "
+        + str(get_jwt_identity())
+        + " da IP: "
+        + str(get_remote_address())
+    )
     user_agent = parse(request.headers.get("User-Agent"))
     if user_agent.is_pc:
-        logging.info("Requests from Desktop")
-        expression = request.form["symbolic_expression"]
-        parsed = exp2latex(expression)
-        response_obj = compute_expression(parsed)
-        return render_template(
-            "show_results.html",
-            alert=False,
-            query=expression,
-            response_obj=response_obj,
-        )
+        try:
+            logging.info("Requests from Desktop")
+            expression = request.form["symbolic_expression"]
+            parsed = exp2latex(expression)
+            response_obj = compute_expression(parsed)
+            return render_template(
+                "show_results.html",
+                query=expression,
+                response_obj=response_obj,
+            )
+        except Exception as e:
+            logging.info(e)
+            return render_template(
+                "math.html", alert=True, error="something goes wrong"
+            )
     else:
         logging.info("Request from mobile")
         _json = request.get_json()
@@ -60,6 +64,8 @@ def submit_expression():
         return jsonify({"results": response_obj})
 
 
+@jwt_optional
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
 def send_file():
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
@@ -74,6 +80,7 @@ def send_file():
 
 
 # GET NAMES OF UPLOADED FILES
+@limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
 

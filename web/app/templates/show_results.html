@@ -16,12 +16,14 @@
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
 
 </head>
 
 <!-- BODY-->
 
-<body>
+<body onLoad="checkCookie();">
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-md">
@@ -34,8 +36,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('math')}}"> <strong> Math again </strong> </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}"> <strong>Log Out</strong></a>
+                <li class="nav-item" id="li_developer">
+                    <a class="nav-link" href="#"> <strong>Developer</strong></a>
+                </li>
+                <li class="nav-item" id="li_logout" style="display: none;">
+                    <a class="nav-link" href="#" id="logoutButton"> <strong>Log out</strong></a>
                 </li>
             </ul>
         </div>

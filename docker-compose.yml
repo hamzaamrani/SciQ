@@ -3,8 +3,8 @@ services:
   web:
     container_name: 'web'
     build: 
-      context: .
-      dockerfile: ./web/Dockerfile
+      context: $PWD
+      dockerfile: $PWD/web/Dockerfile
     image: web
     links: 
       - db
@@ -28,8 +28,6 @@ services:
     image: mysql:5.7
     ports:
       - "3306:3306"  
-    command:
-      --innodb-use-native-aio=0
     environment:
       MYSQL_DATABASE: sciq
       MYSQL_USER: user

@@ -40,7 +40,7 @@
                 $.ajax({
                     url: "/applications/add",
                     method: 'POST',
-                    data: JSON.stringify({ "userid": 1, "appid": $("#appid").val(), "appname": $("#appname").val() }),
+                    data: JSON.stringify({ "appid": $("#appid").val(), "appname": $("#appname").val() }),
                     contentType: 'application/json;charset=UTF-8',
                     success: function (data) {
                         console.log(data)

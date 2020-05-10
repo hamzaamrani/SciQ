@@ -28,5 +28,7 @@ mysql-connector
 pillow
 requests
 git+https://github.com/lark-parser/lark.git@master
-user_agents
+gunicorn
 Flask-Limiter
+user-agents
+flask-jwt-extended

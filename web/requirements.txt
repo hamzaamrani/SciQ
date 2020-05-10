@@ -32,3 +32,4 @@ git+https://github.com/lark-parser/lark.git@master
 gunicorn
 Flask-Limiter
 user-agents
+flask-jwt-extended

@@ -12,6 +12,23 @@ class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # configuration for manage token in cookie and json body
+    JWT_TOKEN_LOCATION = ['cookies', 'json']
+    JWT_ACCESS_TOKEN_EXPIRES = False
+    JWT_IDENTITY_CLAIM = 'identity'
+    JWT_USER_CLAIMS = 'user_claims'
+    JWT_ERROR_MESSAGE_KEY = 'error'
+
+    # configuration for cookie
+    JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
+    JWT_ACCESS_COOKIE_PATH = '/' # TODO modify
+    JWT_REFRESH_COOKIE_PATH = '/token/refresh'
+    JWT_COOKIE_CSRF_PROTECT = False
+    JWT_COOKIE_SECURE = False
+    JWT_SESSION_COOKIE = True
+
+    # configuration for json
+    JWT_JSON_KEY = 'access_token'
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -31,6 +48,7 @@ class PreProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
+    JWT_COOKIE_SECURE = False
     
 
 
@@ -40,6 +58,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
+    JWT_COOKIE_SECURE = False
 
 
 config = {

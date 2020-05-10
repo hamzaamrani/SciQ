@@ -1,5 +1,7 @@
 import mysql.connector
 from flask import current_app
+import logging
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD, DB_CONFIG_PRE_PROD
 
@@ -26,13 +28,20 @@ class UserService:
         cursor.close()
         return len(results) > 0
 
-    def check_credentials(self, username, password):
+    def check_credentials(self, username, password, id=False):
         cursor = self.connection.cursor()
         query = f"SELECT * FROM user WHERE username='{username}' and password='{password}'"
         cursor.execute(query)
         results = [user for user in cursor]
         cursor.close()
-        return len(results) > 0
+        if id:
+            if len(results)>0:
+                id_user = results[0][0]
+            else:
+                id_user = 0
+            return len(results) > 0, id_user
+        else:
+            return len(results) > 0
 
     def signup(self, username, password):
         cursor = self.connection.cursor()
