@@ -2,7 +2,7 @@ import logging
 import os
 
 from flask import Flask, render_template, jsonify, request
-#from flask_heroku import Heroku
+from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
