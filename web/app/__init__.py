@@ -97,12 +97,15 @@ def create_app(config_name):
 
     @app.errorhandler(429)
     def reached_limit_requests(error):
+        logging.info("Content type of request: " + request.headers["Content-Type"])
+        complete = request.stream.read()
+        logging.info("Stream read: " + str(complete))
         user_agent = parse(request.headers.get('User-Agent'))
         if(user_agent.is_pc):
             logging.info("handler limit request")
             return render_template( "math.html", 
                                     alert=True, 
-                                    error='Limit reached for a not logged user')
+                                    error='Limit reached for a not logged user'), 429
         else:
             return jsonify({'error': 'limit request'}), 429
 
