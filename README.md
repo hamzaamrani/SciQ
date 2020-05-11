@@ -19,7 +19,7 @@ To perform test:
 If there are changes in code `docker-compose up --build`
 
 ## High-level architecture
-![](images/HighLevelSchema.png)
+![](images/sciq.jpg)
 
 ### REST API handle:
     * Sign-in
