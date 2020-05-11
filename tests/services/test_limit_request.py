@@ -13,7 +13,7 @@ class TestLimiRequest(unittest.TestCase):
 
     @patch('web.app.api.expression_api.compute_expression')
     @patch('web.app.api.expression_api.render_template')
-    @patch('web.app.api.expression_api.parse_2_latex')
+    @patch('web.app.api.expression_api.exp2latex')
     def test_limit(self, mock_parse_2_latex, mock_compute_expression, mock_render_template):
         mock_parse_2_latex.return_value = " "
         mock_compute_expression.return_value = " "
@@ -39,7 +39,7 @@ class TestLimiRequest(unittest.TestCase):
     
     @patch('web.app.api.expression_api.compute_expression')
     @patch('web.app.api.expression_api.render_template')
-    @patch('web.app.api.expression_api.parse_2_latex')
+    @patch('web.app.api.expression_api.exp2latex')
     def test_no_limit(self, mock_parse_2_latex, mock_compute_expression, mock_render_template):
         with self.app.app_context():
             access_token = create_access_token(identity={'username': 'prova', 'id_user': 1})

@@ -1,8 +1,8 @@
 import logging
 import os
 
-from flask import Flask, jsonify, render_template, request
-from flask_heroku import Heroku
+from flask import Flask, jsonify, render_template
+#from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from user_agents import parse
 
 from web.app.services.utils.utils import custom_key_func
 
@@ -21,11 +20,12 @@ limiter = Limiter(key_func=custom_key_func)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
+from web.app.api.error_handler import reached_limit_requests
 from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
-heroku = Heroku()
+#heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
@@ -53,7 +53,7 @@ def create_app(config_name):
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
-    heroku.init_app(app)
+    #heroku.init_app(app)
     jwt.init_app(app)
 
     migrate.init_app(app, db)
@@ -106,22 +106,6 @@ def create_app(config_name):
 
     app.add_url_rule("/api/v1/solver", methods=["GET"], view_func=solve_exp)
 
-    @app.errorhandler(429)
-    def reached_limit_requests(error):
-        _ = request.stream.read()
-        user_agent = parse(request.headers.get("User-Agent"))
-        logging.info(request.full_path)
-        if user_agent.is_pc and "api" not in request.full_path:
-            logging.info("handler limit request")
-            return (
-                render_template(
-                    "math.html",
-                    alert=True,
-                    error="Limit reached for a not logged user",
-                ),
-                429,
-            )
-        else:
-            return jsonify({"error": "limit request"}), 429
+    app.register_error_handler(429, reached_limit_requests)
 
     return app
