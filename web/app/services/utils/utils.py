@@ -11,7 +11,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 def custom_key_func():
     if request.headers.getlist("X-Forwarded-For"):
         logging.info(request.headers.getlist("X-Forwarded-For"))
-        return request.headers.getlist("X-Forwarded-For")[0]
+        return str(request.headers.getlist("X-Forwarded-For")[0])
     else:
         return get_remote_address()
 
