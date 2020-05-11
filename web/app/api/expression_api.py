@@ -137,11 +137,8 @@ def save_expression_to_db():
     )
 
     # Save current expression's id in personalized collection
-    # users.find({'id_user': '001', 'collections.defaults' : { '$exists': 'true' } }).count() == 0:
-    # collection = 'collections.' + request.form["collection_name"] + ".ids"
 
     if not( request.form["name_collection"] == "default"):
-        logging.info( request.form["name_collection"] )
         collection = 'collections.' + request.form["name_collection"] + ".ids"
         users.update( 
             {'id_user' : '001'}, 
@@ -150,9 +147,7 @@ def save_expression_to_db():
     
     logging.info("Saving expression to db has been completed with success!")
 
-    # return "okk"
-    a = users.find()
-    return str( list( a ) )
+    return "okk"
 
 def get_collections_names():
     from web.app import mongo
@@ -172,3 +167,20 @@ def get_collections_names():
         collections_infos = ['Default collection for expressions.']
     
     return collections_names,collections_infos
+
+def get_expressions(collection_name):
+    from web.app import mongo
+    users = mongo.db.users
+
+    logging.info("Get expressions")
+
+    id_user = "001" # qui id_user andrà letto dai token
+    user = users.find( {'id_user' : id_user} )[0]
+    collection_ids = user["collections"][collection_name]["ids"]
+
+    collection_expressions = []
+    for collection_id in collection_ids:
+        tmp = users.find({"id_user":"001"}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]
+        collection_expressions += [tmp]
+    
+    return collection_expressions

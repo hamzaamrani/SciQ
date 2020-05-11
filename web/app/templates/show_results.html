@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-3">
                     {% if response_obj.success %}
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal" id="saveButton">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
                             Save Expression
                         </button>
                     {% endif %}
@@ -297,9 +297,9 @@
                       <div class="list-group" id="list-tab" name="list-tab" role="tablist">
                         {% for collection in collections_names %}
                             {% if collection == "default" %}
-                                <a class="list-group-item list-group-item-action active" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                <a class="list-group-item list-group-item-action btn-success active" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
                             {% else %}  
-                                <a class="list-group-item list-group-item-action" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                <a class="list-group-item list-group-item-action btn-success" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
                             {% endif %}
                         {% endfor %}
                         </div>
@@ -320,8 +320,8 @@
                 <div class="row">
                     <div class="col-8"></div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="save_expression()">Save</button>
+                        <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" onclick="save_expression()">Save</button>
                     </div>
                 </div>
               <!-- </form> -->
@@ -330,8 +330,31 @@
           </div>
         </div>
     </div>
-
     <!-- END SAVE expression Modal -->
+
+    <footer class="page-footer " id="page-footer">
+        <div class="container ">
+            <div class="row ">
+                <div class="col-lg-8 col-md-8 col-sm-12 ">
+                    <h6 class="text-uppercase font-weight-bold " style="color: green; ">Additional Information</h6>
+                    <p>Our project aim to develop an application that allow the recognition and further the resolution of symbolic mathematical formulas.</p>
+                    <p>The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.</p>
+                    <p>The resolution of the formulas happen through the use of Wolfram|Alpha's API.</p>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 ">
+                    <h6 class="text-uppercase font-weight-bold " style="color: green; ">Contact</h6>
+                    <p>Università degli studi di Milano Bicocca
+                        <br/>info[at]SciQ.com
+                        <br/>c.carta4[at]campus[dot]unimib[dot]it
+                        <br/>s.ventura6[at]campus[dot]unimib[dot]it
+                        <br/>h.amrani[at]campus[dot]unimib[dot]it
+                        <br/>f.belotti8[at]campus[dot]unimib[dot]it
+                        <br/>g.scarpellini[at]campus[dot]unimib[dot]it
+                    </p>
+                </div>
+            </div>
+            <div class="footer-copyright text-center ">© 2020 Copyright: SciQ.com</div>
+    </footer>
 </body>
 
 </html>

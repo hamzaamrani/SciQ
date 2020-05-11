@@ -266,6 +266,7 @@
         padding-top: 10px;
         padding-left: 5px;
         padding-right: 5px;
+        padding-bottom: 5px;
         position: relative;
         width: 100%;
         bottom: 0;
@@ -392,4 +393,10 @@
     .res_title {
         font-weight: bold;
         color: black;
+    }
+
+    .list-group-item.list-group-item-action.active{
+        background-color: rgb(79, 165, 39);
+        border-color: rgb(79, 165, 39);
+        color: white;  
     }
