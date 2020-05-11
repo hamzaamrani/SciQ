@@ -108,6 +108,7 @@ def create_app(config_name):
 
     @app.errorhandler(429)
     def reached_limit_requests(error):
+        _ = request.stream.read()
         user_agent = parse(request.headers.get("User-Agent"))
         logging.info(request.full_path)
         if user_agent.is_pc and "api" not in request.full_path:
