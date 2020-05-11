@@ -12,16 +12,18 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from user_agents import parse
 
+from web.app.services.utils.utils import custom_key_func
+
 LIMIT = "1 per day"
-limiter = Limiter(key_func=get_remote_address, default_limits=[LIMIT])
+limiter = Limiter(key_func=custom_key_func)
 
 # Definitions of route API
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
 from web.app.config import config
-
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 
 heroku = Heroku()
 db = SQLAlchemy()

@@ -4,9 +4,16 @@ from collections.abc import Iterable
 from flask import request
 
 from flask_jwt_extended import get_jwt_identity
+from flask_limiter.util import get_remote_address
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
+def custom_key_func():
+    if request.headers.getlist("X-Forwarded-For"):
+        logging.info(request.headers.getlist("X-Forwarded-For"))
+        return request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        return get_remote_address()
 
 def get_limit():
     appid = request.args.get("appid")
