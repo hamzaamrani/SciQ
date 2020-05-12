@@ -53,6 +53,7 @@ The exposed APIs are:
   * expression: expression to be translated from ASCIIMath to LaTeX
   * appid (optional): the user AppID
   
+
   As a result one gets `{"latex": "x_{2}^{3} + \\log x"}`
 
 * **/api/v1/solver**
@@ -100,7 +101,7 @@ One can also call an API and pass parameters as query parameters (**query parame
     "http://0.0.0.0:5000/api/v1/parser?expression=x_2%5E3+%2B+logx&appid=your_appid"
   ```
 
-An **error** will be returned if the expression parameter is missing: `{"error": "no expression to parse"}`
+An **error** will be returned if the expression parameter is missing: `{"error": "no expression to parse"}`  
 A **429 error** will be returned if one reaches the limit request
     
 
