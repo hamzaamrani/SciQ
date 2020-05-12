@@ -21,12 +21,18 @@
     <script type="text/javascript">
         function save_expression(){
             var col_name = document.getElementsByClassName("list-group-item list-group-item-action active").item(0).innerHTML;
-            
+            var public = false;
+
+            if ($('#publicCheck').is(":checked")) {
+                public = true;
+            }
+
             $.ajax({
                 type: "POST",
                 url: "/save_expression_to_db",
                 data: {
-                    name_collection: col_name
+                    name_collection: col_name,
+                    public: public
                 },
             });
 
@@ -316,9 +322,15 @@
                       </div>
                     </div>
                 </div>
-                  
+                
+                <br>
                 <div class="row">
-                    <div class="col-8"></div>
+                    <div class="col-8">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="publicCheck" value="public">
+                            <label class="form-check-label" for="publicCheck">Make public</label>
+                          </div>
+                    </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-success" onclick="save_expression()">Save</button>

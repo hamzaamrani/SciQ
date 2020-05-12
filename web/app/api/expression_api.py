@@ -122,7 +122,8 @@ def save_expression_to_db():
     id_obj = ObjectId()
     json_obj = expression_obj.to_json()
     json_obj['_id'] = id_obj
-    # logging.info( id_obj )
+    json_obj['public'] = request.form["public"]
+
     
     # Add current expression and add to default collection
     users.update(
