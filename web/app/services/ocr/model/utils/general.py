@@ -189,7 +189,7 @@ class Progbar(object):
 
     def _get_values_sum(self):
         info = ""
-        for name, value in self.sum_values.items():
+        for name, value in list(self.sum_values.items()):
             info += ' - %s: %.4f' % (name, value[0] / max(1, value[1]))
         return info
 

@@ -69,9 +69,9 @@ class BaseModel(object):
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 if clip > 0: # gradient clipping if clip is positive
-                    grads, vs     = zip(*optimizer.compute_gradients(loss))
+                    grads, vs     = list(zip(*optimizer.compute_gradients(loss)))
                     grads, gnorm  = tf.clip_by_global_norm(grads, clip)
-                    self.train_op = optimizer.apply_gradients(zip(grads, vs))
+                    self.train_op = optimizer.apply_gradients(list(zip(grads, vs)))
                 else:
                     self.train_op = optimizer.minimize(loss)
 
@@ -221,7 +221,7 @@ class BaseModel(object):
         sys.stdout.write("\r")
         sys.stdout.flush()
         msg = " - ".join(["{} {:04.2f}".format(k, v)
-                for k, v in scores.items()])
+                for k, v in list(scores.items())])
         self.logger.info("- Eval: {}".format(msg))
 
         return scores

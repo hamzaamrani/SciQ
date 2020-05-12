@@ -114,7 +114,7 @@ class DataGenerator(object):
             data_buckets[s] += [(img_path, formula_id)]
 
         # write the rest of the buffer
-        for k, v in data_buckets.iteritems():
+        for k, v in data_buckets.items():
             for (img_path, formula_id) in v:
                 bucketed_dataset += [(img_path, formula_id)]
 
@@ -144,8 +144,8 @@ class DataGenerator(object):
         try:
             formula_raw = self._formulas[int(formula_id)]
         except KeyError:
-            print("Tried to access id {} but only {} formulas".format(
-                formula_id, len(self._formulas)))
+            print(("Tried to access id {} but only {} formulas".format(
+                formula_id, len(self._formulas))))
             print("Possible fix: mismatch between matching file and formulas")
             raise KeyError
 

@@ -18,7 +18,7 @@ def get_max_shape(arrays):
         images: list of arrays
 
     """
-    shapes = map(lambda x: list(x.shape), arrays)
+    shapes = [list(x.shape) for x in arrays]
     ndim = len(arrays[0].shape)
     max_shape = []
     for d in range(ndim):
@@ -184,7 +184,7 @@ def convert_to_png(formula, dir_output, name, quality=100, density=200,
 
         return "{}.png".format(name)
 
-    except Exception, e:
+    except Exception as e:
         print(e)
         clean(dir_output, name)
         return False
@@ -224,7 +224,7 @@ def build_images(formulas, dir_images, quality=100, density=200, down_ratio=2,
 
     pool   = Pool(n_threads)
     result = pool.map(build_image, [(idx, form, dir_images, quality, density,
-            down_ratio, buckets) for idx, form in formulas.items()
+            down_ratio, buckets) for idx, form in list(formulas.items())
             if idx not in existing_idx])
     pool.close()
     pool.join()

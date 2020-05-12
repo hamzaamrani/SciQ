@@ -13,6 +13,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_DEV")
@@ -54,4 +55,9 @@ DB_CONFIG_PROD = {
     "host": "eu-cdbr-west-02.cleardb.net",
     "port": "3306",
     "database": "heroku_62e37664534fe76",
+}
+
+OCR_CONFIG = {
+    'model_dir': "./data/ocr/",
+    'drive_id': '1pK9mMjQpkwxeoievIM2Vzoo8NDvTZZdW'
 }

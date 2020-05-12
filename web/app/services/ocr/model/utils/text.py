@@ -4,15 +4,16 @@ from collections import Counter
 
 class Vocab(object):
 
-    def __init__(self, config):
+    def __init__(self, config, vocab_path):
         self.config = config
+        self.vocab_path = vocab_path
         self.load_vocab()
 
 
     def load_vocab(self):
         special_tokens = [self.config.unk, self.config.pad, self.config.end]
-        self.tok_to_id = load_tok_to_id(self.config.path_vocab, special_tokens)
-        self.id_to_tok = {idx: tok for tok, idx in self.tok_to_id.iteritems()}
+        self.tok_to_id = load_tok_to_id(self.vocab_path, special_tokens)
+        self.id_to_tok = {idx: tok for tok, idx in self.tok_to_id.items()}
         self.n_tok = len(self.tok_to_id)
 
         self.id_pad = self.tok_to_id[self.config.pad]
@@ -40,7 +41,7 @@ def get_form_prepro(vocab, id_unk):
 
     def f(formula):
         formula = formula.strip().split(' ')
-        return map(lambda t: get_token_id(t), formula)
+        return [get_token_id(t) for t in formula]
 
     return f
 
@@ -88,8 +89,8 @@ def build_vocab(datasets, min_count=10):
             except Exception:
                 print(formula)
                 raise Exception
-    vocab = [tok for tok, count in c.items() if count >= min_count]
-    print("- done. {}/{} tokens added to vocab.".format(len(vocab), len(c)))
+    vocab = [tok for tok, count in list(c.items()) if count >= min_count]
+    print(("- done. {}/{} tokens added to vocab.".format(len(vocab), len(c))))
     return sorted(vocab)
 
 
@@ -113,7 +114,7 @@ def write_vocab(vocab, filename):
                 f.write("{}\n".format(word))
             else:
                 f.write(word)
-    print("- done. {} tokens".format(i+1))
+    print(("- done. {} tokens".format(i+1)))
 
 
 def pad_batch_formulas(formulas, id_pad, id_end, max_len=None):
@@ -130,7 +131,7 @@ def pad_batch_formulas(formulas, id_pad, id_end, max_len=None):
 
     """
     if max_len is None:
-        max_len = max(map(lambda x: len(x), formulas))
+        max_len = max([len(x) for x in formulas])
 
     batch_formulas = id_pad * np.ones([len(formulas), max_len+1],
             dtype=np.int32)
@@ -150,5 +151,5 @@ def load_formulas(filename):
         for idx, line in enumerate(f):
             formulas[idx] = line.strip()
 
-    print("Loaded {} formulas from {}".format(len(formulas), filename))
+    print(("Loaded {} formulas from {}".format(len(formulas), filename)))
     return formulas
