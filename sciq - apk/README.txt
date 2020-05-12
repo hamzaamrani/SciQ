@@ -1,0 +1,1 @@
+Each time there is an enhancement of the application or there is a feature added please re-build application and generate APK with version
