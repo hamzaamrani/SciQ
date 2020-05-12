@@ -241,7 +241,7 @@ class Expression(object):
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
 
-    def compute_full_result(self, results, output="plaintex"):
+    def compute_full_result(self, results, output="plaintext"):
         for pod in results["pods"]:
             subpods = []
             if isinstance(pod["subpods"], list):
