@@ -18,9 +18,23 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 @jwt_optional
 @limiter.limit(get_limit, exempt_when=exempt_limit)
 def solve_exp():
-    exp = request.args.get("expression")
-    pods_format = request.args.get("output")
-    output_result = request.args.get("result")
+    if request.is_json:
+        json = request.get_json()
+        exp = None
+        pods_format = None
+        output_result = None
+        if "expression" in json:
+            exp = request.get("expression")
+        if "output" in json:
+            pods_format = request.args.get("output")
+        if "result" in json:
+            output_result = request.args.get("result")
+    else:
+        exp = request.args.get("expression")
+        pods_format = request.args.get("output")
+        output_result = request.args.get("result")
+    if exp is None:
+        return jsonify({"error": "no expression to parse"})
     parsed = exp2latex(exp)
     solved = compute_expression(
         parsed, pods_format=pods_format, output_result=output_result
@@ -65,7 +79,7 @@ def submit_expression():
 
 
 @jwt_optional
-@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() != None)
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def send_file():
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)

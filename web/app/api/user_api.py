@@ -140,7 +140,7 @@ def add_application():
         result=result,
         msg="Application created! You can now use your AppID "
         + appid
-        + " to request an API without limitations"
+        + " to request an API with partial limitations"
         if result
         else "AppID already taken! Refresh the page",
         error=True if not result else False,

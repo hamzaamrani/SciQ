@@ -8,12 +8,14 @@ from flask_limiter.util import get_remote_address
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
+
 def custom_key_func():
     if request.headers.getlist("X-Forwarded-For"):
         logging.info(request.headers.getlist("X-Forwarded-For"))
         return str(request.headers.getlist("X-Forwarded-For")[0])
     else:
         return get_remote_address()
+
 
 def get_limit():
     appid = request.args.get("appid")
