@@ -1,12 +1,12 @@
 package com.example.sciq.Login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sciq.HomeActivity;
 import com.example.sciq.R;
@@ -32,22 +32,22 @@ public class SplashActivity extends AppCompatActivity {
 
         //If user is logged check if the old token is already valid
 
-        if(logged){
+        if (logged) {
             Long last_login = user_logged.getLong("lastLogin", MODE_PRIVATE);
             Long this_login = new Date().getTime();
             //Check how much time passed since last login
             Long diff = this_login - last_login;
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffDays = diff / (24 * 60 * 60 * 1000);
-            if(!(diffDays> 0) && !(diffHours>8)){
+            if (!(diffDays > 0) && !(diffHours > 8)) {
                 Log.d("UserLogged", "Last login within eight hours!");
                 // Token is still valid
                 destination_activity = HomeActivity.class;
-            }else{
+            } else {
                 Log.d("UserLogged", "Token expired");
                 destination_activity = SignupActivity.class;
             }
-        }else{
+        } else {
             Log.d("UserLogged", "User has not logged in yet");
             destination_activity = SignupActivity.class;
         }
@@ -57,7 +57,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 Intent next_activity = new Intent(SplashActivity.this, destination_activity);
                 //Set flags to avoid user get back to this activity with OS back button
-                next_activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                next_activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(next_activity);
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();

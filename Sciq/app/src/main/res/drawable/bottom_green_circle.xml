@@ -19,6 +19,6 @@
         </shape>
     </item>
     <item>
-        <shape android:shape="rectangle"/>
+        <shape android:shape="rectangle" />
     </item>
 </layer-list>

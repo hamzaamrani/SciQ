@@ -22,7 +22,6 @@
             android:layout_gravity="top" />
 
 
-
         <com.google.android.material.card.MaterialCardView
             android:layout_margin="10dp"
             android:padding="5dp"
@@ -57,7 +56,7 @@
                     android:textSize="20sp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:padding="10dp"/>
+                    android:padding="10dp" />
 
 
                 <LinearLayout
@@ -76,16 +75,14 @@
                         android:hint="Username"
                         android:inputType="text"
                         android:selectAllOnFocus="true"
-                        android:layout_gravity="center_horizontal"
-                        />
+                        android:layout_gravity="center_horizontal" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/passwordLayout_signup"
                         android:layout_width="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_height="wrap_content"
-                        app:passwordToggleEnabled="true"
-                        >
+                        app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/input_password_signup"
@@ -101,8 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_height="wrap_content"
-                        app:passwordToggleEnabled="true"
-                        >
+                        app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/input_password_signup2"
@@ -127,11 +123,10 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:background="@drawable/button_selector"
                     android:padding="10dp"
-                    android:layout_margin="20dp"/>
+                    android:layout_margin="20dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
 
 
         <ImageView
@@ -140,12 +135,9 @@
             android:layout_height="50dp"
             android:layout_gravity="bottom"
             android:src="@drawable/bottom_green_circle"
-            android:scaleType="centerInside"/>
+            android:scaleType="centerInside" />
 
     </GridLayout>
-
-
-
 
 
 </LinearLayout>

@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".Login.SplashActivity"
+        <activity
+            android:name=".Login.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.SignupActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".HomeActivity"/>
+        <activity
+            android:name=".Login.SignupActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".HomeActivity" />
     </application>
 </manifest>

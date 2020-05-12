@@ -1,12 +1,12 @@
 package com.example.sciq.Login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sciq.R;
 import com.example.sciq.Utilities.AsyncTasks.LoginAsyncTask;
@@ -33,20 +33,18 @@ public class SignupActivity extends AppCompatActivity implements ReturnString {
         password_2_signup = findViewById(R.id.input_password_signup2);
 
 
-
-
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(password_1_signup.getText().equals(password_2_signup.getText())){
+                if (password_1_signup.getText().equals(password_2_signup.getText())) {
                     Toast.makeText(getApplicationContext(), "Password must be the same!", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     JSONObject postDataParams = new JSONObject();
-                    try{
+                    try {
                         postDataParams.put("username", username_signup.getText().toString().trim());
                         postDataParams.put("password1", password_1_signup.getText().toString().trim());
                         postDataParams.put("password2", password_2_signup.getText().toString().trim());
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     loginAsyncTask = new LoginAsyncTask(SignupActivity.this);

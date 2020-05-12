@@ -25,14 +25,13 @@ import java.util.Iterator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class RequestHandler
-{
+public class RequestHandler {
     static final String COOKIES_HEADER = "Set-Cookie";
-    static final String COOKIE  = "Cookie";
+    static final String COOKIE = "Cookie";
     static CookieManager msCookieManager = new CookieManager();
 
 
-    public static String sendPost(String r_url , JSONObject postDataParams) throws Exception {
+    public static String sendPost(String r_url, JSONObject postDataParams) throws Exception {
         URL url = new URL(r_url);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -44,55 +43,32 @@ public class RequestHandler
         conn.setDoOutput(true);
         System.out.println("JSONObject within request handler" + postDataParams);
         OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(os, StandardCharsets.UTF_8));
-        //writer.write(encodeParams(postDataParams));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
         os.write(postDataParams.toString().getBytes("UTF-8"));
-        //writer.flush();
-        //writer.close();
         os.close();
 
         //READING RESPONSE
-        int responseCode=conn.getResponseCode(); // To Check for 200
+        int responseCode = conn.getResponseCode(); // To Check for 200
         System.out.println(responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in=new BufferedReader( new InputStreamReader(conn.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuffer sb = new StringBuffer();
-            String line="";
-            while((line = in.readLine()) != null) {
+            String line = "";
+            while ((line = in.readLine()) != null) {
                 sb.append(line);
                 break;
             }
             in.close();
             return sb.toString();
-        }else{
+        } else {
             String err;
-            if (responseCode == 404){
+            if (responseCode == 404) {
                 err = "Connection Error!";
                 return err;
-            }
-            else{
+            } else {
                 err = "Username or Password invalid";
                 return err;
             }
         }
-    }
-
-    private static String encodeParams(JSONObject params) throws Exception {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        Iterator<String> itr = params.keys();
-        while(itr.hasNext()){
-            String key= itr.next();
-            Object value = params.get(key);
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode(key, "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
-        }
-        return result.toString();
     }
 }
