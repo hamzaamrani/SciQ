@@ -2,7 +2,6 @@ package com.example.sciq.Login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -46,11 +45,11 @@ public class SplashActivity extends AppCompatActivity {
                 destination_activity = HomeActivity.class;
             }else{
                 Log.d("UserLogged", "Token expired");
-                destination_activity = LoginActivity.class;
+                destination_activity = SignupActivity.class;
             }
         }else{
             Log.d("UserLogged", "User has not logged in yet");
-            destination_activity = LoginActivity.class;
+            destination_activity = SignupActivity.class;
         }
 
         new Handler().postDelayed(new Runnable() {

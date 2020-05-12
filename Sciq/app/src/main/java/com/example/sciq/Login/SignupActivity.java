@@ -11,11 +11,10 @@ import android.widget.Toast;
 import com.example.sciq.R;
 import com.example.sciq.Utilities.AsyncTasks.LoginAsyncTask;
 import com.example.sciq.Utilities.Interfaces.ReturnString;
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity implements ReturnString {
+public class SignupActivity extends AppCompatActivity implements ReturnString {
 
     private Button signup;
     private LoginAsyncTask loginAsyncTask;
@@ -50,8 +49,8 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    loginAsyncTask = new LoginAsyncTask(LoginActivity.this);
-                    loginAsyncTask.delegate = LoginActivity.this;
+                    loginAsyncTask = new LoginAsyncTask(SignupActivity.this);
+                    loginAsyncTask.delegate = SignupActivity.this;
                     loginAsyncTask.execute("http://sciq-unimib-dev.herokuapp.com/signup", postDataParams);
                 }
             }
