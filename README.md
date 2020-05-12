@@ -15,6 +15,10 @@ To perform test run `docker-compose up -d --build && docker exec web python -m u
 
 If there are changes in code re-run `docker-compose up --build`
 
+## High-level pipeline
+
+![](images/sciq-gitlab-docker-cicd.png)
+
 ## High-level architecture
 ![](images/sciq.png)
 
