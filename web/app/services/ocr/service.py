@@ -10,7 +10,7 @@ import zipfile
 import os
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
-class OCRService():
+class _OCRService():
     """
     Service serving OCR capability
     """

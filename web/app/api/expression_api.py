@@ -47,6 +47,7 @@ def send_file():
     with open(save_path, "r") as f:
         pass
     flash("File uploaded succesfully!")
+    #TODO: Use OCR to get latex and predict using submit_expression
     return "200"
 
 
