@@ -106,7 +106,8 @@ One can also call an API and pass parameters as query parameters (**query parame
   ```
 
 An **error** will be returned if the expression parameter is missing: `{"error": "no expression to parse"}`  
-A **429 error** will be returned if one reaches the limit request
+A **429 error** will be returned if one reaches the limit request  
+Those curl requests have been tested on Ubuntu 20.04 (for Windows users: **get Linux!**)
     
 
 
