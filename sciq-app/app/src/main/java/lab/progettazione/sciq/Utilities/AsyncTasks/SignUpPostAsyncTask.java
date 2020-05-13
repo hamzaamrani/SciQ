@@ -9,13 +9,13 @@ import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 
 import org.json.JSONObject;
 
-public class LoginAsyncTask extends AsyncTask<Object, String, String> {
+public class SignUpPostAsyncTask extends AsyncTask<Object, String, String> {
 
     private Context mContext;
     private ProgressDialog progressBar;
     public ReturnString delegate;
 
-    public LoginAsyncTask(Context context) {
+    public SignUpPostAsyncTask(Context context) {
         this.mContext = context;
         progressBar = new ProgressDialog(mContext);
         progressBar.setCancelable(false);
