@@ -89,10 +89,24 @@ def create_app(config_name):
         view_func=expression_api.get_filenames
     )
 
+    from web.app.api import collections_api
+
+    app.add_url_rule(
+        "/collections",
+        methods=["GET"],
+        view_func=collections_api.collections
+    )
+
     app.add_url_rule(
         "/save_expression_to_db",
         methods=["POST"],
-        view_func=expression_api.save_expression_to_db
+        view_func=collections_api.save_expression_to_db
+    )
+
+    app.add_url_rule(
+        "/create_collection",
+        methods=["POST"],
+        view_func=collections_api.create_collection
     )
 
     return app

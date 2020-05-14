@@ -395,8 +395,3 @@
         color: black;
     }
 
-    .list-group-item.list-group-item-action.active{
-        background-color: rgb(79, 165, 39);
-        border-color: rgb(79, 165, 39);
-        color: white;  
-    }
