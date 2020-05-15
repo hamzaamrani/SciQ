@@ -1,7 +1,8 @@
 import logging
 import os
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
+from user_agents import parse
 #from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
@@ -20,7 +21,7 @@ limiter = Limiter(key_func=custom_key_func)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
-from web.app.api.error_handler import reached_limit_requests
+from web.app.api.error_handler import reached_limit_requests, login_required
 from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -107,5 +108,22 @@ def create_app(config_name):
     app.add_url_rule("/api/v1/solver", methods=["GET"], view_func=solve_exp)
 
     app.register_error_handler(429, reached_limit_requests)
+
+    #app.register_error_handler(401, login_required)
+
+    @jwt.unauthorized_loader
+    def login_required(error):
+        _ = request.stream.read()
+        user_agent = parse(request.headers.get("User-Agent"))
+        if user_agent.is_pc and "api" not in request.full_path:
+            logging.info("handler login required")
+            return (
+                render_template(
+                    "login_required.html",
+                ),
+                401,
+            )
+        else:
+            return jsonify({"error": "login required"}), 401
 
     return app
