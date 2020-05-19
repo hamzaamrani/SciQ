@@ -8,6 +8,8 @@ from .model.utils.text import Vocab
 from .utils import download_file_from_google_drive
 import zipfile
 import os
+import shutil
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 class _OCRService():
@@ -38,13 +40,13 @@ class _OCRService():
         with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
             zip_ref.extractall(dir_output)
 
+        shutil.rmtree(tmp_dir)
         
     def predict(self, img_path):
         """
         Predict latex from image
         """
         try:
-            breakpoint()
             img = np.expand_dims(cv2.imread(img_path, cv2.IMREAD_GRAYSCALE), -1)
             hyps = self.model.predict(img)
             logging.info(hyps[0])

@@ -10,7 +10,6 @@ import os
 
 from web.app.services.ocr import OCR_SERVICE
 
-
 def ocr():
     try:
         logging.info("Current working location is = " + os.getcwd())

@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
-
+from web.app.services.ocr import OCR_SERVICE
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
@@ -47,8 +47,26 @@ def send_file():
     with open(save_path, "r") as f:
         pass
     flash("File uploaded succesfully!")
-    #TODO: Use OCR to get latex and predict using submit_expression
+
     return "200"
+
+def submit_photo():
+    logging.info("Current working location is = " + os.getcwd())
+    fileob = request.files["file2upload"]
+    filename = secure_filename(fileob.filename)
+    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+    
+    logging.info("Save path is = " + save_path)
+    fileob.save(save_path)
+    
+    parsed = OCR_SERVICE.predict(expression)
+    response_obj = compute_expression(parsed)
+    return render_template(
+        "show_results.html",
+        alert=False,
+        query=expression,
+        response_obj=response_obj,
+    )
 
 
 # GET NAMES OF UPLOADED FILES
