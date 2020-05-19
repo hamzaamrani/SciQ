@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="lab.progettazione.sciq.Login.LoginActivity"
+    android:rowCount="3"
+    android:columnCount="1">
+
+
+    <ImageView
+        android:layout_row="0"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:src="@drawable/top_green_circle"
+        android:scaleType="centerInside"
+        android:layout_gravity="top"
+        android:layout_rowWeight="1"/>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:elevation="5dp"
+        app:strokeColor="@color/darkerPrimary"
+        app:strokeWidth="1dp"
+        app:cardPreventCornerOverlap="false">
+
+        <LinearLayout
+            android:background="@color/backgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/backgroundColor"
+                android:text="Login"
+                android:scaleType="centerInside"
+                android:background="@drawable/bottom_green_circle"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="10dp" />
+
+
+            <LinearLayout
+                android:padding="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_row="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="center">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_name_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Username"
+                    android:text=""
+                    android:inputType="text"
+                    android:selectAllOnFocus="true"
+                    android:layout_gravity="center_horizontal" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordLayout_signup"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_password_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:text=""
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="300dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Let's math"
+                android:textSize="20dp"
+                android:textColor="@android:color/white"
+                android:foreground="?attr/selectableItemBackground"
+                android:background="@drawable/button_selector"
+                android:padding="10dp"
+                android:layout_margin="20dp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <ImageView
+        android:layout_row="2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:src="@drawable/bottom_green_circle"
+        android:scaleType="centerInside"
+        android:layout_rowWeight="1"/>
+
+
+</GridLayout>
