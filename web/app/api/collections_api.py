@@ -24,12 +24,18 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 def collections():
     logging.info("Collections")
 
-    collections_names,collections_infos = get_collections_names()
+    collections_names,collections_infos = get_collections()
+    expressions_by_collection = []
+
+    for collection_name in collections_names:
+        expressions = get_expressions(collection_name)
+        expressions_by_collection.append(expressions)
 
     return render_template(
         "collections.html",
         collections_names=collections_names,
-        collections_infos=collections_infos
+        collections_infos=collections_infos,
+        expressions_by_collection=expressions_by_collection
     )
 
 def get_idUser():
@@ -38,7 +44,10 @@ def get_idUser():
 # COLLECTIONS HANDLE
 def save_expression_to_db():
 
-    # logging.info(request.form["name_collection"])
+    # aa = request.form["response_obj_json"]
+    # logging.info(aa)
+    # logging.info(type(aa))
+
 
     with open('tmp_expression', 'rb') as f:
         expression_obj = pickle.load(f)
@@ -103,7 +112,7 @@ def save_expression_to_db():
 
     return "okk"
 
-def get_collections_names():
+def get_collections():
     from web.app import mongo
     users = mongo.db.users
 
@@ -115,12 +124,25 @@ def get_collections_names():
         for collection in doc["collections"]:
             collections_names += [collection]
             collections_infos += [doc["collections"][collection]['info']]
+
     
     if not collections_names:
         collections_names = ['default']
         collections_infos = ['Default collection for expressions.']
     
     return collections_names,collections_infos
+
+def dict2obj(d):
+    if isinstance(d, list):
+        d = [dict2obj(x) for x in d]
+    if not isinstance(d, dict):
+        return d
+    class C(object):
+        pass
+    o = C()
+    for k in d:
+        o.__dict__[k] = dict2obj(d[k])
+    return o
 
 def get_expressions(collection_name):
     from web.app import mongo
@@ -133,9 +155,11 @@ def get_expressions(collection_name):
     collection_ids = user["collections"][collection_name]["ids"]
 
     collection_expressions = []
+
     for collection_id in collection_ids:
-        tmp = users.find({"id_user":"001"}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]
-        collection_expressions += [tmp]
+        expression = users.find({"id_user":"001"}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]['expressions'][0]
+        expression_obj = dict2obj(expression)
+        collection_expressions.append(expression_obj)
     
     return collection_expressions
 
@@ -162,6 +186,8 @@ def delete_collection():
     id_user = get_idUser()
     name = request.form["name_collection"]
 
-    users.update( {'id_user':'001'},{'$unset': {'collections.'+name : 1 }} )
+    logging.info("User " + id_user + ": deliting collection " + name + "..." )
+
+    users.update( {'id_user': id_user},{'$unset': {'collections.'+name : 1 }} )
     
     logging.info("User " + id_user + ": deleted collection " + name + "!"  )

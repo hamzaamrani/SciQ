@@ -32,7 +32,8 @@
                 url: "/save_expression_to_db",
                 data: {
                     name_collection: col_name,
-                    public: public                },
+                    public: public
+                }
             });
 
             alert("Expression saved!");
@@ -305,9 +306,9 @@
                       <div class="list-group" id="list-tab" name="list-tab" role="tablist">
                         {% for collection in collections_names %}
                             {% if collection == "default" %}
-                                <a class="list-group-item list-group-item-action btn-success active" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                <a class="list-group-item list-group-item-action btn-success active" id="{{ collection| replace(' ','_') }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
                             {% else %}  
-                                <a class="list-group-item list-group-item-action btn-success" id="{{ collection }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                <a class="list-group-item list-group-item-action btn-success" id="{{ collection| replace(' ','_') }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
                             {% endif %}
                         {% endfor %}
                         </div>
@@ -316,9 +317,9 @@
                       <div class="tab-content" id="nav-tabContent">
                         {% for i in range(collections_names|length) %}
                             {% if collections_names[i] == "default" %}
-                                <div class="tab-pane fade show active" id="list-{{ collections_names[i] }}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
+                                <div class="tab-pane fade show active" id="list-{{ collections_names[i] | replace(' ','_') }}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
                             {% else %} 
-                                <div class="tab-pane fade" id="list-{{ collections_names[i] }}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
+                                <div class="tab-pane fade" id="list-{{ collections_names[i] | replace(' ','_')}}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
                             {% endif %}
                         {% endfor %}
                       </div>

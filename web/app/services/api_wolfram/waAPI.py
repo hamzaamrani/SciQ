@@ -312,7 +312,7 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         \int x^2 dx
     """
     client_api = waAPI(key)
-    query = "\left( " + query + "\right)"
+    query = "\left( " + query + " \\right)"
     results_json = client_api.full_results(query=query)
     obj_expression = Expression(
         query=query,

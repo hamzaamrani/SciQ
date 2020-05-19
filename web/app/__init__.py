@@ -109,4 +109,10 @@ def create_app(config_name):
         view_func=collections_api.create_collection
     )
 
+    app.add_url_rule(
+        "/delete_collection",
+        methods=["POST"],
+        view_func=collections_api.delete_collection
+    )
+
     return app

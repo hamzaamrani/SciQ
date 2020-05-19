@@ -16,6 +16,7 @@ from web.app.services.parser.parser import ASCIIMath2Tex
 
 from web.app.services.api_wolfram.waAPI import Expression
 import pickle
+import json
 
 from web.app.api import collections_api
 
@@ -30,12 +31,14 @@ def submit_expression():
 
     with open('tmp_expression', 'wb') as f:
         pickle.dump(response_obj, f)
-    collections_names,collections_infos = collections_api.get_collections_names()
+
+    collections_names,collections_infos = collections_api.get_collections()
 
     return render_template(
         "show_results.html",
         alert=False,
         query=expression,
+        # response_obj_json=response_obj.to_json(),
         response_obj=response_obj,
         collections_names=collections_names,
         collections_infos=collections_infos
