@@ -30,7 +30,6 @@ pillow==6.2.2
 requests
 git+https://github.com/lark-parser/lark.git@master
 gunicorn
-<<<<<<< HEAD
 
 tensorflow==1.13.1
 opencv-python
@@ -38,8 +37,7 @@ tqdm
 scipy==1.2.3
 nltk==3.2
 distance==0.1.3
-=======
+
 Flask-Limiter
 user-agents
 flask-jwt-extended
->>>>>>> origin/sprint2

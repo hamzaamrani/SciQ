@@ -8,7 +8,8 @@ class TestOCRLoading(unittest.TestCase):
 
     def test_image(self):
         image_test = 'tests/ocr/images/1.png'
-        self.service.predict(image_test)
+        result = self.service.predict(image_test)[0]
+
 
 if __name__ == "__main__":
     unittest.main()

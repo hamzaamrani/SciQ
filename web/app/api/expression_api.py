@@ -10,14 +10,11 @@ from user_agents import parse
 from web.app import LIMIT, limiter
 from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
-<<<<<<< HEAD
 from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
 from web.app.services.ocr import OCR_SERVICE
-=======
 from web.app.services.utils.utils import exempt_limit, get_limit
 
->>>>>>> origin/sprint2
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
@@ -86,7 +83,7 @@ def submit_expression():
 
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
-def send_file():
+def send_file_without_ocr():
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
@@ -99,30 +96,37 @@ def send_file():
 
     return "200"
 
-def submit_photo():
+@jwt_optional
+#@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
+def send_file():
     logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
+
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     
     logging.info("Save path is = " + save_path)
     fileob.save(save_path)
     
-    parsed = OCR_SERVICE.predict(expression)
+    parsed = OCR_SERVICE.predict(save_path)[0]
+
+
+    logging.info("Requests from Desktop")
     response_obj = compute_expression(parsed)
+    print(response_obj)
     return render_template(
         "show_results.html",
-        alert=False,
-        query=expression,
+        query="",
         response_obj=response_obj,
     )
+
 
 
 # GET NAMES OF UPLOADED FILES
 @limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
-
+    os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):

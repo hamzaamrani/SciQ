@@ -35,7 +35,7 @@ $(function() {
             contentType: false,
             data: formData,
             success: function(data) {
-                alert("Upload succesful!");
+               alert("Upload succesful!");
             },
             error: function(data) {
                 alert("Upload failed!");

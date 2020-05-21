@@ -86,16 +86,15 @@ DB_CONFIG_PROD = {
     "database": "heroku_62e37664534fe76",
 }
 
-<<<<<<< HEAD
 OCR_CONFIG = {
     'model_dir': "./data/ocr/",
     'drive_id': '1pK9mMjQpkwxeoievIM2Vzoo8NDvTZZdW'
-=======
+}
+
 DB_CONFIG_PRE_PROD = {
     "user": "bdd2e662bdbe1b",
     "password": "2e134689",
     "host": "eu-cdbr-west-03.cleardb.net",
     "port": "3306",
     "database": "heroku_8c7f90193d110bd",
->>>>>>> origin/sprint2
 }
