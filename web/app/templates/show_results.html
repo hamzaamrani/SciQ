@@ -22,7 +22,7 @@
         function save_expression(){
             var col_name = document.getElementsByClassName("list-group-item list-group-item-action active").item(0).innerHTML;
             var public = false;
-
+                
             if ($('#publicCheck').is(":checked")) {
                 public = true;
             }
@@ -32,7 +32,8 @@
                 url: "/save_expression_to_db",
                 data: {
                     name_collection: col_name,
-                    public: public
+                    public: public,
+                    obj_json: "{{response_obj_json}}"
                 }
             });
 

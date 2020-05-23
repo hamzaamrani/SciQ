@@ -8,13 +8,14 @@ import logging
 import requests
 from PIL import Image
 import json
+from flask import jsonify
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
-KEY = "V2WJ46-EEXEV95WXG"
-
+# KEY = "V2WJ46-EEXEV95WXG"
+KEY = "23AR8V-3HGY7TGWPT"
 
 def raw(text):
     """
@@ -275,21 +276,22 @@ class Expression(object):
         """
         Convert expression object to json
         """
-        json_object = {}
-        json_object['success'] = self.success
-        json_object['query'] = self.query
-        json_object['execution_time'] = self.execution_time
-        json_object['plots'] = self.plots
-        json_object['alternate_forms'] = self.alternate_forms
-        json_object['results'] = self.results
-        json_object['solutions'] = self.solutions
-        json_object['symbolic_solutions'] = self.symbolic_solutions
-        json_object['limits'] = self.limits
-        json_object['partial_derivatives'] = self.partial_derivatives
-        json_object['integral'] = self.integral
+        # json_object = {}
+        # json_object['success'] = self.success
+        # json_object['query'] = self.query
+        # json_object['execution_time'] = self.execution_time
+        # json_object['plots'] = self.plots
+        # json_object['alternate_forms'] = self.alternate_forms
+        # json_object['results'] = self.results
+        # json_object['solutions'] = self.solutions
+        # json_object['symbolic_solutions'] = self.symbolic_solutions
+        # json_object['limits'] = self.limits
+        # json_object['partial_derivatives'] = self.partial_derivatives
+        # json_object['integral'] = self.integral
 
-        # return json.dumps(json_object)
-        return json_object
+        # # return json.dumps(json_object)
+        # return json_object
+        return json.dumps({k: v for k, v in self.__dict__.items() })
 
 
 def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
@@ -311,8 +313,10 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
         \int x^2 dx
     """
+    logging.info("Computing expression...")
     client_api = waAPI(key)
-    query = "\left( " + query + " \\right)"
+    query = "\left( " + query + " \right)"
+    query = raw(query)
     results_json = client_api.full_results(query=query)
     obj_expression = Expression(
         query=query,
@@ -321,6 +325,3 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
         dir_plots=dir_plots,
     )
     return obj_expression
-
-obj = compute_expression('\int x^2 dx')
-# obj.print_expression()

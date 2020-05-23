@@ -15,7 +15,8 @@ from web.app.services.parser.const import asciimath_grammar
 from web.app.services.parser.parser import ASCIIMath2Tex
 
 from web.app.services.api_wolfram.waAPI import Expression
-import pickle
+import json
+import html
 
 from bson import ObjectId
 
@@ -43,15 +44,21 @@ def get_idUser():
 
 # COLLECTIONS HANDLE
 def save_expression_to_db():
-
-    # aa = request.form["response_obj_json"]
-    # logging.info(aa)
-    # logging.info(type(aa))
+    logging.info("Saving expression to db...")
 
 
-    with open('tmp_expression', 'rb') as f:
-        expression_obj = pickle.load(f)
-    os.remove('tmp_expression')
+    json_obj = request.form["obj_json"]
+    json_obj = raw(json_obj)
+    
+    json_obj = json_obj.replace("true","'true'")
+    json_obj = json_obj.replace("false","'false'")
+    json_obj = html.unescape(json_obj)
+
+    json_obj = eval(json_obj)
+
+    # logging.info(json_obj)
+    # logging.info(type(json_obj))
+
 
     from web.app import mongo
     users = mongo.db.users
@@ -82,9 +89,12 @@ def save_expression_to_db():
 
     
     id_obj = ObjectId()
-    json_obj = expression_obj.to_json()
+    json_obj['query'] = raw(json_obj['query'])
+    # json_obj = expression_obj.to_json()
     json_obj['_id'] = id_obj
     json_obj['public'] = request.form["public"]
+
+    logging.info(json_obj)
 
     
     # Add current expression and add to default collection
@@ -191,3 +201,22 @@ def delete_collection():
     users.update( {'id_user': id_user},{'$unset': {'collections.'+name : 1 }} )
     
     logging.info("User " + id_user + ": deleted collection " + name + "!"  )
+
+
+def raw(text):
+    """
+    Returns a raw string representation of text
+    """
+    escape_dict = {
+        "\a": "\\a",
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+        "\v": "\\v",
+    }
+    for k, v in escape_dict.items():
+        text = text.replace(k, v)
+
+    return text
