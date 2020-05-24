@@ -1,7 +1,8 @@
 import logging
 import os
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
+from user_agents import parse
 #from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
@@ -108,4 +109,22 @@ def create_app(config_name):
 
     app.register_error_handler(429, reached_limit_requests)
 
+    register_jwt_callbacks()
+
     return app
+
+def register_jwt_callbacks():
+    @jwt.unauthorized_loader
+    def jwt_unauthorized_callback(error):
+        _ = request.stream.read()
+        user_agent = parse(request.headers.get("User-Agent"))
+        if user_agent.is_pc and "api" not in request.full_path:
+            logging.info("handler login required")
+            return (
+                render_template(
+                    "login_required.html",
+                ),
+                401,
+            )
+        else:
+            return jsonify({"error": "login required"}), 401

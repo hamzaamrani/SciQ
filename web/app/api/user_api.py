@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import secrets
+import datetime
 
 from flask import jsonify, make_response, render_template, request
 
@@ -42,6 +43,7 @@ def login():
                 )
                 if result:
                     payload = {"username": username, "id_user": id_user}
+                    expires = datetime.datetime.now() + datetime.timedelta(hours=4)
                     access_token = create_access_token(identity=payload)
 
                     resp = make_response(
@@ -58,6 +60,7 @@ def login():
                         value=access_token,
                         path="/",
                         httponly=False,
+                        expires=expires
                     )
                     return resp
                 else:
@@ -119,12 +122,7 @@ def get_md5(password):
     md5_password = m.hexdigest()
     return md5_password
 
-
-def loggedUser():
-    global username_global
-    return render_template("loggedUser.html", name=username_global)
-
-
+    
 @limiter.exempt
 @jwt_required
 def add_application():

@@ -4,17 +4,6 @@ Our project aim to develop an application that allow the recognition and further
 The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.
 The resolution of the formulas happens through the usege of Wolphram|Alpha's API.
 
-
-## Usage
-To use the run `docker-compose up --build`; if there isn't a local DB mapped to a volume, a new DB will be created.  
-After the build go to `http://0.0.0.0:5000`
-
-**On windows system the url isn't 0.0.0.0, but the docker engine IP**
-
-To perform test run `docker-compose up -d --build && docker exec web python -m unittest -v tests.runner` or run bash file `test.sh` 
-
-If there are changes in code re-run `docker-compose up --build`
-
 ## High-level pipeline
 
 ![](images/sciq-gitlab-docker-cicd.png)
