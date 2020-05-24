@@ -43,7 +43,7 @@ def login():
                 )
                 if result:
                     payload = {"username": username, "id_user": id_user}
-                    expires = datetime.datetime.now() + datetime.timedelta(seconds=20)
+                    expires = datetime.datetime.now() + datetime.timedelta(hours=4)
                     access_token = create_access_token(identity=payload)
 
                     resp = make_response(

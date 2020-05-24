@@ -38,6 +38,9 @@
             object-fit: cover;
             object-position: center;
         }
+        .container {
+            margin-top: 25vh;
+        }
     </style>
     <script>
         $(window).on('resize load', function () {
@@ -74,9 +77,9 @@
     </script>
 
     <div class="container text-center" id="technology">
-        <h1>LOGIN or SIGN-UP for developer access</h1>
-        <div class="row">
-            <div class="col text-center">
+        <h1>LOGIN or SIGN-UP for access</h1>
+        <div class="row justify-content-center">
+            <div class="col-4">
                 <button type="button" href="#loginModal" class="btn btn btn-success" data-toggle="modal" data-target="#loginModal"> 
                     <strong>LOGIN</strong> 
                 </button>

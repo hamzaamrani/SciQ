@@ -21,7 +21,7 @@ limiter = Limiter(key_func=custom_key_func)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
-from web.app.api.error_handler import reached_limit_requests, login_required
+from web.app.api.error_handler import reached_limit_requests
 from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -109,10 +109,13 @@ def create_app(config_name):
 
     app.register_error_handler(429, reached_limit_requests)
 
-    #app.register_error_handler(401, login_required)
+    register_jwt_callbacks()
 
+    return app
+
+def register_jwt_callbacks():
     @jwt.unauthorized_loader
-    def login_required(error):
+    def jwt_unauthorized_callback(error):
         _ = request.stream.read()
         user_agent = parse(request.headers.get("User-Agent"))
         if user_agent.is_pc and "api" not in request.full_path:
@@ -125,5 +128,3 @@ def create_app(config_name):
             )
         else:
             return jsonify({"error": "login required"}), 401
-
-    return app
