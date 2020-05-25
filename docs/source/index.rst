@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to py_asciimath docs!
+Welcome to SciQ docs!
 =============================
 .. mdinclude:: intro.md
 
