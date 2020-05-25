@@ -13,7 +13,11 @@
 import os
 import re
 import sys
+import logging
 
+logging
+
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
@@ -74,8 +78,8 @@ html_static_path = ["_static"]
 
 
 def setup(app):
-    print(os.getcwd())
-    with open("../README.md", "r+") as f:
+    logging.info(os.getcwd())
+    with open("README.md", "r+") as f:
         readme = f.read()
         readme = re.sub(r"images/", "_static/images/", readme)
         f.seek(0)
