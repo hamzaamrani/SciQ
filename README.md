@@ -6,7 +6,9 @@ The resolution of the formulas happens through the usege of Wolphram|Alpha's API
 
 ## High-level pipeline
 
-![](images/sciq-gitlab-docker-cicd.png)
+<div align="center">
+  <img src="_static/images/sciq-gitlab-docker-cicd.png">
+</div>
 
 Our pipeline is developed with a Dev-Ops centered methodology, in which we make sure that our application has passed routine and building tests before being used from the community.  
 Our application is also available as an Android APK and can be installed in everyone smartphone.
@@ -15,7 +17,9 @@ Our application is also available as an Android APK and can be installed in ever
 
 As one can see from the image below, our architecture is simple but effective and can be useful in multiple ways: from the simple conversion of an ASCIIMath expression into its LaTeX representation to the resolution of arbitrary symbolic mathematical expression, sent from a web form or directly uploading an image.
 
-![](images/sciq.png)
+<div align="center">
+  <img src="_static/images/sciq.png">
+</div>
 
 With our platform one can also save expressions into collections, make them available publicy and share them with collegues or in a community.
 
