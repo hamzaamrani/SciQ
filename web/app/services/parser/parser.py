@@ -160,7 +160,7 @@ class ASCIIMath2Tex(object):
             Defaults to "contextual".
         transformer (str, optional): a class that specifies how the parsed input
             will be transformed. In this case it represents how a recognized (parsed)
-            ASCIIMath expression will be transformed into its LaTeX equivalent
+            ASCIIMath expression will be transformed into its LaTeX equivalent.  
             Defaults to "LatexTransformer()".
         *args: Additional positional arguments to the :class:`~lark.Lark` class.
         **kwargs: Additional keyword arguments to the :class:`~lark.Lark` class.
