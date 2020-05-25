@@ -1,14 +1,14 @@
 import base64
+import json
+import logging
 import os.path
 import urllib.parse
 import urllib.request
 from io import BytesIO
-from flask import Markup
-import logging
-import requests
-from PIL import Image
-import json
 
+import requests
+from flask import Markup
+from PIL import Image
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -63,7 +63,8 @@ class waAPI(object):
 
         Request a key at https://developer.wolframalpha.com
 
-        :param key: Wolfram Alpha App ID Developer Key
+        Arguments:
+            key (str, optional): Wolfram Alpha App ID Developer Key
         """
         self.key = key
         self.response_format = "json"
@@ -79,13 +80,18 @@ class waAPI(object):
         self, response_format=None, key=None, query=None, pods_format="mathml"
     ):
         """
-        Calls the API and returns a dictionary of the search results
+        Calls the Wolfram|Alpha API and returns a dictionary of the search results
 
-        :param response_format: the format that the API uses for its response,
-                                includes JSON (.json) and XML.
-                                Defaults to '.xml'.
-
-        :param key: a developer key. Defaults to key given when the waAPI class was initialized.
+        Arguments:
+            response_format (str, optional): the format that the API uses for its response,
+                includes JSON (.json) and XML. Defaults to '.xml'
+            key (str, optional): the developer key. Defaults to key given when the waAPI class was initialized
+            query (str, optional): the query string
+            pods_format (str, optional): format of the result's pods.
+                It must be one from 'mathml' or 'plaintex'. Defaults to 'mathml'
+   
+        Returns:
+            result (json): a json containing the query result from Wolfram|Alpha API
 
         """
         if key is None:
@@ -137,9 +143,9 @@ class Expression(object):
         Arguments:
             query (str): expression query
             results (dict): results of query from Wolfram Alpha API
-            dir_plots (str, optional): dir where to save plots
             id_equation (int, optional): identifier of expression
-            pods_format (str, optional): pod format. It can be mathml or plaintext
+            dir_plots (str, optional): dir where to save plots
+            pods_format (str, optional): pod format. It can be 'mathml' or 'plaintext'
             output_results (str, optional): Output default result or full results. It can be default or full
         """
 
@@ -242,6 +248,13 @@ class Expression(object):
             self.save_plots(id_equation, dir_plots)
 
     def compute_full_result(self, results, output="plaintext"):
+        """Extract relevant information from the Wolfram|Alpha API response
+
+        Args:
+            results (list): the result list from Wolfram|Alpha API
+            output (str, optional): the output type to search for into the 'results' object.
+                Defaults to "plaintext".
+        """
         for pod in results["pods"]:
             subpods = []
             if isinstance(pod["subpods"], list):
@@ -328,20 +341,19 @@ class Expression(object):
         Convert expression object to json
         """
         expression = {}
-        expression['success'] = self.success
-        expression['query'] = self.query
-        expression['execution_time'] = self.execution_time
-        expression['plots'] = self.plots
-        expression['alternate_forms'] = self.alternate_forms
-        expression['results'] = self.results
-        expression['solutions'] = self.solutions
-        expression['symbolic_solutions'] = self.symbolic_solutions
-        expression['limits'] = self.limits
-        expression['partial_derivatives'] = self.partial_derivatives
-        expression['integral'] = self.integral
+        expression["success"] = self.success
+        expression["query"] = self.query
+        expression["execution_time"] = self.execution_time
+        expression["plots"] = self.plots
+        expression["alternate_forms"] = self.alternate_forms
+        expression["results"] = self.results
+        expression["solutions"] = self.solutions
+        expression["symbolic_solutions"] = self.symbolic_solutions
+        expression["limits"] = self.limits
+        expression["partial_derivatives"] = self.partial_derivatives
+        expression["integral"] = self.integral
 
         return json.dumps(expression)
-
 
 
 def compute_expression(
@@ -357,14 +369,13 @@ def compute_expression(
     Returns an Expression object containing the query results
 
     Arguments:
+        query (str): expression query
+        key (str, optional): key to use Wolfram Alpha API
+        id_equation (int, optional): identifier to rename plot images
+        dir_plots (str, optional): directory where to save plot images
+        pods_format (str, optional): output for results: mathml or plaintext
 
-    query (str): expression query
-    key (str, optional): key to use Wolfram Alpha API
-    id_equation (int, optional): identifier to rename plot images
-    dir_plots (str, optional): directory where to save plot images
-    pods_format (str, optional): output for results: mathml or plaintext
-
-    Expression examples:
+    Examples:
         x^3 - y^2 = 23
         x^3 + x^2 y + x y^2 + y^3
         3x^3 + 2x^2 - 4ax +2 = 0
@@ -372,6 +383,10 @@ def compute_expression(
         \cos{\frac{\arcsin{x}}{2}}
         2x+17y=23,x-y=5,\int_{0}^{x} x dx
         \int x^2 dx
+
+    Returns:
+        expression (Expression): object of class Expression, to be
+            further analyzed
     """
     client_api = waAPI(key)
     query = "\left( " + query + "\right)"

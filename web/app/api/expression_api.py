@@ -39,6 +39,9 @@ def solve_exp():
     solved = compute_expression(
         parsed, pods_format=pods_format, output_result=output_result
     )
+    logging.info(
+        jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
+    )
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
 
 

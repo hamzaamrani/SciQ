@@ -144,6 +144,28 @@ class LatexTransformer(Transformer):
 
 
 class ASCIIMath2Tex(object):
+    """Class that handle the translation from ASCIIMath to LaTeX
+
+    Args:
+        grammar (str): grammar to be recognized by the parser.
+        cache (bool, optional): If True, use cached parser.
+            See :class:`~lark.Lark`. Defaults to True.
+        inplace (bool, optional): If True, parse the input inplace.
+            See :class:`~lark.Lark`. Defaults to False.
+        lexer (str, optional): Lexer used during parsing. See :class:`~lark.Lark`.
+            Defaults to "contextual".
+        parser (str, optional): Parser algorithm. See :class:`~lark.Lark`.
+            Defaults to "lalr".
+        lexer (str, optional): Lexer algorithm. See :class:`~lark.Lark`.
+            Defaults to "contextual".
+        transformer (str, optional): a class that specifies how the parsed input
+            will be transformed. In this case it represents how a recognized (parsed)
+            ASCIIMath expression will be transformed into its LaTeX equivalent
+            Defaults to "LatexTransformer()".
+        *args: Additional positional arguments to the :class:`~lark.Lark` class.
+        **kwargs: Additional keyword arguments to the :class:`~lark.Lark` class.
+    """
+
     def __init__(
         self,
         grammar,
@@ -164,7 +186,18 @@ class ASCIIMath2Tex(object):
             grammar, *args, parser=parser, lexer=lexer, cache=cache, **kwargs
         )
 
-    def asciimath2tex(self, s: str, pprint=False):
+    def asciimath2tex(self, exp: str, pprint=False):
+        """Translates an ASCIIMath string to LaTeX
+
+        Args:
+            exp (str): String to translate. If from_file is True, then s
+                must represent the file's path
+            pprint (bool, optional): Abstract Syntax Tree pretty print.
+                Defaults to False.
+
+        Returns:
+            str: LaTeX translated expression
+        """
         if not self.inplace:
             parsed = self.parser.parse(s)
             if pprint:
