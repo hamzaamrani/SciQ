@@ -79,7 +79,7 @@ html_static_path = ["_static"]
 
 def setup(app):
     logging.info(os.getcwd())
-    with open("README.md", "r+") as f:
+    with open("../../README.md", "r+") as f:
         readme = f.read()
         readme = re.sub(r"images/", "_static/images/", readme)
         f.seek(0)
