@@ -34,6 +34,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_DEV")
     FLASK_ENV = "development"
+    MONGO_URI = os.environ.get("MONGO_URI")
 
 
 class TestingConfig(Config):
@@ -46,6 +47,7 @@ class PreProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PRE_PROD")
+    MONGO_URI = os.environ.get("MONGO_URI_PRE_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
     JWT_COOKIE_SECURE = False
@@ -56,6 +58,7 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_PROD")
+    MONGO_URI = os.environ.get("MONGO_URI_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
     JWT_COOKIE_SECURE = False

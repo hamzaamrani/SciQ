@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=3">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include Bootstrap stuff-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/remarkable/1.7.1/remarkable.min.js"></script>
+
+    <style>
+        .custom {
+            width: 160px !important;
+        }
+        .sidebar {
+            margin: 0 0 0 0;
+            padding-left: 2rem;
+            top: 10rem !important; /*set it according to height of nav bar*/
+        }
+        .filterbar{
+            top: 10rem !important; /*set it according to height of nav bar*/
+        }
+        .main_post{
+            margin-bottom: 5rem;
+            margin-top: 10rem;
+        }
+        .text_post p{
+            margin-bottom: 0;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+            var md = new Remarkable();
+            var elements = document.getElementsByClassName("text_post");     
+            var id = "";       
+            for(var i=0; i<elements.length; i++) {
+                tex = elements[i].innerHTML;
+                mark = md.render(tex);
+                elements[i].innerHTML = mark;
+            }
+
+            var answer = new SimpleMDE({  element: document.getElementById("answer"), 
+                                            spellChecker: false});
+
+            $("#modalAnswer").on("hidden.bs.modal", function () {
+                    $(this).find(".invalid-feedback").hide(); 
+                    answer.value(" ");
+            });
+
+            $('#modalAnswer').on('show.bs.modal', function (event) {
+                id = $(event.relatedTarget).data('id');
+            });
+
+            $("#share_answer").on("click", function (event) {
+                console.log('click on share');
+
+                var text  = answer.value();
+
+                if (text.trim() == ""){   
+                    document.getElementById('answer_form').style.display="inline";
+                }
+                else{                
+                    $.ajax({
+                        type: "POST",
+                        url: '/comment',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({ 'text': text, 'id_post': id }),
+                        dataType: "json",
+                        success: function (data) {
+                            location.reload();
+                        },
+                        statusCode: {
+                            401: function(xhr) {
+                                $('#modalAnswer').modal('hide');
+                                $('#login_required').show();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+
+<body onLoad="checkCookie();">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md fixed-top">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"> <strong>Math</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/developer"> <strong>Developer</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/applications"> <strong>My applications</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/posts"> <strong> Community </strong> </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#AsciMathInfo"> <strong>Read Me!</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#page-footer"> <strong> Contact </strong> </a>
+                </li>
+                <li class="nav-item" id="li_logout" style="display: none;">
+                    <a class="nav-link" href="#" id="logoutButton"> <strong>Log out</strong></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class='container-fluid main_post'>
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <div class="alert alert-warning" role="alert" id="login_required" style="display: none;">
+                    Login required
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-2 align-self-start sticky-top sidebar">
+                <button type="button" class="btn btn-success custom" data-toggle="modal" data-target="#modalAnswer" data-id="{{ posts[0]._id }}">Add answer</button>
+            </div>
+            <div class="col-8">
+                {% for post in posts %}
+                    <div class="card border-light mb-1" style="border: none;">
+                        <div class="card-header container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a href="/post/{{post._id}}" class="card-link" style="color: #000000;">
+                                        <h3>{{ post.title }}</h3>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body text-left">  
+                            <div class=row>
+                                <div class="col-md-10">
+                                    <p class="card-text text_post">{{post.text}}</p>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 2rem;">
+                                <div class="col-md-2 float-left">
+                                    <button type="button" class="btn btn-outline-info btn-sm" disabled>{{post.topic}}</button>
+                                </div>
+                                <div class="col-md-3 offset-md-7">
+                                    <p class="float-md-right">asked by: <span style="color: cornflowerblue;">{{post.author}}</span></p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    {% for comment in post.comment %}
+                        <div class="card border-light mb-1" style="border: none;">
+                            <div class="card-body text-left">  
+                                <div class=row>
+                                    <div class="col-md-10">
+                                        <p class="card-text text_post">{{comment.text}}</p>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top: 2rem;">
+                                    <div class="col-md-3 offset-md-9">
+                                        <p class="float-md-right">answer by: <span style="color: cornflowerblue;">{{comment.author}}</span></p>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>              
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Answer-->
+    <div class="modal fade" id="modalAnswer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share an answer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group required">
+                            <label class="control-label">Answer</label>
+                            <div class="invalid-feedback" id="answer_form" style="display: none;">
+                                Please insert an answer.
+                            </div>
+                            <textarea class="form-control" id="answer" rows="5"></textarea>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="share_answer">Share answer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="page-footer" id="page-footer">
+        <div class="row" style="margin-left: 0; margin-right: 0;">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <h6 class="text-uppercase font-weight-bold" style="color: green;">Additional Information</h6>
+                <p>Our project aim to develop an application that allow the recognition and further the resolution
+                    of symbolic mathematical formulas.</p>
+                <p>The insertion of the formulas could happen through the use of a predefined text-area or through
+                    the uploading of an image containing a formula.</p>
+                <p>The resolution of the formulas happen through the use of Wolfram|Alpha's API.</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <h6 class="text-uppercase font-weight-bold" style="color: green;">Contact</h6>
+                <p>Università degli studi di Milano Bicocca
+                    <br>info[at]SciQ.com
+                    <br>c.carta4[at]campus[dot]unimib[dot]it
+                    <br>s.ventura6[at]campus[dot]unimib[dot]it
+                    <br>h.amrani[at]campus[dot]unimib[dot]it
+                    <br>f.belotti8[at]campus[dot]unimib[dot]it
+                    <br>g.scarpellini[at]campus[dot]unimib[dot]it
+                </p>
+            </div>
+        </div>
+        <div class="footer-copyright text-center">© 2020 Copyright: SciQ.com</div>
+    </footer>
+</body>
+
+</html>
