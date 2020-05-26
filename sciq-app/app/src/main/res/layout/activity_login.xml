@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="lab.progettazione.sciq.Login.LoginActivity"
+    tools:context="lab.progettazione.sciq.Activities.Login.LoginActivity"
     android:rowCount="3"
     android:columnCount="1">
 
@@ -20,7 +20,7 @@
         android:layout_rowWeight="1"/>
 
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_margin="10dp"
         android:padding="5dp"
         android:layout_row="1"
@@ -111,7 +111,7 @@
                 android:layout_margin="20dp" />
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
 
     <ImageView

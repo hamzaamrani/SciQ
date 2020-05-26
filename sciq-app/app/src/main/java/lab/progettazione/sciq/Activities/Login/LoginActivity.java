@@ -1,9 +1,10 @@
-package lab.progettazione.sciq.Login;
+package lab.progettazione.sciq.Activities.Login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import com.progettazione.sciq.R;
 
 import org.json.JSONObject;
 
+import lab.progettazione.sciq.Activities.MainActivity;
 import lab.progettazione.sciq.Utilities.AsyncTasks.LoginPostAsyncTask;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 
@@ -74,9 +76,25 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
         try{
             JSONObject login_response = new JSONObject(output);
             if(login_response.has("access_token")){
-                Log.d("Access Token", login_response.getString("access_token"));
+                String tkn = login_response.getString("access_token");
+
+                //Todo encrypt preferences
+                SharedPreferences pref = getSharedPreferences("Info", MODE_PRIVATE);
+                SharedPreferences.Editor edit_pref = pref.edit();
+                edit_pref.clear();
+                edit_pref.putString("token", tkn);
+                edit_pref.apply();
+
+                SharedPreferences isLogged = getSharedPreferences("Logged", 0);
+                SharedPreferences.Editor login = isLogged.edit();
+                login.clear();
+                login.putBoolean("isLogged", true );
+                login.apply();
+
                 input_password_login.setError(null);
                 input_name_login.setError(null);
+                Intent i  = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
             }else{
                 Toast.makeText(getApplicationContext(), login_response.getString("results"), Toast.LENGTH_LONG).show();
                 input_name_login.setError("Username could be wrong");

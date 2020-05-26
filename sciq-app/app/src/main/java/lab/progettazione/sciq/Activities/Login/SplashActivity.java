@@ -1,4 +1,4 @@
-package lab.progettazione.sciq.Login;
+package lab.progettazione.sciq.Activities.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +8,11 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import lab.progettazione.sciq.HomeActivity;
 import com.progettazione.sciq.R;
 
 import java.util.Date;
+
+import lab.progettazione.sciq.Activities.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -42,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
             if (!(diffDays > 0) && !(diffHours > 8)) {
                 Log.d("UserLogged", "Last login within eight hours!");
                 // Token is still valid
-                destination_activity = HomeActivity.class;
+                destination_activity = MainActivity.class;
             } else {
                 Log.d("UserLogged", "Token expired");
                 destination_activity = SignupActivity.class;

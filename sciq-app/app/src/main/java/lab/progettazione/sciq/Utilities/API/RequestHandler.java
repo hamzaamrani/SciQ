@@ -1,4 +1,4 @@
-package lab.progettazione.sciq.API;
+package lab.progettazione.sciq.Utilities.API;
 
 import org.json.JSONObject;
 
@@ -12,6 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class RequestHandler {
     static final String COOKIES_HEADER = "Set-Cookie";
@@ -19,19 +21,25 @@ public class RequestHandler {
     static CookieManager msCookieManager = new CookieManager();
 
 
-    public static String sendPost(String r_url, JSONObject postDataParams) throws Exception {
+    public static String sendPost(String r_url, JSONObject postDataParams, String token) throws Exception {
         URL url = new URL(r_url);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(20000);
         conn.setConnectTimeout(20000);
         conn.setRequestMethod("POST");
+
+        if(token != null){
+            conn.setRequestProperty("Cookie","access_token_cookie="+token);
+            System.out.println("Token not null, equal to = " + token);
+        }
+
+
         conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
         conn.setDoInput(true);
         conn.setDoOutput(true);
         System.out.println("JSONObject within request handler" + postDataParams);
         OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
         os.write(postDataParams.toString().getBytes("UTF-8"));
         os.close();
 

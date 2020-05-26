@@ -1,6 +1,5 @@
-package lab.progettazione.sciq.Login;
+package lab.progettazione.sciq.Activities.Login;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.progettazione.sciq.R;
 
-import lab.progettazione.sciq.HomeActivity;
+import lab.progettazione.sciq.Activities.MainActivity;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SignUpPostAsyncTask;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 
@@ -117,7 +116,7 @@ public class SignupActivity extends AppCompatActivity implements ReturnString {
                             login.putBoolean("isLogged", true );
                             login.apply();
 
-                            Intent go_home = new Intent(getApplicationContext(), HomeActivity.class);
+                            Intent go_home = new Intent(getApplicationContext(), MainActivity.class);
                             go_home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(go_home);
                             finish();
