@@ -55,14 +55,9 @@ exclude_patterns = []
 html_sidebars = {
     "**": ["about.html", "globaltoc.html", "relations.html", "searchbox.html",]
 }
-
+html_logo = "_static/images/logo.jpg"
 # html_theme_options = {
-#     "show_powered_by": False,
-#     "github_user": "belerico",
-#     "github_repo": "py_asciimath",
-#     "github_banner": True,
-#     "show_related": False,
-#     "note_bg": "#FFF59C",
+#     "logo_only": True,
 # }
 # -- Options for HTML output -------------------------------------------------
 
@@ -79,7 +74,7 @@ html_static_path = ["_static"]
 
 def setup(app):
     print(os.getcwd())
-    with open("../../README.md", "r+") as f:
+    with open("../README.md", "r+") as f:
         readme = f.read()
         readme = re.sub(r"docs/source/", "", readme)
         f.seek(0)
