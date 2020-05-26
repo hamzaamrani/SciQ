@@ -24,11 +24,11 @@ def solve_exp():
         pods_format = None
         output_result = None
         if "expression" in json:
-            exp = request.get("expression")
+            exp = json["expression"]
         if "output" in json:
-            pods_format = request.args.get("output")
+            pods_format = json["output"]
         if "result" in json:
-            output_result = request.args.get("result")
+            output_result = json["result"]
     else:
         exp = request.args.get("expression")
         pods_format = request.args.get("output")
