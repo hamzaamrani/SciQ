@@ -375,17 +375,8 @@ def compute_expression(
         dir_plots (str, optional): directory where to save plot images
         pods_format (str, optional): output for results: mathml or plaintext
 
-    Examples:
-        x^3 - y^2 = 23
-        x^3 + x^2 y + x y^2 + y^3
-        3x^3 + 2x^2 - 4ax +2 = 0
-        \frac{x^2-1}{x^2+1}
-        \cos{\frac{\arcsin{x}}{2}}
-        2x+17y=23,x-y=5,\int_{0}^{x} x dx
-        \int x^2 dx
-
     Returns:
-        expression (Expression): object of class Expression, to be
+        expression: object of class Expression, to be
             further analyzed
     """
     client_api = waAPI(key)
