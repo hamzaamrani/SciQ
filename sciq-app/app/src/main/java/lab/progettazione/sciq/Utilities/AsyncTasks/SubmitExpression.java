@@ -57,7 +57,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
         progressBar.setVisibility(View.GONE);
         boolean success;
         try{
-            JSONObject response = new JSONObject(s);  // "results" : "tutta la merda"
+            JSONObject response = new JSONObject(s); 
             if(response.has("success")){
                 success = response.getBoolean("success");
                 if(success){
@@ -67,7 +67,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
                 }else
                     delegate.onExpressionFailure("Success false");
             }else
-                delegate.onExpressionFailure("Dio");
+                delegate.onExpressionFailure("Connection error");
 
         }catch (Exception e){
             e.printStackTrace();
