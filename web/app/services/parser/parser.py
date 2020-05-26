@@ -199,9 +199,9 @@ class ASCIIMath2Tex(object):
             str: LaTeX translated expression
         """
         if not self.inplace:
-            parsed = self.parser.parse(s)
+            parsed = self.parser.parse(exp)
             if pprint:
                 print(parsed.pretty())
             return self.transformer.transform(parsed)
         else:
-            return self.parser.parse(s)
+            return self.parser.parse(exp)

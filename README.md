@@ -108,8 +108,8 @@ One can also call an API and pass parameters as query parameters (**query parame
     "http://0.0.0.0:5000/api/v1/parser?expression=x_2%5E3+%2B+logx&appid=your_appid"
   ```
 
-An **error** will be returned if the expression parameter is missing: `{"error": "no expression to parse"}`  
-A **429 error** will be returned if one reaches the limit request  
+An **error** will be returned if the expression parameter is missing: `{"error": "no expression to parse"}`.  
+A **429 error** will be returned if one reaches the limit request.  
 Those curl requests have been tested on Ubuntu 20.04 (for Windows users: **get Linux!**)
     
 
