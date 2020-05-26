@@ -57,7 +57,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
         progressBar.setVisibility(View.GONE);
         boolean success;
         try{
-            JSONObject response = new JSONObject(s); 
+            JSONObject response = new JSONObject(s);
             if(response.has("success")){
                 success = response.getBoolean("success");
                 if(success){
