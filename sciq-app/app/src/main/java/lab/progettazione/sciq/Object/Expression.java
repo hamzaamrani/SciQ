@@ -40,7 +40,7 @@ public class Expression {
             this.execution_time = (double) expression.get("execution_time");
 
         if(expression.has("plots")){
-            
+
 
             int i;
             for(i = 0; i < plots.size(); i ++){
