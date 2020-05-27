@@ -78,7 +78,7 @@ def submit_expression():
         response_obj = compute_expression(parsed)
         response = jsonify({k: v for k, v in response_obj.__dict__.items()})
         #json.load method converts JSON string to Python Object
-        parsed = json.loads(response)
+        parsed = json.loads(str(response))
         logging.info("Sending JSON = " + json.dumps(parsed, indent=2, sort_keys=True))
         return response
 
