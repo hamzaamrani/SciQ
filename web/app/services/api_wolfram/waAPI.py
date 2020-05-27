@@ -374,7 +374,7 @@ def compute_expression(
         \int x^2 dx
     """
     client_api = waAPI(key)
-    query = "\left( " + query + "\right)"
+    query = raw("\left( " + query + "\right)")
     results_json = client_api.full_results(
         response_format=response_format, query=query, pods_format=pods_format
     )

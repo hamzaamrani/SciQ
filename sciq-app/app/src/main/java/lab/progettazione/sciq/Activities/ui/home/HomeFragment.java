@@ -104,7 +104,6 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
     public void onExpressionSuccessful(Expression expression) {
         Log.d("submit_expression", "Request successful");
         System.out.println(expression.toString());
-
     }
 
     @Override

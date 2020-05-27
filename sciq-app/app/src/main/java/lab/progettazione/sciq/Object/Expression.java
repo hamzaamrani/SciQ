@@ -11,18 +11,19 @@ import org.json.JSONObject;
 
 import java.lang.annotation.IncompleteAnnotationException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Expression {
     private Boolean success;
     private String query;
     private double execution_time;
-    private ArrayList<String> plots;
-    private ArrayList<String> alternate_forms;
-    private ArrayList<String> solutions;
-    private ArrayList<String> symbolic_solutions;
-    private ArrayList<String> limits;
-    private ArrayList<String> partial_derivatives;
-    private ArrayList<String> integral;
+    private ArrayList<String> plots = new ArrayList<>();
+    private ArrayList<String> alternate_forms = new ArrayList<>();
+    private ArrayList<String> solutions  = new ArrayList<>();
+    private ArrayList<String> symbolic_solutions = new ArrayList<>();
+    private ArrayList<String> limits = new ArrayList<>();
+    private ArrayList<String> partial_derivatives = new ArrayList<>();
+    private ArrayList<String> integral = new ArrayList<>();
 
     public Expression(JSONObject expression) throws Exception{
 
@@ -40,16 +41,64 @@ public class Expression {
             this.execution_time = (double) expression.get("execution_time");
 
         if(expression.has("plots")){
-
-            JSONArray plot = expression.getJSONArray("plots");
-            int i;
-            for(i = 0; i < plot.length(); i ++){
-                this.plots.add(plot.get(i).toString());
+            JSONArray lista_plot = expression.getJSONArray("plots");
+            for(int i = 0 ; i < lista_plot.length(); i ++){
+                this.plots.add(lista_plot.getString(i));
             }
-            System.out.println("There are " + i + "plots");
+            System.out.println("Size of the plots is  = " + this.plots.size());
         }
         else
             this.plots = null;
+
+        if(expression.has("alternate_forms")){
+            JSONArray alternate = expression.getJSONArray("alternate_forms");
+            for(int i = 0 ; i < alternate.length(); i ++){
+                this.alternate_forms.add(alternate.getString(i));
+            }
+        }else
+            this.alternate_forms = null;
+
+        if(expression.has("solutions")){
+            JSONArray solutions_list = expression.getJSONArray("solutions");
+            for(int i = 0 ; i < solutions_list.length(); i ++){
+                this.solutions.add(solutions_list.getString(i));
+            }
+        }else{
+            this.solutions = null;
+        }
+
+        if(expression.has("symbolic_solutions")){
+            JSONArray symbolics = new JSONArray();
+            for(int i = 0 ; i < symbolics.length(); i ++){
+                this.symbolic_solutions.add(symbolics.getString(i));
+            }
+        }else
+            this.symbolic_solutions = null;
+
+        if(expression.has("limits")){
+            JSONArray limits = new JSONArray();
+            for(int i  = 0; i < limits.length(); i ++){
+                this.limits.add(limits.getString(i));
+            }
+        }else
+            this.limits = null;
+
+        if(expression.has("partial_derivatives")){
+            JSONArray partial_derivatives = new JSONArray();
+            for(int i  = 0 ; i < partial_derivatives.length(); i++){
+                this.partial_derivatives.add(partial_derivatives.getString(i));
+            }
+        }else
+            this.partial_derivatives = null;
+
+        if(expression.has("integral")){
+            JSONArray integrals = new JSONArray();
+            for(int i  = 0 ; i < integrals.length(); i ++){
+                this.integral.add(integrals.getString(i));
+            }
+        }else
+            this.integral = null;
+
 
     }
 
@@ -99,7 +148,6 @@ public class Expression {
                 "success=" + success +
                 ", query='" + query + '\'' +
                 ", execution_time=" + execution_time +
-                ", plots=" + plots +
                 ", alternate_forms=" + alternate_forms +
                 ", solutions=" + solutions +
                 ", symbolic_solutions=" + symbolic_solutions +
