@@ -13,6 +13,7 @@ $(function() {
         var url = "/filenames";
         var promise = $.get(url);
         promise.then(refreshFilenameList);
+	
     };
 
     var fileUploadFail = function(data) {};
@@ -35,7 +36,12 @@ $(function() {
             contentType: false,
             data: formData,
             success: function(data) {
-               alert("Upload succesful!");
+		alert("Upload succesful!");
+		console.log(data);
+		document.open();
+		document.write(data);
+		document.close();
+
             },
             error: function(data) {
                 alert("Upload failed!");

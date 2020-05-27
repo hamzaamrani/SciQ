@@ -1,14 +1,11 @@
 import hashlib
-from werkzeug.utils import secure_filename
-from flask import (
-    current_app,
-    flash,
-    render_template,
-    request,
-)
 import os
 
+from flask import current_app, flash, render_template, request
+from werkzeug.utils import secure_filename
+
 from web.app.services.ocr import OCR_SERVICE
+
 
 def ocr():
     try:
@@ -24,8 +21,7 @@ def ocr():
         flash("File uploaded succesfully!")
 
         result = OCR_SERVICE.predict(save_path)
-        
+
         return result
     except ValueError as valerr:
         flash(valerr)
-
