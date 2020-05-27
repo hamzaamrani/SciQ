@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 
 from flask import current_app, flash, jsonify, render_template, request
 from werkzeug.utils import secure_filename
@@ -75,11 +76,11 @@ def submit_expression():
         logging.info("Expression = " + expression)
         parsed = exp2latex(expression)
         response_obj = compute_expression(parsed)
-        json = jsonify({k: v for k, v in response_obj.__dict__.items()})
+        response = jsonify({k: v for k, v in response_obj.__dict__.items()})
         #json.load method converts JSON string to Python Object
-        parsed = json.loads(json)
+        parsed = json.loads(response)
         logging.info("Sending JSON = " + json.dumps(parsed, indent=2, sort_keys=True))
-        return json
+        return response
 
 
 @jwt_optional
