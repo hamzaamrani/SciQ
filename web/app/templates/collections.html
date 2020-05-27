@@ -84,9 +84,12 @@
                 },
             });
 
-            setTimeout(function(){
-                window.location.reload();
+            $(document).ready(function () {
+                setTimeout(function(){
+                  location.reload(true);
+                }, 500);       
             });
+
         }
 
         function delete_collection(name_collection){
@@ -95,7 +98,6 @@
             var id = target.id;
             var name_collection = id.replace('-delete','');
 
-            alert(name_collection);
             $.ajax({
                 type: "POST",
                 url: "/delete_collection",
@@ -104,18 +106,30 @@
                 },
             });
 
-            setTimeout(function(){
-                window.location.reload();
+            // location.reload();
+
+            $(document).ready(function () {
+                setTimeout(function(){
+                  location.reload(true);
+                }, 500);       
             });
         }
 
-        function handle_expression_view(){
-            event = event || window.event; // IE
-            var target = event.target || event.srcElement; // IE
-            var id_expr = target.id;
+        // function see_expression(){
+        //     event = event || window.event; // IE
+        //     var target = event.target || event.srcElement; // IE
+        //     var id_expr = target.id;
 
-            alert(id_expr);
-        }
+        //     alert(id_expr);
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/show_expression",
+        //         data: {
+        //             id_expr: id_expr
+        //         }
+        //     });
+        // }
 
     </script>
 
@@ -197,11 +211,14 @@
                             <!-- {{ expression.query }} -->
                             <div class="card" style="width: 20rem;">
                                 <div class="card-body">
-
                                   <h4 class="card-title">\( {{ expression.query }} \)</h4>
-                                  <h6 class="card-subtitle mb-2 text-muted">{{ expression._id }}</h6>
+                                  
+                                  <form action="/show_expression" method="POST">
+                                    <button type="submit" name="id_expr" class="btn btn-link float-right static-bottom" value="{{ expression._id }}">
+                                        Show
+                                    </button>
+                                  </form>
 
-                                  <a href="#" id="{{ expression._id }}" onclick="handle_expression_view()" class="card-link float-right" data-toggle="modal" data-target="#showModal" >Open</a>
                                 </div>
                             </div>
 

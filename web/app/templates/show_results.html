@@ -17,7 +17,6 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
 
-
     <script type="text/javascript">
         function save_expression(){
             var col_name = document.getElementsByClassName("list-group-item list-group-item-action active").item(0).innerHTML;
@@ -37,9 +36,10 @@
                 }
             });
 
-            alert("Expression saved!");
-            $('#saveModal').modal('hide');
-            document.getElementById("saveButton").disabled = true;
+            // alert("Expression saved!");
+            // $('#saveModal').modal('hide');
+            // document.getElementById("saveButton").disabled = true;
+            window.location.replace('/collections');
       }
     </script>
 
@@ -48,7 +48,6 @@
 <!-- BODY-->
 
 <body>
-
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-md">
         <a class="navbar-brand" href="#"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" /> </a>
@@ -77,16 +76,26 @@
                     <p class="res_title" style="vertical-align: middle;"> Query : `{{ query }}` </p>
                 </div>
                 <div class="col-3">
-                    <p class="res_title" style="vertical-align: middle;"> Query response : {{ response_obj.success }} </p>
+                    {% if (response_obj._id is not defined) %}
+                        <p class="res_title" style="vertical-align: middle;"> Query response : {{ response_obj.success }} </p>
+                    {% else %}
+                        <p class="res_title" style="vertical-align: middle;"> Public : {{ response_obj.public }} </p>
+                    {% endif %}
                 </div>
                 <div class="col-3">
                     <p class="res_title" style="vertical-align: middle;"> Execution Time : {{ response_obj.execution_time }} </p>
                 </div>
                 <div class="col-3">
-                    {% if response_obj.success %}
+
+                    {% if (response_obj.success) and (response_obj._id is not defined) %}
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
                             Save Expression
                         </button>
+                    {% else %}
+                        Delete
+                        <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
+                            Delete Expression
+                        </button> -->
                     {% endif %}
                 </div>
             </div>

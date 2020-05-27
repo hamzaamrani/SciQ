@@ -47,10 +47,6 @@ def create_app(config_name):
     # Definitions of route API
     from web.app.api import user_api
 
-    # app.add_url_rule("/prova", 
-    #     methods=["POST"], 
-    #     view_func=user_api.trova_mongo)
-
     app.add_url_rule("/", 
         methods=["GET"], 
         view_func=user_api.index)
@@ -113,6 +109,12 @@ def create_app(config_name):
         "/delete_collection",
         methods=["POST"],
         view_func=collections_api.delete_collection
+    )
+
+    app.add_url_rule(
+        "/show_expression",
+        methods=["POST"],
+        view_func=collections_api.show_expression
     )
 
     return app

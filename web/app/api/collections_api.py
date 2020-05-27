@@ -17,8 +17,11 @@ from web.app.services.parser.parser import ASCIIMath2Tex
 from web.app.services.api_wolfram.waAPI import Expression
 import json
 import html
+from flask import Markup
 
 from bson import ObjectId
+from bson.objectid import ObjectId
+
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -56,9 +59,6 @@ def save_expression_to_db():
 
     json_obj = eval(json_obj)
 
-    # logging.info(json_obj)
-    # logging.info(type(json_obj))
-
 
     from web.app import mongo
     users = mongo.db.users
@@ -90,12 +90,8 @@ def save_expression_to_db():
     
     id_obj = ObjectId()
     json_obj['query'] = raw(json_obj['query'])
-    # json_obj = expression_obj.to_json()
     json_obj['_id'] = id_obj
     json_obj['public'] = request.form["public"]
-
-    logging.info(json_obj)
-
     
     # Add current expression and add to default collection
     users.update(
@@ -114,13 +110,13 @@ def save_expression_to_db():
     if not( request.form["name_collection"] == "default"):
         collection = 'collections.' + request.form["name_collection"] + ".ids"
         users.update( 
-            {'id_user' : '001'}, 
+            {'id_user' : id_user}, 
             {'$addToSet': {collection: id_obj}} 
         )
     
     logging.info("Saving expression to db has been completed with success!")
 
-    return "okk"
+    return "200"
 
 def get_collections():
     from web.app import mongo
@@ -167,9 +163,12 @@ def get_expressions(collection_name):
     collection_expressions = []
 
     for collection_id in collection_ids:
-        expression = users.find({"id_user":"001"}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]['expressions'][0]
-        expression_obj = dict2obj(expression)
-        collection_expressions.append(expression_obj)
+        try:
+            expression = users.find({"id_user":id_user}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]['expressions'][0]
+            expression_obj = dict2obj(expression)
+            collection_expressions.append(expression_obj)
+        except:
+            pass
     
     return collection_expressions
 
@@ -220,3 +219,29 @@ def raw(text):
         text = text.replace(k, v)
 
     return text
+
+def show_expression():
+    id_expr = request.form["id_expr"]
+    
+    from web.app import mongo
+    users = mongo.db.users
+    id_user = get_idUser()
+
+    exp = users.find({"id_user": id_user}, { 'expressions': { '$elemMatch': { '_id': ObjectId(id_expr) } } })[0]['expressions'][0]
+    exp_keys = ['alternate_forms','solutions','symbolic_solutions','results','limits','partial_derivatives','integral']
+
+    for key in exp_keys:
+        exp[key] = [Markup(x) for x in exp[key]]
+    
+    exp_obj = dict2obj(exp)
+
+        
+    return render_template(
+        "show_results.html",
+        alert=False,
+        query=exp_obj.query,
+        response_obj_json=exp,
+        response_obj = exp_obj,
+        collections_names=[],
+        collections_infos=[]
+    )

@@ -28,7 +28,7 @@ def submit_expression():
 
     parsed = parse_2_latex(expression)
     response_obj = compute_expression(parsed)
-
+    response_obj_json = response_obj.to_json()
 
     collections_names,collections_infos = collections_api.get_collections()
 
@@ -36,8 +36,8 @@ def submit_expression():
         "show_results.html",
         alert=False,
         query=expression,
-        response_obj_json=response_obj.to_json(),
-        response_obj=response_obj,
+        response_obj_json=response_obj_json,
+        response_obj = response_obj,
         collections_names=collections_names,
         collections_infos=collections_infos
     )

@@ -145,7 +145,7 @@ class Expression(object):
 
         self.query = query
         self.success = results["success"]
-        self.execution_time = results["timing"]
+        self.execution_time = str(results["timing"])
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
@@ -315,9 +315,7 @@ def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
     """
     logging.info("Computing expression...")
     client_api = waAPI(key)
-    query = "\left( " + query + " \right)"
-    query = raw(query)
-    results_json = client_api.full_results(query=query)
+    results_json = client_api.full_results(query=raw("\left( " + query + " \right)"))
     obj_expression = Expression(
         query=query,
         results=results_json,
