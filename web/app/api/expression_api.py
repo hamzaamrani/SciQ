@@ -75,7 +75,9 @@ def submit_expression():
         logging.info("Expression = " + expression)
         parsed = exp2latex(expression)
         response_obj = compute_expression(parsed)
-        return jsonify({k: v for k, v in response_obj.__dict__.items()})
+        json = jsonify({k: v for k, v in response_obj.__dict__.items()})
+        logging.info(str(json))
+        return json
 
 
 @jwt_optional

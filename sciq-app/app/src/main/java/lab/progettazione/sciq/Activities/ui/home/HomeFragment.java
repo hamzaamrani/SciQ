@@ -101,11 +101,10 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
 
 
     @Override
-    public void onExpressionSuccesfull(Expression expression) {
-        Log.d("submit_expression", "Request sucesfull");
-        for(int i = 0; i < expression.getPlots().size(); i ++){
-            Log.d("submit_expression", "Plots of the expression n° " + i + " =  " + expression.getPlots().get(i));
-        }
+    public void onExpressionSuccessful(Expression expression) {
+        Log.d("submit_expression", "Request successful");
+        System.out.println(expression.toString());
+
     }
 
     @Override

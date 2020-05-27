@@ -53,7 +53,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        System.out.print("Returned " + s);
+        //System.out.print("Returned " + s);
         progressBar.setVisibility(View.GONE);
         boolean success;
         try{
@@ -63,7 +63,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
                 if(success){
                     Expression response_exp = new Expression(response);
                     System.out.println("Success =  " + response_exp.getSuccess());
-                    delegate.onExpressionSuccesfull(response_exp);
+                    delegate.onExpressionSuccessful(response_exp);
                 }else
                     delegate.onExpressionFailure("Success false");
             }else
