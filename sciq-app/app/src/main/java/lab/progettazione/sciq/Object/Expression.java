@@ -41,10 +41,10 @@ public class Expression {
 
         if(expression.has("plots")){
 
-
+            JSONArray plot = expression.getJSONArray("plots");
             int i;
-            for(i = 0; i < plots.size(); i ++){
-                this.plots.add(plots.get(i).toString());
+            for(i = 0; i < plot.length(); i ++){
+                this.plots.add(plot.get(i).toString());
             }
             System.out.println("There are " + i + "plots");
         }

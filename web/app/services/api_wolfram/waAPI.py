@@ -331,14 +331,14 @@ class Expression(object):
         expression['success'] = self.success
         expression['query'] = self.query
         expression['execution_time'] = self.execution_time
-        expression['plots'] = self.plots
-        expression['alternate_forms'] = self.alternate_forms
-        expression['results'] = self.results
-        expression['solutions'] = self.solutions
-        expression['symbolic_solutions'] = self.symbolic_solutions
-        expression['limits'] = self.limits
-        expression['partial_derivatives'] = self.partial_derivatives
-        expression['integral'] = self.integral
+        expression['plots'] = json.dumps(self.plots)
+        expression['alternate_forms'] = json.dumps(self.alternate_forms)
+        expression['results'] = json.dumps(self.results)
+        expression['solutions'] = json.dumps(self.solutions)
+        expression['symbolic_solutions'] = json.dumps(self.symbolic_solutions)
+        expression['limits'] = json.dumps(self.limits)
+        expression['partial_derivatives'] = json.dumps(self.partial_derivatives)
+        expression['integral'] = json.dumps(self.integral)
 
         return json.dumps(expression)
 
