@@ -73,7 +73,9 @@ def save_expression_to_db():
             {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
         )
         '''
+        '''
         users.create_index([("id_user"),("collections.default")], unique=True)
+        '''
 
     id_obj = ObjectId()
     json_obj["query"] = raw(json_obj["query"])
@@ -191,7 +193,9 @@ def create_collection():
         {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
     )
     '''
+    '''
     users.create_index([("id_user"),("collections.default")], unique=True)
+    '''
 
     logging.info("User " + id_user + ": created collection " + name + "!")
 
