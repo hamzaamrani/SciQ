@@ -55,6 +55,7 @@ public class RequestHandler {
                 break;
             }
             in.close();
+            System.out.println("Returning " + sb.toString());
             return sb.toString();
         } else {
             String err;
@@ -62,8 +63,13 @@ public class RequestHandler {
                 err = "Connection Error!";
                 return err;
             } else {
-                err = "Username or Password invalid";
-                return err;
+                if(responseCode == 429){
+                    return "Limit exceeded";
+                }else{
+                    err = "Username or Password invalid";
+                    return err;
+                }
+
             }
         }
     }

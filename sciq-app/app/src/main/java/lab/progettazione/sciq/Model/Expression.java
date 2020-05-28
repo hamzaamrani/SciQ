@@ -1,4 +1,4 @@
-package lab.progettazione.sciq.Object;
+package lab.progettazione.sciq.Model;
 
 
 import android.os.Parcel;

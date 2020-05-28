@@ -1,6 +1,9 @@
 package lab.progettazione.sciq.Activities.ui.home;
 
-import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,9 +27,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nishant.math.MathView;
 import com.progettazione.sciq.R;
 
-import java.util.logging.Logger;
-
-import lab.progettazione.sciq.Object.Expression;
+import lab.progettazione.sciq.Activities.Login.SignupActivity;
+import lab.progettazione.sciq.Activities.ShowResults;
+import lab.progettazione.sciq.Model.Expression;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SubmitExpression;
 import lab.progettazione.sciq.Utilities.Interfaces.ExpressionInterface;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
@@ -37,7 +40,7 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
     private HomeViewModel homeViewModel;
     private SubmitExpression submitExpression;
     private SharedUtils check = new SharedUtils();
-
+    private static String asciiMath_delimiter = "`";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -51,11 +54,6 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
 
 
 
-
-        String asciimath_delimiter = "`";
-
-
-
         expression_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -64,7 +62,7 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mathView.setText(asciimath_delimiter + s.toString() + asciimath_delimiter);
+                mathView.setText(asciiMath_delimiter + s.toString() + asciiMath_delimiter);
             }
 
             @Override
@@ -82,9 +80,11 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
                     expression_input.setError(null);
                     if(check.userLogged(getContext())){
                         submitExpression.execute(check.getToken(getContext()), expression_input.getText().toString().trim());
+                    }else{
+                        submitExpression.execute(null, expression_input.getText().toString().trim());
                     }
                 }else
-                    expression_input.setError("Type something!");
+                    expression_input.setError("Type some kind of expression to be evaluated!");
             }
         });
 
@@ -104,10 +104,32 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
     public void onExpressionSuccessful(Expression expression) {
         Log.d("submit_expression", "Request successful");
         System.out.println(expression.toString());
+        Intent i  = new Intent(getContext(), ShowResults.class);
+        i.putExtra("Expression", expression);
+        startActivity(i);
     }
 
     @Override
     public void onExpressionFailure(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        if(error.equalsIgnoreCase("Limit request reached!")){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Limit request reached!")
+                    .setMessage("Sign up or login to perform unlimited requests!")
+                    .setPositiveButton("Ok, let's do it", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i  = new Intent(getContext(), SignupActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                            getActivity().finish();
+                        }
+                    })
+                    .setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                        }
+                    }).show();
+        }
     }
 }

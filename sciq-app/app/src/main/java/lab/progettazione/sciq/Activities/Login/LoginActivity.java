@@ -7,12 +7,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.progettazione.sciq.R;
 
 import org.json.JSONObject;
+
+import java.util.Date;
 
 import lab.progettazione.sciq.Activities.MainActivity;
 import lab.progettazione.sciq.Utilities.AsyncTasks.LoginPostAsyncTask;
@@ -23,6 +26,7 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
     private TextInputEditText input_name_login, input_password_login;
     private Button login_button;
     LoginPostAsyncTask loginPostAsyncTask;
+    private TextView no_login;
 
 
     @Override
@@ -33,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
         input_name_login = findViewById(R.id.input_name_login);
         input_password_login = findViewById(R.id.input_password_login);
         login_button = findViewById(R.id.login_button);
+        no_login = findViewById(R.id.no_login);
 
 
 
@@ -69,6 +74,19 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
             }
         });
 
+        no_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences isLogged = getSharedPreferences("Logged", 0);
+                SharedPreferences.Editor login = isLogged.edit();
+                login.clear();
+                login.putBoolean("isLogged", false);
+                login.apply();
+                Intent i  = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     @Override
@@ -89,6 +107,7 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
                 SharedPreferences.Editor login = isLogged.edit();
                 login.clear();
                 login.putBoolean("isLogged", true );
+                login.putLong("lastLogin", new Date().getTime());
                 login.apply();
 
                 input_password_login.setError(null);

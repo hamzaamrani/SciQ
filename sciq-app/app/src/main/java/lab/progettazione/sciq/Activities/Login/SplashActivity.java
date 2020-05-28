@@ -28,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // Check if the user is already logged into SciQ
         SharedPreferences user_logged = getSharedPreferences("Logged", MODE_PRIVATE);
-        boolean logged = user_logged.getBoolean("logged", false);
+        boolean logged = user_logged.getBoolean("isLogged", false);
         Log.d("UserLogged", "User logged = " + logged);
 
         //If user is logged check if the old token is already valid
@@ -40,8 +40,8 @@ public class SplashActivity extends AppCompatActivity {
             Long diff = this_login - last_login;
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffDays = diff / (24 * 60 * 60 * 1000);
-            if (!(diffDays > 0) && !(diffHours > 8)) {
-                Log.d("UserLogged", "Last login within eight hours!");
+            if (!(diffDays > 0) && !(diffHours > 4)) {
+                Log.d("UserLogged", "Last login within 4 hours!");
                 // Token is still valid
                 destination_activity = MainActivity.class;
             } else {
