@@ -17,10 +17,9 @@ from web.app.services.utils.utils import custom_key_func
 
 LIMIT = "1 per day"
 limiter = Limiter(key_func=custom_key_func)
-mongo = PyMongo()
 
 # Definitions of route API
-from web.app.api import expression_api, user_api, community_api
+from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
 from web.app.api.error_handler import reached_limit_requests, login_required
@@ -33,7 +32,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 jwt = JWTManager() 
-
+mongo = PyMongo()
 
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
@@ -110,6 +109,8 @@ def create_app(config_name):
     app.add_url_rule("/api/v1/parser", methods=["GET"], view_func=exp2json)
 
     app.add_url_rule("/api/v1/solver", methods=["GET"], view_func=solve_exp)
+
+    from web.app.api import community_api
 
     app.add_url_rule("/posts", methods=['GET'], view_func=community_api.posts)
 
