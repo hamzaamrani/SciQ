@@ -35,3 +35,4 @@ user-agents
 flask-jwt-extended
 pymongo
 Flask-PyMongo
+mongomock

@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, jsonify, render_template, request
 from user_agents import parse
-#from flask_heroku import Heroku
+from flask_heroku import Heroku
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -27,12 +27,13 @@ from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
-#heroku = Heroku()
+heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
-jwt = JWTManager() 
-mongo = PyMongo()
+jwt = JWTManager()
+mongo = PyMongo() 
+
 
 def create_app(config_name):
     app = Flask(__name__, static_url_path="")
@@ -52,14 +53,15 @@ def create_app(config_name):
         )
     )
 
-    from web.app.models import User
-
     db.init_app(app)
     ma.init_app(app)
     limiter.init_app(app)
-    #heroku.init_app(app)
     jwt.init_app(app)
+    heroku.init_app(app)
     mongo.init_app(app)
+
+    from web.app.models import User
+
     migrate.init_app(app, db)
 
     app.add_url_rule("/", methods=["GET"], view_func=user_api.index)
@@ -100,7 +102,7 @@ def create_app(config_name):
         view_func=user_api.add_application,
     )
 
-    # app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
+    app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
 
     app.add_url_rule(
         "/api/v1/appid", methods=["GET"], view_func=user_api.get_appid
@@ -125,6 +127,39 @@ def create_app(config_name):
     app.register_error_handler(429, reached_limit_requests)
 
     register_jwt_callbacks()
+
+    
+    from web.app.api import collections_api
+
+    app.add_url_rule(
+        "/collections",
+        methods=["GET"],
+        view_func=collections_api.collections
+    )
+
+    app.add_url_rule(
+        "/save_expression_to_db",
+        methods=["POST"],
+        view_func=collections_api.save_expression_to_db
+    )
+
+    app.add_url_rule(
+        "/create_collection",
+        methods=["POST"],
+        view_func=collections_api.create_collection
+    )
+
+    app.add_url_rule(
+        "/delete_collection",
+        methods=["POST"],
+        view_func=collections_api.delete_collection
+    )
+
+    app.add_url_rule(
+        "/show_expression",
+        methods=["POST"],
+        view_func=collections_api.show_expression
+    )
 
     return app
 

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ - Query results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=4">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+
+    <link href="css/propeller.min.css" rel="stylesheet">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        CommonHTML: {
+            styles: {
+            //
+            // remove CSS for '.mjx-math *'
+            //
+            '.mjx-math *': {
+                display: null,
+                '-webkit-box-sizing': null,
+                '-moz-box-sizing': null,
+                'box-sizing': null,
+                'tex-align': null
+            },
+            //
+            // add CSS for .mjx-math span instead
+            //
+            '.mjx-math span': {
+                display: 'inline-block',
+                '-webkit-box-sizing': 'context-box !important',
+                '-moz-box-sizing': 'context-box !important',
+                'box-sizing': 'context-box !important',
+                'tex-align': 'left'
+            },
+            //
+            // override display for .mjx-char spans
+            //
+            'span.mjx-char': {
+                display: 'block'
+            }
+            }
+        }
+        });
+        MathJax.Hub.Register.StartupHook("TeX Jax Ready", function () {
+        var MML = MathJax.ElementJax.mml;
+        var TEX = MathJax.InputJax.TeX;
+        TEX.Definitions.macros.insertHTML = 'InsertHTML';
+        TEX.Parse.Augment({
+            InsertHTML: function (name) {
+            var html = this.GetArgument(name).replace(/^\s*<!--\s*/,'').replace(/\s*-->\s*$/,'');
+            var span = MathJax.HTML.Element('mjx-reset', {style: {display:'inline-block'}});
+            span.innerHTML = html;  // serious security risk if users can enter math
+            span.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
+            var mml = MML["annotation-xml"](MML.xml(span)).With({encoding:"application/xhtml+xml",isToken:true});
+            this.Push(MML.semantics(mml));
+            }
+        });
+        });
+    </script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"
+        defer></script>
+
+    <script type="text/javascript">
+        function create_collection() {
+            var name_collection = document.getElementById("input-name-collection").value;
+            var info_collection = document.getElementById("input-info-collection").value;
+
+            $.ajax({
+                type: "POST",
+                url: "/create_collection",
+                data: {
+                    name_collection: name_collection,
+                    info_collection: info_collection
+                }
+            });
+
+            $(document).ajaxStop(function () {
+                window.location.reload();
+            });
+        }
+
+        function delete_collection(name_collection) {
+            event = event || window.event; // IE
+            var target = event.target || event.srcElement; // IE
+            var id = target.id;
+            var name_collection = id.replace('-delete', '');
+
+            $.ajax({
+                type: "POST",
+                url: "/delete_collection",
+                data: {
+                    name_collection: name_collection
+                }
+            });
+
+            $(document).ajaxStop(function () {
+                window.location.reload();
+            });
+        }
+
+    </script>
+
+</head>
+
+<!-- BODY-->
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="#"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            {% include 'navbar.html' %}
+        </div>
+    </nav>
+
+
+    <!-- Collection view  -->
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-10">
+                <h1>Collections</h1>
+            </div>
+            <div class="col-2">
+                <button class="btn pmd-btn-fab pmd-ripple-effect btn-light" type="button" data-toggle="modal"
+                    data-target="#createCollection" id="button-createCollection">Add new collection</button>
+            </div>
+        </div>
+
+        <br>
+
+        <div id="accordion">
+
+            {% for i in range(collections_names|length) %}
+            <div class="card">
+                <div class="card-header" id="card-{{ collections_names[i] }}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse"
+                            data-target="#{{ collections_names[i]| replace(' ','_') }}" aria-expanded="true"
+                            aria-controls="collapseOne">
+                            {% if collections_names[i] == "default" %}
+                            All expressions
+                            {% else %}
+                            {{ collections_names[i] }} # {{ i }}
+                            {% endif%}
+                        </button>
+                        {% if collections_names[i] != "default" %}
+                        <button class="btn btn-success float-right" id="{{ collections_names[i] }}-delete"
+                            style="margin-right: 1em" onclick="delete_collection(event)">Delete</button>
+                        {% endif%}
+                    </h5>
+                </div>
+
+                {% if collections_names[i] == "default" %}
+                <div id="{{ collections_names[i]| replace(' ','_') }}" class="collapse show"
+                    aria-labelledby="card-{{ collections_names[i] }}" data-parent="#accordion">
+                    {% else %}
+                    <div id="{{ collections_names[i]| replace(' ','_') }}" class="collapse"
+                        aria-labelledby="card-{{ collections_names[i] }}" data-parent="#accordion">
+                        {% endif%}
+                        <div class="card-body">
+                            <p class="lead">
+                                {{ collections_infos[i] }}
+                            </p>
+
+                            <div class="cards">
+                                {% for expression in expressions_by_collection[i]%}
+
+                                <!-- {{ expression.query }} -->
+                                <div class="card" style="width: 20rem;">
+                                    <div class="card-body">
+                                        <h4 class="card-title">\( {{ expression.query }} \)</h4>
+
+                                        <form action="/show_expression" method="POST">
+                                            <button type="submit" name="id_expr"
+                                                class="btn btn-link float-right static-bottom"
+                                                value="{{ expression._id }}">
+                                                Show
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+
+
+        <!-- End Collections view  -->
+
+        <!-- BEGIN SAVE expression Modal -->
+        <div class="modal fade bd-example-modal-xl" id="showModal" tabindex="-1" role="dialog"
+            aria-labelledby="showModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="showModalLabel">
+                            Expression computation
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+
+                        <div class="container container-fluid response_global" style="padding-left: 5px;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <p class="res_title" style="vertical-align: middle;" id="query"> Query : </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <p class="res_title" style="vertical-align: middle;" id="query-response"> Query
+                                            response : </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <p class="res_title" style="vertical-align: middle;" id="execution-time">
+                                            Execution Time :</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Plots:</p>
+                                <div class="cards" id="plots">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Solutions:</p>
+                                <div class="cards" id="solutions">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Symbolic solutions:</p>
+                                <div class="cards" id="symbolic-solutions">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Alternate forms:</p>
+                                <div class="cards" id="alternate-forms">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Limits:</p>
+                                <div class="cards" id="alternate-forms">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Partial derivatives:</p>
+                                <div class="cards" id="partial-derivatives">
+
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <p class="res_title" style="vertical-align: middle;">Integrals:</p>
+                                <div class="cards" id="integrals">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- END SAVE expression Modal -->
+
+        <!-- Modal for create new collection -->
+        <div class="modal fade" id="createCollection" tabindex="-1" role="dialog" aria-labelledby="createCollection"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Create new collection</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+                            </div>
+                            <input type="text" class="form-control" id="input-name-collection" aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default" required>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
+                            </div>
+                            <input type="text" class="form-control" id="input-info-collection" aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" onclick="create_collection()">Add</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End modal -->
+        {% include 'footer.html' %}
+</body>
+
+</html>
