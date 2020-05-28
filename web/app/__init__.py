@@ -22,7 +22,7 @@ limiter = Limiter(key_func=custom_key_func)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
-from web.app.api.error_handler import reached_limit_requests
+from web.app.api.error_handler import reached_limit_requests, login_required
 from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -39,6 +39,8 @@ def create_app(config_name):
     app = Flask(__name__, static_url_path="")
 
     app.config.from_object(config[config_name])
+
+    app.config['PROPAGATE_EXCEPTIONS'] = True
 
     app.config["UPLOAD_FOLDER"] = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), "/web/app/static/uploads",
@@ -109,6 +111,18 @@ def create_app(config_name):
     app.add_url_rule("/api/v1/parser", methods=["GET"], view_func=exp2json)
 
     app.add_url_rule("/api/v1/solver", methods=["GET"], view_func=solve_exp)
+
+    from web.app.api import community_api
+
+    app.add_url_rule("/posts", methods=['GET'], view_func=community_api.posts)
+
+    app.add_url_rule("/posts/user", methods=['GET'], view_func=community_api.get_posts)
+
+    app.add_url_rule("/post", methods=['POST', 'DELETE'], view_func=community_api.post)
+
+    app.add_url_rule("/post/<id>", methods=['GET'], view_func=community_api.get_post)
+
+    app.add_url_rule('/comment', methods=['POST'], view_func=community_api.comment)
 
     app.register_error_handler(429, reached_limit_requests)
 
