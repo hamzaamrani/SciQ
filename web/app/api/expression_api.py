@@ -43,26 +43,6 @@ def solve_exp():
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
 
 
-# def submit_expression():
-#     expression = request.form["symbolic_expression"]
-
-#     parsed = parse_2_latex(expression)
-#     response_obj = compute_expression(parsed)
-#     response_obj_json = response_obj.to_json()
-
-#     collections_names,collections_infos = collections_api.get_collections()
-
-#     return render_template(
-#         "show_results.html",
-#         alert=False,
-#         query=response_obj.query,
-#         response_obj_json=response_obj_json,
-#         response_obj = response_obj,
-#         collections_names=collections_names,
-#         collections_infos=collections_infos
-#     )
-
-
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def submit_expression():
@@ -104,7 +84,7 @@ def submit_expression():
         logging.info("Expression = " + expression)
         parsed = exp2latex(expression)
         response_obj = compute_expression(parsed).to_json()
-        return jsonify({"results": response_obj})
+        return jsonify(response_obj)
 
 
 @jwt_optional
