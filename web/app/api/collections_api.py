@@ -199,7 +199,7 @@ def create_collection():
 
     logging.info("User " + id_user + ": created collection " + name + "!")
     
-    return "200"
+    return jsonify({'result': 'collection created'})
 
 
 def delete_collection():
@@ -216,7 +216,7 @@ def delete_collection():
 
     logging.info("User " + id_user + ": deleted collection " + name + "!")
     
-    return "200"
+    return jsonify({'result': 'collection deleted'})
 
 
 def raw(text):
