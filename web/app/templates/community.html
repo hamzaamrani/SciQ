@@ -124,6 +124,20 @@
                     });
                 }
             });
+
+            $("#button_filter").on("click", function(event){
+                var topic = $("#topic_filter").children("option:selected").val();
+
+                document.querySelectorAll(`.${topic}`).forEach(function(el) {
+                    el.style.display = 'block';
+                });
+
+                $(".card:not('."+ topic +"')").hide();
+
+            });
+            $("#button_disable_filter").on("click", function(event){
+                $(".card").show();
+            });
         });
     </script>
 </head>
@@ -188,7 +202,7 @@
             </div>
             <div class='col-8'>            
                 {% for post in posts %}
-                    <div class="card border-light mb-1" style="border: none;">
+                    <div class="card border-light mb-1 {{post.topic}}" style="border: none;">
                         <div class="card-header container-fluid">
                             <div class="row">
                                 <div class="col-md-12">
@@ -221,12 +235,14 @@
                 <div class="form-group">
                     <label>Filter by topic</label>
                     <select class="form-control" id="topic_filter">
-                        <option>Integral</option>
-                        <option>Derivates</option>
-                        <option>Limit</option>
+                        <option value='Integral'>Integral</option>
+                        <option value='Derivates'>Derivates</option>
+                        <option value='Limit'>Limit</option>
+                        <option vlaue='General'>General</option>
                     </select>
                 </div>  
-                <button type="button" class="btn btn-primary">Apply filter</button>
+                <button type="button" class="btn btn-primary" id="button_filter">Apply filter</button>
+                <button type="button" class="btn btn-light" id="button_disable_filter">Disable filter</button>
             </div>
         </div>
     </div>
