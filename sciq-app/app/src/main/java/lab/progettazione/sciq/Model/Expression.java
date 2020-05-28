@@ -1,19 +1,15 @@
 package lab.progettazione.sciq.Object;
 
-import android.widget.ExpandableListView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.lang.annotation.IncompleteAnnotationException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class Expression {
+
+public class Expression implements Parcelable {
     private Boolean success;
     private String query;
     private double execution_time;
@@ -102,6 +98,32 @@ public class Expression {
 
     }
 
+    protected Expression(Parcel in) {
+        byte tmpSuccess = in.readByte();
+        success = tmpSuccess == 0 ? null : tmpSuccess == 1;
+        query = in.readString();
+        execution_time = in.readDouble();
+        plots = in.createStringArrayList();
+        alternate_forms = in.createStringArrayList();
+        solutions = in.createStringArrayList();
+        symbolic_solutions = in.createStringArrayList();
+        limits = in.createStringArrayList();
+        partial_derivatives = in.createStringArrayList();
+        integral = in.createStringArrayList();
+    }
+
+    public static final Creator<Expression> CREATOR = new Creator<Expression>() {
+        @Override
+        public Expression createFromParcel(Parcel in) {
+            return new Expression(in);
+        }
+
+        @Override
+        public Expression[] newArray(int size) {
+            return new Expression[size];
+        }
+    };
+
     public Boolean getSuccess() {
         return success;
     }
@@ -146,7 +168,7 @@ public class Expression {
     public String toString() {
         return "Expression{" +
                 "success=" + success +
-                ", query='" + query + '\'' +
+                ", query=" + query  +
                 ", execution_time=" + execution_time +
                 ", alternate_forms=" + alternate_forms +
                 ", solutions=" + solutions +
@@ -155,5 +177,24 @@ public class Expression {
                 ", partial_derivatives=" + partial_derivatives +
                 ", integral=" + integral +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (success == null ? 0 : success ? 1 : 2));
+        dest.writeString(query);
+        dest.writeDouble(execution_time);
+        dest.writeStringList(plots);
+        dest.writeStringList(alternate_forms);
+        dest.writeStringList(solutions);
+        dest.writeStringList(symbolic_solutions);
+        dest.writeStringList(limits);
+        dest.writeStringList(partial_derivatives);
+        dest.writeStringList(integral);
     }
 }
