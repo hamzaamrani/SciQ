@@ -183,7 +183,7 @@ def create_collection():
             }
         },
     )
-    users.create_index(
+    users.createIndex(
         {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
     )
 
