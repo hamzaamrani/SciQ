@@ -92,7 +92,7 @@ def submit_expression():
         logging.info("Expression = " + expression)
         parsed = exp2latex(expression)
         response_obj = compute_expression(parsed).to_json()
-        return jsonify(response_obj)
+        return response_obj
 
 
 @jwt_optional
