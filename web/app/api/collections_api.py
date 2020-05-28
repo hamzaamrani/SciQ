@@ -2,7 +2,7 @@ import html
 import logging
 
 from bson import ObjectId
-from flask import Markup, render_template, request
+from flask import Markup, render_template, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
