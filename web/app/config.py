@@ -23,6 +23,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = os.environ.get("TESTING")
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    MONGO_URI = os.environ.get("MONGO_URI")
     FLASK_ENV = "development"
 
 

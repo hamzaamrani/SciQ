@@ -157,18 +157,21 @@ def get_expressions(collection_name):
     logging.info("Get expressions")
 
     id_user = get_idUser()
-    user = users.find( {'id_user' : id_user} )[0]
-    collection_ids = user["collections"][collection_name]["ids"]
-
     collection_expressions = []
 
-    for collection_id in collection_ids:
-        try:
-            expression = users.find({"id_user":id_user}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]['expressions'][0]
-            expression_obj = dict2obj(expression)
-            collection_expressions.append(expression_obj)
-        except:
-            pass
+    try:
+        user = users.find( {'id_user' : id_user} )[0]
+        collection_ids = user["collections"][collection_name]["ids"]
+
+        for collection_id in collection_ids:
+            try:
+                expression = users.find({"id_user":id_user}, { 'expressions': { '$elemMatch': { '_id': collection_id } } })[0]['expressions'][0]
+                expression_obj = dict2obj(expression)
+                collection_expressions.append(expression_obj)
+            except:
+                pass
+    except:
+        pass
     
     return collection_expressions
 
@@ -245,3 +248,19 @@ def show_expression():
         collections_names=[],
         collections_infos=[]
     )
+
+def delete_expression():
+    id_expr = request.form["id_expr"]
+    
+    from web.app import mongo
+    users = mongo.db.users
+    id_user = get_idUser()
+
+    collections_names,collections_infos = get_collections()
+
+
+    users.update( {'id_user': id_user},{'$pull': {'expressions':{'_id' : ObjectId(id_expr) }}}, 'false','true' )
+
+    for collection_name in collections_names:
+        users.update( {'id_user': id_user},{'$pull': {'collections.'+collection_name+'.ids' : ObjectId(id_expr) }}, 'false','true' )
+

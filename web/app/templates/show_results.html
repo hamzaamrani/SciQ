@@ -17,6 +17,59 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
 
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        CommonHTML: {
+            styles: {
+            //
+            // remove CSS for '.mjx-math *'
+            //
+            '.mjx-math *': {
+                display: null,
+                '-webkit-box-sizing': null,
+                '-moz-box-sizing': null,
+                'box-sizing': null,
+                'tex-align': null
+            },
+            //
+            // add CSS for .mjx-math span instead
+            //
+            '.mjx-math span': {
+                display: 'inline-block',
+                '-webkit-box-sizing': 'context-box !important',
+                '-moz-box-sizing': 'context-box !important',
+                'box-sizing': 'context-box !important',
+                'tex-align': 'left'
+            },
+            //
+            // override display for .mjx-char spans
+            //
+            'span.mjx-char': {
+                display: 'block'
+            }
+            }
+        }
+        });
+        MathJax.Hub.Register.StartupHook("TeX Jax Ready", function () {
+        var MML = MathJax.ElementJax.mml;
+        var TEX = MathJax.InputJax.TeX;
+        TEX.Definitions.macros.insertHTML = 'InsertHTML';
+        TEX.Parse.Augment({
+            InsertHTML: function (name) {
+            var html = this.GetArgument(name).replace(/^\s*<!--\s*/,'').replace(/\s*-->\s*$/,'');
+            var span = MathJax.HTML.Element('mjx-reset', {style: {display:'inline-block'}});
+            span.innerHTML = html;  // serious security risk if users can enter math
+            span.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
+            var mml = MML["annotation-xml"](MML.xml(span)).With({encoding:"application/xhtml+xml",isToken:true});
+            this.Push(MML.semantics(mml));
+            }
+        });
+        });
+    </script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML" defer></script>
+
+
     <script type="text/javascript">
         function save_expression(){
             var col_name = document.getElementsByClassName("list-group-item list-group-item-action active").item(0).innerHTML;
@@ -36,10 +89,19 @@
                 }
             });
 
+            $(document).ajaxStop(function(){
+                window.location.replace('/collections');
+            });
+
             // alert("Expression saved!");
             // $('#saveModal').modal('hide');
             // document.getElementById("saveButton").disabled = true;
-            window.location.replace('/collections');
+            
+            // $(document).ready(function () {
+            //     setTimeout(function(){
+            //         window.location.replace('/collections');
+            //     }, 500);       
+            // });
       }
     </script>
 
@@ -73,7 +135,7 @@
         <div class="container container-response">
             <div class="row">
                 <div class="col-3">
-                    <p class="res_title" style="vertical-align: middle;"> Query : `{{ query }}` </p>
+                    <p class="res_title" style="vertical-align: middle;"> Query : \( {{ query }} \) </p>
                 </div>
                 <div class="col-3">
                     {% if (response_obj._id is not defined) %}

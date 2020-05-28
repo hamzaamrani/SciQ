@@ -81,14 +81,18 @@
                 data: {
                     name_collection: name_collection,
                     info_collection: info_collection                
-                },
+                }
             });
 
-            $(document).ready(function () {
-                setTimeout(function(){
-                  location.reload(true);
-                }, 500);       
+            $(document).ajaxStop(function(){
+                window.location.reload();
             });
+
+            // $(document).ready(function () {
+            //     setTimeout(function(){
+            //       location.reload(true);
+            //     }, 500);       
+            // });
 
         }
 
@@ -103,16 +107,19 @@
                 url: "/delete_collection",
                 data: {
                     name_collection: name_collection
-                },
+                }
             });
 
+            $(document).ajaxStop(function(){
+                window.location.reload();
+            });
             // location.reload();
 
-            $(document).ready(function () {
-                setTimeout(function(){
-                  location.reload(true);
-                }, 500);       
-            });
+            // $(document).ready(function () {
+            //     setTimeout(function(){
+            //       location.reload(true);
+            //     }, 500);       
+            // });
         }
 
         // function see_expression(){
@@ -138,7 +145,6 @@
 <!-- BODY-->
 
 <body>
-
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-md">
         <a class="navbar-brand" href="#"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" /> </a>

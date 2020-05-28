@@ -35,7 +35,7 @@ def submit_expression():
     return render_template(
         "show_results.html",
         alert=False,
-        query=expression,
+        query=response_obj.query,
         response_obj_json=response_obj_json,
         response_obj = response_obj,
         collections_names=collections_names,
