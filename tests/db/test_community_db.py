@@ -2,8 +2,6 @@ import mongomock
 import unittest
 from datetime import datetime
 from bson.objectid import ObjectId
-import logging
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -11,10 +9,6 @@ class TestExpressionDb(unittest.TestCase):
     def setUp(self): 
         self.database = mongomock.MongoClient().sciq_mongo 
         self.collection = self.database['posts'] 
-        
-    def test__connection(self): 
-        self.assertEqual("Database(mongomock.MongoClient('localhost', 27017), 'sciq_mongo')", repr(self.database)) 
-        self.assertEqual("Collection(Database(mongomock.MongoClient('localhost', 27017), 'sciq_mongo'), 'posts')", repr(self.collection)) 
 
     def test_add_post(self):
         payload = {
