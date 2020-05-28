@@ -22,7 +22,7 @@ limiter = Limiter(key_func=custom_key_func)
 from web.app.api import expression_api, user_api
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
-from web.app.api.error_handler import reached_limit_requests, login_required
+from web.app.api.error_handler import reached_limit_requests
 from web.app.config import config
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
