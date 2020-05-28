@@ -8,7 +8,7 @@ from io import BytesIO
 
 import requests
 
-from flask import Markup
+from flask import Markup, jsonify
 from PIL import Image
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
@@ -344,7 +344,7 @@ class Expression(object):
         """
         Convert expression object to json
         """
-        return json.dumps({k: v for k, v in self.__dict__.items()})
+        return jsonify({k: v for k, v in self.__dict__.items()})
 
 
 def compute_expression(

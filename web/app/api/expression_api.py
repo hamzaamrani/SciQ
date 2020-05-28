@@ -27,12 +27,20 @@ def solve_exp():
             exp = json["expression"]
         if "output" in json:
             pods_format = json["output"]
+        else:
+            pods_format = "plaintext"
         if "result" in json:
             output_result = json["result"]
+        else:
+            output_result = "default"
     else:
         exp = request.args.get("expression")
         pods_format = request.args.get("output")
+        if pods_format is None:
+            pods_format = "plaintext"
         output_result = request.args.get("result")
+        if output_result is None:
+            output_result = "default"
     if exp is None:
         return jsonify({"error": "no expression to parse"})
     parsed = exp2latex(exp)
