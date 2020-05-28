@@ -68,8 +68,14 @@ def save_expression_to_db():
         }
 
         users.insert_one(printer)
+        '''
         users.createIndex(
             {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
+        )
+        '''
+        users.create_index(
+            [("id_user": id_user),("collections.default": 1)], 
+            unique=True
         )
 
     id_obj = ObjectId()
@@ -183,8 +189,14 @@ def create_collection():
             }
         },
     )
+    '''
     users.createIndex(
         {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
+    )
+    '''
+    users.create_index(
+        [("id_user": id_user),("collections.default": 1)], 
+        unique=True
     )
 
     logging.info("User " + id_user + ": created collection " + name + "!")
