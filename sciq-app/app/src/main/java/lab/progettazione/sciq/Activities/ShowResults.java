@@ -34,6 +34,7 @@ public class ShowResults extends AppCompatActivity {
     private MathView latex_query;
     private TextView execution_response;
     private TextView execution_time;
+
     private static String latex_delimiter_start = "\\(";
     private static String latex_delimiter_end = "\\)";
 
@@ -117,7 +118,7 @@ public class ShowResults extends AppCompatActivity {
 
         latex_query.setText(latex_delimiter_start + current_expression.getQuery() + latex_delimiter_end);
         execution_response.setText(valueOf(current_expression.getSuccess()).toUpperCase());
-        execution_time.setText(valueOf(current_expression.getExecution_time()));
+        execution_time.setText(current_expression.getExecution_time());
 
 
 

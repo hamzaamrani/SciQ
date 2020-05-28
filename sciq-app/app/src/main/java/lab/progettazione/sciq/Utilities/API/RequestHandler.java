@@ -25,8 +25,8 @@ public class RequestHandler {
         URL url = new URL(r_url);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(20000);
-        conn.setConnectTimeout(20000);
+        conn.setReadTimeout(200000);
+        conn.setConnectTimeout(200000);
         conn.setRequestMethod("POST");
 
         if(token != null){

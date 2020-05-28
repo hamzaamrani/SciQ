@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,14 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.progettazione.sciq.R;
 
+import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
+
 
 public class DashboardFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
+    private SharedUtils check = new SharedUtils();
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -25,6 +30,26 @@ public class DashboardFragment extends Fragment {
                 ViewModelProviders.of(this).get(DashboardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
+
+        final LinearLayout if_logged = root.findViewById(R.id.if_logged);
+        final LinearLayout if_not_logged = root.findViewById(R.id.if_not_logged);
+
+
+        if(check.userLogged(getContext())){
+            if_logged.setVisibility(View.VISIBLE);
+        }else{
+            if_not_logged.setVisibility(View.VISIBLE);
+        }
+
+
+
+
+
+
+
+
+
+
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

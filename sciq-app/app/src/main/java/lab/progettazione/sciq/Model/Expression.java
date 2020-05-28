@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Expression implements Parcelable {
     private Boolean success;
     private String query;
-    private double execution_time;
+    private String execution_time;
     private ArrayList<String> plots = new ArrayList<>();
     private ArrayList<String> alternate_forms = new ArrayList<>();
     private ArrayList<String> solutions  = new ArrayList<>();
@@ -34,7 +34,7 @@ public class Expression implements Parcelable {
             this.query = null;
 
         if(expression.has("execution_time"))
-            this.execution_time = (double) expression.get("execution_time");
+            this.execution_time = expression.getString("execution_time");
 
         if(expression.has("plots")){
             JSONArray lista_plot = expression.getJSONArray("plots");
@@ -102,7 +102,7 @@ public class Expression implements Parcelable {
         byte tmpSuccess = in.readByte();
         success = tmpSuccess == 0 ? null : tmpSuccess == 1;
         query = in.readString();
-        execution_time = in.readDouble();
+        execution_time = in.readString();
         plots = in.createStringArrayList();
         alternate_forms = in.createStringArrayList();
         solutions = in.createStringArrayList();
@@ -132,7 +132,7 @@ public class Expression implements Parcelable {
         return query;
     }
 
-    public double getExecution_time() {
+    public String getExecution_time() {
         return execution_time;
     }
 
@@ -188,7 +188,7 @@ public class Expression implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (success == null ? 0 : success ? 1 : 2));
         dest.writeString(query);
-        dest.writeDouble(execution_time);
+        dest.writeString(execution_time);
         dest.writeStringList(plots);
         dest.writeStringList(alternate_forms);
         dest.writeStringList(solutions);
