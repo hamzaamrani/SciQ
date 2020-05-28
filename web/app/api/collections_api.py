@@ -198,6 +198,8 @@ def create_collection():
     '''
 
     logging.info("User " + id_user + ": created collection " + name + "!")
+    
+    return "200"
 
 
 def delete_collection():
@@ -213,6 +215,8 @@ def delete_collection():
     users.update({"id_user": id_user}, {"$unset": {"collections." + name: 1}})
 
     logging.info("User " + id_user + ": deleted collection " + name + "!")
+    
+    return "200"
 
 
 def raw(text):
