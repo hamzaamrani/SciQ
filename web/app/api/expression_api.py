@@ -2,21 +2,15 @@ import logging
 import os
 
 from flask import current_app, flash, jsonify, render_template, request
-from werkzeug.utils import secure_filename
-
 from flask_jwt_extended import get_jwt_identity, jwt_optional
 from flask_limiter.util import get_remote_address
 from user_agents import parse
 from web.app import LIMIT, limiter
+from web.app.api import collections_api
 from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.utils.utils import exempt_limit, get_limit
-
-from web.app.services.api_wolfram.waAPI import Expression
-import pickle
-import json
-
-from web.app.api import collections_api
+from werkzeug.utils import secure_filename
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -47,7 +41,7 @@ def solve_exp():
     )
     # logging.info(jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
-    
+
 
 # def submit_expression():
 #     expression = request.form["symbolic_expression"]
@@ -68,6 +62,7 @@ def solve_exp():
 #         collections_infos=collections_infos
 #     )
 
+
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def submit_expression():
@@ -85,14 +80,17 @@ def submit_expression():
             parsed = exp2latex(expression)
             response_obj = compute_expression(parsed)
             response_obj_json = response_obj.to_json()
-            collections_names,collections_infos = collections_api.get_collections()
+            (
+                collections_names,
+                collections_infos,
+            ) = collections_api.get_collections()
             return render_template(
                 "show_results.html",
                 # query=expression,
                 response_obj=response_obj,
                 response_obj_json=response_obj_json,
                 collections_names=collections_names,
-                collections_infos=collections_infos
+                collections_infos=collections_infos,
             )
         except Exception as e:
             logging.info(e)

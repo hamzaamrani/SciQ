@@ -1,7 +1,10 @@
-from flask import request, render_template, jsonify
-from user_agents import parse
 import logging
+
+from flask import jsonify, render_template, request
+from user_agents import parse
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 
 def reached_limit_requests(error):
     _ = request.stream.read()

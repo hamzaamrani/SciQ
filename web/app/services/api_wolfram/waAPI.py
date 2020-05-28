@@ -7,10 +7,9 @@ import urllib.request
 from io import BytesIO
 
 import requests
+
 from flask import Markup
 from PIL import Image
-import json
-from flask import jsonify
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -18,6 +17,7 @@ API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
 # KEY = "V2WJ46-EEXEV95WXG"
 KEY = "23AR8V-3HGY7TGWPT"
+
 
 def raw(text):
     """
@@ -246,12 +246,12 @@ class Expression(object):
                     except BaseException:
                         print("Error in extraction:", pod["id"])
             elif output_result == "full":
-                self.compute_full_result(results)
+                self.compute_full_result(results, output=pods_format)
 
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
 
-    def compute_full_result(self, results, output="plaintext"):
+    def compute_full_result(self, results, output="mathml"):
         """Extract relevant information from the Wolfram|Alpha API response
 
         Args:
@@ -344,9 +344,7 @@ class Expression(object):
         """
         Convert expression object to json
         """
-        return json.dumps({k: v for k, v in self.__dict__.items() })
-
-        
+        return json.dumps({k: v for k, v in self.__dict__.items()})
 
 
 def compute_expression(
@@ -375,7 +373,9 @@ def compute_expression(
     logging.info("Computing expression...")
     client_api = waAPI(key)
 
-    results_json = client_api.full_results(query=raw("\left( " + query + " \right)"))
+    results_json = client_api.full_results(
+        query=raw("\left( " + query + " \right)"), pods_format=pods_format
+    )
     obj_expression = Expression(
         query=query,
         results=results_json,

@@ -1,21 +1,21 @@
+import datetime
 import hashlib
 import logging
 import secrets
-import datetime
 
 from flask import jsonify, make_response, render_template, request
-
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
     jwt_optional,
-    unset_jwt_cookies,
     jwt_required,
+    unset_jwt_cookies,
 )
 from web.app import limiter
 from web.app.services.web_services import user_services
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 
 @jwt_optional
 @limiter.exempt
@@ -42,7 +42,9 @@ def login():
                 )
                 if result:
                     payload = {"username": username, "id_user": id_user}
-                    expires = datetime.datetime.now() + datetime.timedelta(hours=4)
+                    expires = datetime.datetime.now() + datetime.timedelta(
+                        hours=4
+                    )
                     access_token = create_access_token(identity=payload)
 
                     resp = make_response(
@@ -59,7 +61,7 @@ def login():
                         value=access_token,
                         path="/",
                         httponly=False,
-                        expires=expires
+                        expires=expires,
                     )
                     return resp
                 else:
@@ -121,7 +123,7 @@ def get_md5(password):
     md5_password = m.hexdigest()
     return md5_password
 
-    
+
 @limiter.exempt
 @jwt_required
 def add_application():
