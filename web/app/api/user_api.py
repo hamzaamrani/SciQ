@@ -17,7 +17,6 @@ from web.app.services.web_services import user_services
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
-
 @jwt_optional
 @limiter.exempt
 def index():
@@ -126,6 +125,7 @@ def get_md5(password):
 @limiter.exempt
 @jwt_required
 def add_application():
+    logging.info("PROVAAAA***************")
     userid = get_jwt_identity()["id_user"]
     appid = request.get_json()["appid"]
     appname = request.get_json()["appname"]

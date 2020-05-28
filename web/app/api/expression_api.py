@@ -12,6 +12,12 @@ from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.utils.utils import exempt_limit, get_limit
 
+from web.app.services.api_wolfram.waAPI import Expression
+import pickle
+import json
+
+from web.app.api import collections_api
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
@@ -39,11 +45,28 @@ def solve_exp():
     solved = compute_expression(
         parsed, pods_format=pods_format, output_result=output_result
     )
-    logging.info(
-        jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
-    )
+    # logging.info(jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
+    
 
+# def submit_expression():
+#     expression = request.form["symbolic_expression"]
+
+#     parsed = parse_2_latex(expression)
+#     response_obj = compute_expression(parsed)
+#     response_obj_json = response_obj.to_json()
+
+#     collections_names,collections_infos = collections_api.get_collections()
+
+#     return render_template(
+#         "show_results.html",
+#         alert=False,
+#         query=response_obj.query,
+#         response_obj_json=response_obj_json,
+#         response_obj = response_obj,
+#         collections_names=collections_names,
+#         collections_infos=collections_infos
+#     )
 
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
@@ -61,10 +84,15 @@ def submit_expression():
             expression = request.form["symbolic_expression"]
             parsed = exp2latex(expression)
             response_obj = compute_expression(parsed)
+            response_obj_json = response_obj.to_json()
+            collections_names,collections_infos = collections_api.get_collections()
             return render_template(
                 "show_results.html",
-                query=expression,
+                # query=expression,
                 response_obj=response_obj,
+                response_obj_json=response_obj_json,
+                collections_names=collections_names,
+                collections_infos=collections_infos
             )
         except Exception as e:
             logging.info(e)

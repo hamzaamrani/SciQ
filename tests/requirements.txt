@@ -32,3 +32,5 @@ gunicorn
 Flask-Limiter
 user-agents
 flask-jwt-extended
+pymongo
+Flask-PyMongo

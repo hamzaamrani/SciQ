@@ -9,13 +9,15 @@ from io import BytesIO
 import requests
 from flask import Markup
 from PIL import Image
+import json
+from flask import jsonify
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
-KEY = "V2WJ46-EEXEV95WXG"
-
+# KEY = "V2WJ46-EEXEV95WXG"
+KEY = "23AR8V-3HGY7TGWPT"
 
 def raw(text):
     """
@@ -114,6 +116,8 @@ class waAPI(object):
                 )
             )
 
+            logging.info(url)
+
             r = requests.get(url)
             r = r.json()
             return r["queryresult"]
@@ -160,7 +164,7 @@ class Expression(object):
 
         self.query = query
         self.success = results["success"]
-        self.execution_time = results["timing"]
+        self.execution_time = str(results["timing"])
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
@@ -340,20 +344,9 @@ class Expression(object):
         """
         Convert expression object to json
         """
-        expression = {}
-        expression["success"] = self.success
-        expression["query"] = self.query
-        expression["execution_time"] = self.execution_time
-        expression["plots"] = self.plots
-        expression["alternate_forms"] = self.alternate_forms
-        expression["results"] = self.results
-        expression["solutions"] = self.solutions
-        expression["symbolic_solutions"] = self.symbolic_solutions
-        expression["limits"] = self.limits
-        expression["partial_derivatives"] = self.partial_derivatives
-        expression["integral"] = self.integral
+        return json.dumps({k: v for k, v in self.__dict__.items() })
 
-        return json.dumps(expression)
+        
 
 
 def compute_expression(
@@ -379,11 +372,10 @@ def compute_expression(
         expression: object of class Expression, to be
             further analyzed
     """
+    logging.info("Computing expression...")
     client_api = waAPI(key)
-    query = "\left( " + query + "\right)"
-    results_json = client_api.full_results(
-        response_format=response_format, query=query, pods_format=pods_format
-    )
+
+    results_json = client_api.full_results(query=raw("\left( " + query + " \right)"))
     obj_expression = Expression(
         query=query,
         results=results_json,

@@ -1,5 +1,4 @@
-from web.app import db
-
+from web.app import db, ma
 
 class User(db.Model):
     __tablename__ = "user"
@@ -20,3 +19,9 @@ class Applications(db.Model):
     appid = db.Column(db.String(128), index=True, unique=True, nullable=False)
     name = db.Column(db.String(128), index=True, unique=False, nullable=False)
     username_fk = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
+
+#  class UserSchema(ma.Schema):
+#     class Meta:
+#         fields = ("username", "password")
+
+
