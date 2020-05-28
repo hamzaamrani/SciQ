@@ -44,8 +44,9 @@ def save_expression_to_db():
     json_obj = html.unescape(json_obj)
 
     json_obj = eval(json_obj)
-    from web.app import mongo
 
+
+    from web.app import mongo
     users = mongo.db.users
 
     id_user = get_idUser()
@@ -101,7 +102,7 @@ def save_expression_to_db():
 
     logging.info("Saving expression to db has been completed with success!")
 
-    return "200"
+    return jsonify({'result': 'expression saved in collection'})
 
 
 def get_collections():
