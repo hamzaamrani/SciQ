@@ -11,7 +11,6 @@ from flask_pymongo import PyMongo
 
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
 from web.app.services.utils.utils import custom_key_func
 
@@ -24,6 +23,7 @@ from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
 from web.app.api.error_handler import reached_limit_requests
 from web.app.config import config
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
@@ -32,7 +32,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 jwt = JWTManager()
-mongo = PyMongo() 
+mongo = PyMongo()
 
 
 def create_app(config_name):
@@ -100,7 +100,9 @@ def create_app(config_name):
         view_func=user_api.add_application,
     )
 
-    app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
+    app.add_url_rule(
+        "/filenames", methods=["GET"], view_func=expression_api.get_filenames
+    )
 
     app.add_url_rule(
         "/api/v1/appid", methods=["GET"], view_func=user_api.get_appid
@@ -114,40 +116,38 @@ def create_app(config_name):
 
     register_jwt_callbacks()
 
-    
     from web.app.api import collections_api
 
     app.add_url_rule(
-        "/collections",
-        methods=["GET"],
-        view_func=collections_api.collections
+        "/collections", methods=["GET"], view_func=collections_api.collections
     )
 
     app.add_url_rule(
         "/save_expression_to_db",
         methods=["POST"],
-        view_func=collections_api.save_expression_to_db
+        view_func=collections_api.save_expression_to_db,
     )
 
     app.add_url_rule(
         "/create_collection",
         methods=["POST"],
-        view_func=collections_api.create_collection
+        view_func=collections_api.create_collection,
     )
 
     app.add_url_rule(
         "/delete_collection",
         methods=["POST"],
-        view_func=collections_api.delete_collection
+        view_func=collections_api.delete_collection,
     )
 
     app.add_url_rule(
         "/show_expression",
         methods=["POST"],
-        view_func=collections_api.show_expression
+        view_func=collections_api.show_expression,
     )
 
     return app
+
 
 def register_jwt_callbacks():
     @jwt.unauthorized_loader
@@ -157,9 +157,7 @@ def register_jwt_callbacks():
         if user_agent.is_pc and "api" not in request.full_path:
             logging.info("handler login required")
             return (
-                render_template(
-                    "login_required.html",
-                ),
+                render_template("login_required.html",),
                 401,
             )
         else:

@@ -72,6 +72,7 @@ def submit_expression():
                 collections_names,
                 collections_infos,
             ) = collections_api.get_collections()
+            logging.info(response_obj_json.get_json())
             return render_template(
                 "show_results.html",
                 # query=expression,

@@ -1,5 +1,4 @@
 import base64
-import json
 import logging
 import os.path
 import urllib.parse
@@ -11,31 +10,14 @@ import requests
 from flask import Markup, jsonify
 from PIL import Image
 
+from web.app.services.utils.utils import raw
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
 # KEY = "V2WJ46-EEXEV95WXG"
 KEY = "23AR8V-3HGY7TGWPT"
-
-
-def raw(text):
-    """
-    Returns a raw string representation of text
-    """
-    escape_dict = {
-        "\a": "\\a",
-        "\b": "\\b",
-        "\f": "\\f",
-        "\n": "\\n",
-        "\r": "\\r",
-        "\t": "\\t",
-        "\v": "\\v",
-    }
-    for k, v in escape_dict.items():
-        text = text.replace(k, v)
-
-    return text
 
 
 def to_mathml(text_mml):
@@ -377,7 +359,7 @@ def compute_expression(
         query=raw("\left( " + query + " \right)"), pods_format=pods_format
     )
     obj_expression = Expression(
-        query=query,
+        query=raw(query),
         results=results_json,
         id_equation=id_equation,
         dir_plots=dir_plots,

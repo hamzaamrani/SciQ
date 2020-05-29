@@ -13,6 +13,7 @@ from flask_jwt_extended import (
 )
 from web.app import limiter
 from web.app.services.web_services import user_services
+from web.app.api.collections_api import create_default_collection
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -41,6 +42,7 @@ def login():
                     username, md5_password, id=True
                 )
                 if result:
+                    create_default_collection(str(id_user))
                     payload = {"username": username, "id_user": id_user}
                     expires = datetime.datetime.now() + datetime.timedelta(
                         hours=4

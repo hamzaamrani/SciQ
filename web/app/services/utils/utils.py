@@ -9,6 +9,25 @@ from flask_limiter.util import get_remote_address
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
+def raw(text):
+    """
+    Returns a raw string representation of text
+    """
+    escape_dict = {
+        "\a": "\\a",
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+        "\v": "\\v",
+    }
+    for k, v in escape_dict.items():
+        text = text.replace(k, v)
+
+    return text
+
+
 def custom_key_func():
     if request.headers.getlist("X-Forwarded-For"):
         logging.info(request.headers.getlist("X-Forwarded-For"))
@@ -39,9 +58,9 @@ def concat(s: str):
     return '"' + s + '"'
 
 
-def flatten(l):
+def flatten(lst: list):
     """Flatten a list (or other iterable) recursively"""
-    for el in l:
+    for el in lst:
         if isinstance(el, Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub

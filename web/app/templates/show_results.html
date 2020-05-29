@@ -4,7 +4,6 @@
 <head>
     <title>SciQ - Query results</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=4">
@@ -20,11 +19,12 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
     <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
 
+    <link href="css/propeller.min.css" rel="stylesheet">
 
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -75,32 +75,43 @@
         });
         });
     </script>
-    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML" defer></script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"
+        defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
 
 
     <script type="text/javascript">
-        function save_expression(){
+        function htmlDecode(input) {
+            var doc = new DOMParser().parseFromString(input, "text/html");
+            return doc.documentElement.textContent;
+        }
+
+        function save_expression() {
             var col_name = document.getElementsByClassName("list-group-item list-group-item-action active").item(0).innerHTML;
             var public = false;
-                
+
             if ($('#publicCheck').is(":checked")) {
                 public = true;
             }
-
+            var response = JSON.parse('{{ response_obj_json.get_json() | tojson | safe}}');
             $.ajax({
                 type: "POST",
                 url: "/save_expression_to_db",
-                data: {
-                    name_collection: col_name,
-                    public: public,
-                    obj_json: "{{response_obj_json}}"
-                }
+                contentType: "application/json;charset=UTF-8",
+                data:
+                    JSON.stringify({ "name_collection": col_name, "public": public, "response": response })
             });
 
-            $(document).ajaxStop(function(){
+            $(document).ajaxStop(function () {
                 window.location.replace('/collections');
             });
-      }
+        }
+    </script>
+    <script>
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     </script>
 
 </head>
@@ -129,23 +140,26 @@
                 </div>
                 <div class="col-3">
                     {% if (response_obj._id is not defined) %}
-                        <p class="res_title" style="vertical-align: middle;"> Query response : {{ response_obj.success }} </p>
+                    <p class="res_title" style="vertical-align: middle;"> Query response : {{ response_obj.success }}
+                    </p>
                     {% else %}
-                        <p class="res_title" style="vertical-align: middle;"> Public : {{ response_obj.public }} </p>
+                    <p class="res_title" style="vertical-align: middle;"> Public : {{ response_obj.public }} </p>
                     {% endif %}
                 </div>
                 <div class="col-3">
-                    <p class="res_title" style="vertical-align: middle;"> Execution Time : {{ response_obj.execution_time }} </p>
+                    <p class="res_title" style="vertical-align: middle;"> Execution Time :
+                        {{ response_obj.execution_time }} </p>
                 </div>
                 <div class="col-3">
 
                     {% if (response_obj.success) and (response_obj._id is not defined) %}
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
-                            Save Expression
-                        </button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal"
+                        id="saveButton">
+                        Save Expression
+                    </button>
                     {% else %}
-                        Delete
-                        <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
+                    Delete
+                    <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
                             Delete Expression
                         </button> -->
                     {% endif %}
@@ -346,65 +360,74 @@
     </div>
 
     <!-- BEGIN SAVE expression Modal -->
-    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog  modal-dialog-centered" role="document">
-          <div class="modal-content">
+            <div class="modal-content">
 
-            <div class="modal-header">
-              <h5 class="modal-title" id="saveModalLabel">
-                Choose collection where to save the expression
-              </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveModalLabel">
+                        Choose collection where to save the expression
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-            <div class="modal-body">
-              
-              <!-- <form role="form" method="POST" action="/save_expression_to_db"> -->
+                <div class="modal-body">
 
-                <div class="row">
-                    <div class="col-4">
-                      <div class="list-group" id="list-tab" name="list-tab" role="tablist">
-                        {% for collection in collections_names %}
-                            {% if collection == "default" %}
-                                <a class="list-group-item list-group-item-action btn-success active" id="{{ collection| replace(' ','_') }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
-                            {% else %}  
-                                <a class="list-group-item list-group-item-action btn-success" id="{{ collection| replace(' ','_') }}" data-toggle="list" href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
-                            {% endif %}
-                        {% endfor %}
+                    <!-- <form role="form" method="POST" action="/save_expression_to_db"> -->
+
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="list-group" id="list-tab" name="list-tab" role="tablist">
+                                {% for collection in collections_names %}
+                                {% if collection == "default" %}
+                                <a class="list-group-item list-group-item-action btn-success active"
+                                    id="{{ collection| replace(' ','_') }}" data-toggle="list"
+                                    href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                {% else %}
+                                <a class="list-group-item list-group-item-action btn-success"
+                                    id="{{ collection| replace(' ','_') }}" data-toggle="list"
+                                    href="#list-{{ collection }}" role="tab" aria-controls="home">{{ collection }}</a>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="tab-content" id="nav-tabContent">
+                                {% for i in range(collections_names|length) %}
+                                {% if collections_names[i] == "default" %}
+                                <div class="tab-pane fade show active"
+                                    id="list-{{ collections_names[i] | replace(' ','_') }}" role="tabpanel"
+                                    aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
+                                {% else %}
+                                <div class="tab-pane fade" id="list-{{ collections_names[i] | replace(' ','_')}}"
+                                    role="tabpanel" aria-labelledby="{{ collections_names[i] }}">
+                                    {{ collections_infos[i] }}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-8">
-                      <div class="tab-content" id="nav-tabContent">
-                        {% for i in range(collections_names|length) %}
-                            {% if collections_names[i] == "default" %}
-                                <div class="tab-pane fade show active" id="list-{{ collections_names[i] | replace(' ','_') }}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
-                            {% else %} 
-                                <div class="tab-pane fade" id="list-{{ collections_names[i] | replace(' ','_')}}" role="tabpanel" aria-labelledby="{{ collections_names[i] }}">{{ collections_infos[i] }}</div>
-                            {% endif %}
-                        {% endfor %}
-                      </div>
-                    </div>
-                </div>
-                
-                <br>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="publicCheck" value="public">
-                            <label class="form-check-label" for="publicCheck">Make public</label>
-                          </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" onclick="save_expression()">Save</button>
-                    </div>
-                </div>
-              <!-- </form> -->
-            </div>
 
-          </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="publicCheck" value="public">
+                                <label class="form-check-label" for="publicCheck">Make public</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success" onclick="save_expression()">Save</button>
+                        </div>
+                    </div>
+                    <!-- </form> -->
+                </div>
+
+            </div>
         </div>
     </div>
     <!-- END SAVE expression Modal -->

@@ -1,9 +1,10 @@
-import html
 import logging
 
 from bson import ObjectId
-from flask import Markup, render_template, request
+from flask import Markup, jsonify, render_template, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from user_agents import parse
+from web.app.services.utils.utils import raw
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -19,12 +20,14 @@ def collections():
         expressions = get_expressions(collection_name)
         expressions_by_collection.append(expressions)
 
-    return render_template(
-        "collections.html",
-        collections_names=collections_names,
-        collections_infos=collections_infos,
-        expressions_by_collection=expressions_by_collection,
-    )
+    user_agent = parse(request.headers.get("User-Agent"))
+    if user_agent.is_pc:
+        return render_template(
+            "collections.html",
+            collections_names=collections_names,
+            collections_infos=collections_infos,
+            expressions_by_collection=expressions_by_collection,
+        )
 
 
 @jwt_required
@@ -36,19 +39,49 @@ def get_idUser():
 def save_expression_to_db():
     logging.info("Saving expression to db...")
 
-    json_obj = request.form["obj_json"]
-    json_obj = raw(json_obj)
+    json_obj = request.get_json()
+    logging.info(json_obj)
 
-    json_obj = json_obj.replace("true", "'true'")
-    json_obj = json_obj.replace("false", "'false'")
-    json_obj = html.unescape(json_obj)
-
-    json_obj = eval(json_obj)
     from web.app import mongo
 
     users = mongo.db.users
 
     id_user = get_idUser()
+    id_obj = ObjectId()
+    json_obj["response"]["_id"] = id_obj
+    json_obj["response"]["public"] = json_obj["public"]
+
+    json_obj["response"]["query"] = raw(json_obj["response"]["query"])
+
+    # Add current expression and add to default collection
+    users.update(
+        {"id_user": id_user},
+        {"$addToSet": {"expressions": json_obj["response"]}},
+    )
+
+    # Save current expression's id in default collection
+    users.update(
+        {"id_user": id_user},
+        {"$addToSet": {"collections.default.ids": id_obj}},
+    )
+
+    # Save current expression's id in personalized collection
+
+    if not (json_obj["name_collection"] == "default"):
+        collection = "collections." + json_obj["name_collection"] + ".ids"
+        users.update({"id_user": id_user}, {"$addToSet": {collection: id_obj}})
+
+    logging.info("Saving expression to db has been completed with success!")
+
+    return "200"
+
+
+def create_default_collection(id_user):
+    from web.app import mongo
+
+    users = mongo.db.users
+
+    # id_user = get_idUser()
 
     logging.info("Saving current expression to db...")
 
@@ -68,35 +101,6 @@ def save_expression_to_db():
         }
 
         users.insert_one(printer)
-        users.createIndex(
-            {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
-        )
-
-    id_obj = ObjectId()
-    json_obj["query"] = raw(json_obj["query"])
-    json_obj["_id"] = id_obj
-    json_obj["public"] = request.form["public"]
-
-    # Add current expression and add to default collection
-    users.update(
-        {"id_user": id_user}, {"$addToSet": {"expressions": json_obj}}
-    )
-
-    # Save current expression's id in default collection
-    users.update(
-        {"id_user": id_user},
-        {"$addToSet": {"collections.default.ids": id_obj}},
-    )
-
-    # Save current expression's id in personalized collection
-
-    if not (request.form["name_collection"] == "default"):
-        collection = "collections." + request.form["name_collection"] + ".ids"
-        users.update({"id_user": id_user}, {"$addToSet": {collection: id_obj}})
-
-    logging.info("Saving expression to db has been completed with success!")
-
-    return "200"
 
 
 def get_collections():
@@ -205,25 +209,6 @@ def delete_collection():
     logging.info("User " + id_user + ": deleted collection " + name + "!")
 
 
-def raw(text):
-    """
-    Returns a raw string representation of text
-    """
-    escape_dict = {
-        "\a": "\\a",
-        "\b": "\\b",
-        "\f": "\\f",
-        "\n": "\\n",
-        "\r": "\\r",
-        "\t": "\\t",
-        "\v": "\\v",
-    }
-    for k, v in escape_dict.items():
-        text = text.replace(k, v)
-
-    return text
-
-
 def show_expression():
     id_expr = request.form["id_expr"]
 
@@ -236,6 +221,7 @@ def show_expression():
         {"id_user": id_user},
         {"expressions": {"$elemMatch": {"_id": ObjectId(id_expr)}}},
     )[0]["expressions"][0]
+
     exp_keys = [
         "alternate_forms",
         "solutions",
@@ -255,7 +241,7 @@ def show_expression():
         "show_results.html",
         alert=False,
         query=exp_obj.query,
-        response_obj_json=exp,
+        response_obj_json=jsonify({}),
         response_obj=exp_obj,
         collections_names=[],
         collections_infos=[],
