@@ -42,7 +42,7 @@ build-test-env:
   script:
       - docker pull $DOCKER_DEV_ENV_IMAGE || true
       - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
-      - docker push $DOCKER_DEV_ENV_IMAGE
+#      - docker push $DOCKER_DEV_ENV_IMAGE
   only:
     - sprint2
     
