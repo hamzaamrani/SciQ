@@ -36,4 +36,4 @@ pymongo
 Flask-PyMongo
 numpy
 mongomock
-opencv-python
+opencv-python-headless

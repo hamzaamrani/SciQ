@@ -33,7 +33,6 @@ git+https://github.com/miyakogi/m2r@dev#egg=m2r
 gunicorn
 
 tensorflow==1.13.1
-opencv-python
 tqdm
 scipy==1.2.3
 nltk==3.2
@@ -46,4 +45,4 @@ pymongo
 Flask-PyMongo
 mongomock
 numpy
-opencv-python
+opencv-python-headless
