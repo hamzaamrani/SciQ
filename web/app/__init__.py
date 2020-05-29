@@ -11,7 +11,6 @@ from flask_pymongo import PyMongo
 
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
 from web.app.services.utils.utils import custom_key_func
 
@@ -20,19 +19,20 @@ limiter = Limiter(key_func=custom_key_func)
 
 # Definitions of route API
 from web.app.api import expression_api, user_api
+from web.app.api.error_handler import reached_limit_requests
 from web.app.api.expression_api import solve_exp
 from web.app.api.parser_api import exp2json
-from web.app.api.error_handler import reached_limit_requests
 from web.app.config import config
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+from web.app.services.utils.utils import custom_key_func
 
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 heroku = Heroku()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 jwt = JWTManager()
-mongo = PyMongo() 
+mongo = PyMongo()
 
 
 def create_app(config_name):
@@ -43,15 +43,13 @@ def create_app(config_name):
     app.config['PROPAGATE_EXCEPTIONS'] = True
 
     app.config["UPLOAD_FOLDER"] = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "/web/app/static/uploads",
+        os.path.abspath(os.path.dirname(__file__)),
+        "/web/app/static/uploads",
     )
-    logging.info(
-        "Upload folder = "
-        + os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            "/web/app/static/uploads",
-        )
-    )
+    logging.info("Upload folder = " + os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        "/web/app/static/uploads",
+    ))
 
     db.init_app(app)
     ma.init_app(app)
@@ -80,20 +78,22 @@ def create_app(config_name):
         view_func=expression_api.submit_expression,
     )
 
-    app.add_url_rule(
-        "/sendfile", methods=["POST"], view_func=expression_api.send_file
-    )
+    app.add_url_rule("/sendfile",
+                     methods=["POST"],
+                     view_func=expression_api.send_file)
+
+    app.add_url_rule("/filenames",
+                     methods=["GET"],
+                     view_func=expression_api.get_filenames)
+
+    app.add_url_rule("/developer",
+                     methods=["GET"],
+                     view_func=user_api.developer)
 
     app.add_url_rule(
-        "/filenames", methods=["GET"], view_func=expression_api.get_filenames
-    )
-
-    app.add_url_rule(
-        "/developer", methods=["GET"], view_func=user_api.developer
-    )
-
-    app.add_url_rule(
-        "/applications", methods=["GET"], view_func=user_api.get_applications,
+        "/applications",
+        methods=["GET"],
+        view_func=user_api.get_applications,
     )
 
     app.add_url_rule(
@@ -102,11 +102,13 @@ def create_app(config_name):
         view_func=user_api.add_application,
     )
 
-    app.add_url_rule("/filenames",methods=["GET"],view_func=expression_api.get_filenames)
+    app.add_url_rule("/filenames",
+                     methods=["GET"],
+                     view_func=expression_api.get_filenames)
 
-    app.add_url_rule(
-        "/api/v1/appid", methods=["GET"], view_func=user_api.get_appid
-    )
+    app.add_url_rule("/api/v1/appid",
+                     methods=["GET"],
+                     view_func=user_api.get_appid)
 
     app.add_url_rule("/api/v1/parser", methods=["GET"], view_func=exp2json)
 
@@ -116,52 +118,50 @@ def create_app(config_name):
 
     app.add_url_rule("/posts", methods=['GET'], view_func=community_api.posts)
 
-    app.add_url_rule("/posts/user", methods=['GET'], view_func=community_api.get_posts)
+    app.add_url_rule("/posts/user",
+                     methods=['GET'],
+                     view_func=community_api.get_posts)
 
-    app.add_url_rule("/post", methods=['POST', 'DELETE'], view_func=community_api.post)
+    app.add_url_rule("/post",
+                     methods=['POST', 'DELETE'],
+                     view_func=community_api.post)
 
-    app.add_url_rule("/post/<id>", methods=['GET'], view_func=community_api.get_post)
+    app.add_url_rule("/post/<id>",
+                     methods=['GET'],
+                     view_func=community_api.get_post)
 
-    app.add_url_rule('/comment', methods=['POST'], view_func=community_api.comment)
+    app.add_url_rule('/comment',
+                     methods=['POST'],
+                     view_func=community_api.comment)
 
     app.register_error_handler(429, reached_limit_requests)
 
     register_jwt_callbacks()
 
-    
     from web.app.api import collections_api
 
-    app.add_url_rule(
-        "/collections",
-        methods=["GET"],
-        view_func=collections_api.collections
-    )
+    app.add_url_rule("/collections",
+                     methods=["GET"],
+                     view_func=collections_api.collections)
 
-    app.add_url_rule(
-        "/save_expression_to_db",
-        methods=["POST"],
-        view_func=collections_api.save_expression_to_db
-    )
+    app.add_url_rule("/save_expression_to_db",
+                     methods=["POST"],
+                     view_func=collections_api.save_expression_to_db)
 
-    app.add_url_rule(
-        "/create_collection",
-        methods=["POST"],
-        view_func=collections_api.create_collection
-    )
+    app.add_url_rule("/create_collection",
+                     methods=["POST"],
+                     view_func=collections_api.create_collection)
 
-    app.add_url_rule(
-        "/delete_collection",
-        methods=["POST"],
-        view_func=collections_api.delete_collection
-    )
+    app.add_url_rule("/delete_collection",
+                     methods=["POST"],
+                     view_func=collections_api.delete_collection)
 
-    app.add_url_rule(
-        "/show_expression",
-        methods=["POST"],
-        view_func=collections_api.show_expression
-    )
+    app.add_url_rule("/show_expression",
+                     methods=["POST"],
+                     view_func=collections_api.show_expression)
 
     return app
+
 
 def register_jwt_callbacks():
     @jwt.unauthorized_loader
@@ -171,9 +171,7 @@ def register_jwt_callbacks():
         if user_agent.is_pc and "api" not in request.full_path:
             logging.info("handler login required")
             return (
-                render_template(
-                    "login_required.html",
-                ),
+                render_template("login_required.html", ),
                 401,
             )
         else:

@@ -1,17 +1,18 @@
 import logging
 import os
-import json
 
 from flask import current_app, flash, jsonify, render_template, request
 from flask_jwt_extended import get_jwt_identity, jwt_optional
 from flask_limiter.util import get_remote_address
 from user_agents import parse
+from werkzeug.utils import secure_filename
+
 from web.app import LIMIT, limiter
 from web.app.api import collections_api
 from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
+from web.app.services.ocr import OCR_SERVICE
 from web.app.services.utils.utils import exempt_limit, get_limit
-from werkzeug.utils import secure_filename
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -55,18 +56,15 @@ def solve_exp():
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def submit_expression():
-    logging.info(
-        "Identita': "
-        + str(get_jwt_identity())
-        + " da IP: "
-        + str(get_remote_address())
-    )
+    logging.info("Identita': " + str(get_jwt_identity()) + " da IP: " +
+                 str(get_remote_address()))
     user_agent = parse(request.headers.get("User-Agent"))
     if user_agent.is_pc:
         try:
             logging.info("Requests from Desktop")
             expression = request.form["symbolic_expression"]
             parsed = exp2latex(expression)
+            logging.debug('DEBUG: results' + parsed)
             response_obj = compute_expression(parsed)
             response_obj_json = response_obj.to_json()
             (
@@ -75,7 +73,6 @@ def submit_expression():
             ) = collections_api.get_collections()
             return render_template(
                 "show_results.html",
-                # query=expression,
                 response_obj=response_obj,
                 response_obj_json=response_obj_json,
                 collections_names=collections_names,
@@ -83,9 +80,9 @@ def submit_expression():
             )
         except Exception as e:
             logging.info(e)
-            return render_template(
-                "math.html", alert=True, error="something goes wrong"
-            )
+            return render_template("math.html",
+                                   alert=True,
+                                   error="something goes wrong")
     else:
         logging.info("Request from mobile")
         _json = request.get_json()
@@ -98,30 +95,68 @@ def submit_expression():
 
 @jwt_optional
 @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
-def send_file():
+def send_file_without_ocr():
     fileob = request.files["file2upload"]
     filename = secure_filename(fileob.filename)
     save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     logging.info("Save path is = " + save_path)
     fileob.save(save_path)
     # open and close to update the access time.
-    with open(save_path, "r") as f:
-        pass
+
     flash("File uploaded succesfully!")
+
     return "200"
+
+
+def raw(text):
+    """
+    Returns a raw string representation of text
+    """
+    escape_dict = {
+        "\a": "\\a",
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+        "\v": "\\v",
+    }
+    for k, v in escape_dict.items():
+        text = text.replace(k, v)
+
+    return text
+
+
+@jwt_optional
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
+def send_file():
+    logging.info("Current working location is = " + os.getcwd())
+    fileob = request.files["file2upload"]
+    filename = secure_filename(fileob.filename)
+
+    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+    logging.info("Save path is = " + save_path)
+    fileob.save(save_path)
+    parsed = OCR_SERVICE.predict(save_path)
+
+    logging.info("Requests from Desktop")
+    response_obj = compute_expression(parsed)
+
+    return render_template("show_results.html",
+                           alert=True,
+                           response_obj=response_obj)
 
 
 # GET NAMES OF UPLOADED FILES
 @limiter.exempt
 def get_filenames():
     logging.info("Current working location is = " + os.getcwd())
-
+    os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
     filenames = os.listdir(current_app.config["UPLOAD_FOLDER"])
 
     def modify_time_sort(file_name):
-        file_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"], file_name
-        )
+        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"],
+                                 file_name)
         file_stats = os.stat(file_path)
         last_access_time = file_stats.st_atime
         return last_access_time
