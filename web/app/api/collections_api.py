@@ -54,7 +54,6 @@ def save_expression_to_db():
     logging.info("Saving expression to db...")
 
     json_obj = request.get_json()
-    logging.info(json_obj)
 
     from web.app import mongo
 
@@ -94,12 +93,9 @@ def create_default_collection(id_user):
 
     users = mongo.db.users
 
-    # id_user = get_idUser()
-
     logging.info("Saving current expression to db...")
 
     # Check if user collection exists
-    # logging.info(users.find({ 'id_user': id_user } ).count())
     if users.find({"id_user": id_user}).count() == 0:
         logging.info("Creating collection for user: " + id_user)
         printer = {
@@ -222,8 +218,6 @@ def delete_collection():
 
     id_user = get_idUser()
     name = request.form["name_collection"]
-
-    logging.info("User " + id_user + ": deleting collection " + name + "...")
 
     users.update({"id_user": id_user}, {"$unset": {"collections." + name: 1}})
 
