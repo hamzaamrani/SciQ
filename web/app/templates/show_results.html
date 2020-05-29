@@ -109,6 +109,20 @@
                 window.location.replace('/collections');
             });
         }
+
+        function update_expression() {
+            var exp_id = "{{ response_obj._id }}";
+            var query = "{{ response_obj.query }}";
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/update_expression",
+            //     contentType: "application/json;charset=UTF-8",
+            //     data: JSON.stringify({ "exp_id": exp_id, "query": query }),
+            // });
+            window.location.href = "/update_expression?exp_id=" + encodeURIComponent(exp_id) 
+                + "&symbolic_expression=" + encodeURIComponent(query)
+                + "&public={{ response_obj.public }}"
+        }
     </script>
     <script>
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
@@ -159,9 +173,9 @@
                     </button>
                     {% else %}
                     Delete
-                    <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
-                            Delete Expression
-                        </button> -->
+                    <button type="button" class="btn btn-success" id="updateButton" onclick="update_expression()">
+                        Update
+                    </button>
                     {% endif %}
                 </div>
             </div>
