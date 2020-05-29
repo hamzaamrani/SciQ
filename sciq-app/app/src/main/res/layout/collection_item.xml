@@ -42,7 +42,7 @@
                 android:id="@+id/expression_count"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:layout_weight="0.2"/>
 
@@ -55,6 +55,15 @@
             android:layout_height="2dp"
             android:background="@color/colorPrimaryDark"
             />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/collection_info"
+            android:text="Info"
+            android:gravity="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp"/>
 
 
         <LinearLayout

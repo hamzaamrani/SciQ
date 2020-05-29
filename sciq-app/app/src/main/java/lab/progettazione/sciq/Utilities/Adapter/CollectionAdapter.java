@@ -58,6 +58,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView title_collection;
         private TextView collection_count;
+        private TextView collection_info;
         private Boolean expanded;
         private LinearLayout if_expression;
         private RecyclerView expression_list;
@@ -69,6 +70,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
             expression_list = itemView.findViewById(R.id.lista_expression);
             collection_count = itemView.findViewById(R.id.expression_count);
             if_expression = itemView.findViewById(R.id.if_expression);
+            collection_info = itemView.findViewById(R.id.collection_info);
             expanded = false;
         }
 
@@ -94,6 +96,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String title = collectionList.get(position).getNome();
         holder.title_collection.setText(title.toUpperCase());
+        holder.collection_info.setText(collectionList.get(position).getInfo());
         if(collectionList.get(position).getLista_expression() != null){
             holder.collection_count.setText(valueOf(collectionList.get(position).getLista_expression().size()));
         }else{
