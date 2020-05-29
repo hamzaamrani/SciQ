@@ -1,12 +1,14 @@
-from flask import request, render_template, jsonify
-from user_agents import parse
 import logging
+
+from flask import jsonify, render_template, request
+from user_agents import parse
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 
 def reached_limit_requests(error):
     _ = request.stream.read()
     user_agent = parse(request.headers.get("User-Agent"))
-    logging.info(request.full_path)
     if user_agent.is_pc and "api" not in request.full_path:
         logging.info("handler limit request")
         return (

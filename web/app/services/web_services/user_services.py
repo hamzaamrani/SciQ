@@ -1,11 +1,11 @@
+import logging
+from os import environ
+
 import mysql.connector
 from flask import current_app
-import logging
+from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PRE_PROD, DB_CONFIG_PROD
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
-
-from web.app.config import DB_CONFIG_DEV, DB_CONFIG_PROD, DB_CONFIG_PRE_PROD
-
-from os import environ
 
 
 class UserService:
@@ -35,7 +35,7 @@ class UserService:
         results = [user for user in cursor]
         cursor.close()
         if id:
-            if len(results)>0:
+            if len(results) > 0:
                 id_user = results[0][0]
             else:
                 id_user = 0

@@ -1,20 +1,22 @@
 import base64
+import json
+import logging
 import os.path
 import urllib.parse
 import urllib.request
 from io import BytesIO
-from flask import Markup
-import logging
-import requests
-from PIL import Image
-import json
 
+import requests
+
+from flask import Markup, jsonify
+from PIL import Image
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
-KEY = "V2WJ46-EEXEV95WXG"
+# KEY = "V2WJ46-EEXEV95WXG"
+KEY = "23AR8V-3HGY7TGWPT"
 
 
 def raw(text):
@@ -63,7 +65,8 @@ class waAPI(object):
 
         Request a key at https://developer.wolframalpha.com
 
-        :param key: Wolfram Alpha App ID Developer Key
+        Arguments:
+            key (str, optional): Wolfram Alpha App ID Developer Key
         """
         self.key = key
         self.response_format = "json"
@@ -79,13 +82,18 @@ class waAPI(object):
         self, response_format=None, key=None, query=None, pods_format="mathml"
     ):
         """
-        Calls the API and returns a dictionary of the search results
+        Calls the Wolfram|Alpha API and returns a dictionary of the search results
 
-        :param response_format: the format that the API uses for its response,
-                                includes JSON (.json) and XML.
-                                Defaults to '.xml'.
-
-        :param key: a developer key. Defaults to key given when the waAPI class was initialized.
+        Arguments:
+            response_format (str, optional): the format that the API uses for its response,
+                includes JSON (.json) and XML. Defaults to '.xml'
+            key (str, optional): the developer key. Defaults to key given when the waAPI class was initialized
+            query (str, optional): the query string
+            pods_format (str, optional): format of the result's pods.
+                It must be one from 'mathml' or 'plaintex'. Defaults to 'mathml'
+   
+        Returns:
+            result (json): a json containing the query result from Wolfram|Alpha API
 
         """
         if key is None:
@@ -107,6 +115,8 @@ class waAPI(object):
                     pods_format,
                 )
             )
+
+            logging.info(url)
 
             r = requests.get(url)
             r = r.json()
@@ -137,9 +147,9 @@ class Expression(object):
         Arguments:
             query (str): expression query
             results (dict): results of query from Wolfram Alpha API
-            dir_plots (str, optional): dir where to save plots
             id_equation (int, optional): identifier of expression
-            pods_format (str, optional): pod format. It can be mathml or plaintext
+            dir_plots (str, optional): dir where to save plots
+            pods_format (str, optional): pod format. It can be 'mathml' or 'plaintext'
             output_results (str, optional): Output default result or full results. It can be default or full
         """
 
@@ -154,7 +164,7 @@ class Expression(object):
 
         self.query = query
         self.success = results["success"]
-        self.execution_time = results["timing"]
+        self.execution_time = str(results["timing"])
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
@@ -236,12 +246,19 @@ class Expression(object):
                     except BaseException:
                         print("Error in extraction:", pod["id"])
             elif output_result == "full":
-                self.compute_full_result(results)
+                self.compute_full_result(results, output=pods_format)
 
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
 
-    def compute_full_result(self, results, output="plaintext"):
+    def compute_full_result(self, results, output="mathml"):
+        """Extract relevant information from the Wolfram|Alpha API response
+
+        Args:
+            results (list): the result list from Wolfram|Alpha API
+            output (str, optional): the output type to search for into the 'results' object.
+                Defaults to "plaintext".
+        """
         for pod in results["pods"]:
             subpods = []
             if isinstance(pod["subpods"], list):
@@ -327,21 +344,7 @@ class Expression(object):
         """
         Convert expression object to json
         """
-        expression = {}
-        expression['success'] = self.success
-        expression['query'] = self.query
-        expression['execution_time'] = self.execution_time
-        expression['plots'] = json.dumps(self.plots)
-        expression['alternate_forms'] = json.dumps(self.alternate_forms)
-        expression['results'] = json.dumps(self.results)
-        expression['solutions'] = json.dumps(self.solutions)
-        expression['symbolic_solutions'] = json.dumps(self.symbolic_solutions)
-        expression['limits'] = json.dumps(self.limits)
-        expression['partial_derivatives'] = json.dumps(self.partial_derivatives)
-        expression['integral'] = json.dumps(self.integral)
-
-        return json.dumps(expression)
-
+        return jsonify({k: v for k, v in self.__dict__.items()})
 
 
 def compute_expression(
@@ -357,26 +360,21 @@ def compute_expression(
     Returns an Expression object containing the query results
 
     Arguments:
+        query (str): expression query
+        key (str, optional): key to use Wolfram Alpha API
+        id_equation (int, optional): identifier to rename plot images
+        dir_plots (str, optional): directory where to save plot images
+        pods_format (str, optional): output for results: mathml or plaintext
 
-    query (str): expression query
-    key (str, optional): key to use Wolfram Alpha API
-    id_equation (int, optional): identifier to rename plot images
-    dir_plots (str, optional): directory where to save plot images
-    pods_format (str, optional): output for results: mathml or plaintext
-
-    Expression examples:
-        x^3 - y^2 = 23
-        x^3 + x^2 y + x y^2 + y^3
-        3x^3 + 2x^2 - 4ax +2 = 0
-        \frac{x^2-1}{x^2+1}
-        \cos{\frac{\arcsin{x}}{2}}
-        2x+17y=23,x-y=5,\int_{0}^{x} x dx
-        \int x^2 dx
+    Returns:
+        expression: object of class Expression, to be
+            further analyzed
     """
+    logging.info("Computing expression...")
     client_api = waAPI(key)
-    query = raw("\left( " + query + "\right)")
+
     results_json = client_api.full_results(
-        response_format=response_format, query=query, pods_format=pods_format
+        query=raw("\left( " + query + " \right)"), pods_format=pods_format
     )
     obj_expression = Expression(
         query=query,
