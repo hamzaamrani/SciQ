@@ -1,6 +1,7 @@
+import numpy as np
 import logging
 import os
-
+import cv2
 from flask import current_app, flash, jsonify, render_template, request
 from flask_jwt_extended import get_jwt_identity, jwt_optional
 from flask_limiter.util import get_remote_address
@@ -46,9 +47,9 @@ def solve_exp():
     if exp is None:
         return jsonify({"error": "no expression to parse"})
     parsed = exp2latex(exp)
-    solved = compute_expression(
-        parsed, pods_format=pods_format, output_result=output_result
-    )
+    solved = compute_expression(parsed,
+                                pods_format=pods_format,
+                                output_result=output_result)
     # logging.info(jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
     return jsonify({k: v for k, v in solved.__dict__.items() if k != "plots"})
 
@@ -133,19 +134,42 @@ def raw(text):
 def send_file():
     logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
-    filename = secure_filename(fileob.filename)
+    # logging.info("Load fileob" + fileob)
 
-    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-    logging.info("Save path is = " + save_path)
-    fileob.save(save_path)
-    parsed = OCR_SERVICE.predict(save_path)
-
-    logging.info("Requests from Desktop")
-    response_obj = compute_expression(parsed)
-
-    return render_template("show_results.html",
-                           alert=True,
-                           response_obj=response_obj)
+    nparr = np.frombuffer(fileob.getbuffer(), np.uint8)
+    # decode image
+    img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+    parsed = OCR_SERVICE.predict(img)
+    logging.info("Identita': " + str(get_jwt_identity()) + " da IP: " +
+                 str(get_remote_address()))
+    user_agent = parse(request.headers.get("User-Agent"))
+    if user_agent.is_pc:
+        try:
+            logging.info("Requests from Desktop")
+            logging.debug('DEBUG: results' + parsed)
+            response_obj = compute_expression(parsed)
+            response_obj_json = response_obj.to_json()
+            (
+                collections_names,
+                collections_infos,
+            ) = collections_api.get_collections()
+            logging.info(response_obj_json.get_json())
+            return render_template(
+                "show_results.html",
+                response_obj=response_obj,
+                response_obj_json=response_obj_json,
+                collections_names=collections_names,
+                collections_infos=collections_infos,
+            )
+        except Exception as e:
+            logging.info(e)
+            return render_template("math.html",
+                                   alert=True,
+                                   error="something goes wrong")
+    else:
+        logging.info("Request from mobile")
+        response_obj = compute_expression(parsed).to_json()
+        return response_obj
 
 
 # GET NAMES OF UPLOADED FILES
