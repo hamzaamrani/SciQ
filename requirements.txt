@@ -1,3 +1,4 @@
+opencv-python-headless
 alembic==1.4.2
 certifi==2019.11.28
 click==7.1.1
@@ -33,7 +34,6 @@ git+https://github.com/miyakogi/m2r@dev#egg=m2r
 gunicorn
 
 tensorflow==1.13.1
-opencv-python
 tqdm
 scipy==1.2.3
 nltk==3.2
@@ -45,3 +45,4 @@ flask-jwt-extended
 pymongo
 Flask-PyMongo
 mongomock
+numpy

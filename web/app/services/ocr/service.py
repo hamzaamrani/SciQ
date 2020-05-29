@@ -1,8 +1,6 @@
 import logging
 import os
-import shutil
 import zipfile
-
 import cv2
 import numpy as np
 
@@ -20,7 +18,6 @@ class _OCRService():
     """
     Service serving OCR capability. It loads a OCR latex model to predict image characters
     """
-
     def __init__(self):
         dir_output = OCR_CONFIG['model_dir']
         if (not os.path.isdir(dir_output)):
@@ -47,7 +44,26 @@ class _OCRService():
 
         # shutil.rmtree(tmp_dir)
 
-    def predict(self, img_path):
+    def predict(self, img):
+        """Translates an ASCIIMath string to LaTeX
+
+        Args:
+            img (numpy.Array): numpy image
+        Returns:
+            str: LaTeX prediction of the input image
+        """
+
+        try:
+            img = np.expand_dims(img, -1)
+            hyps = self.model.predict(img)
+            result = hyps[0]
+            result = result.replace('\\,', '').replace(' ', '')
+            logging.info(result)
+            return result
+        except Exception as ex:
+            logging.info('are you kidding me?')
+
+    def predict_from_path(self, img_path):
         """Translates an ASCIIMath string to LaTeX
 
         Args:
@@ -58,7 +74,8 @@ class _OCRService():
         """
 
         try:
-            img = np.expand_dims(cv2.imread(img_path, cv2.IMREAD_GRAYSCALE), -1)
+            img = np.expand_dims(cv2.imread(img_path, cv2.IMREAD_GRAYSCALE),
+                                 -1)
             hyps = self.model.predict(img)
             result = hyps[0]
             result = result.replace('\\,', '').replace(' ', '')

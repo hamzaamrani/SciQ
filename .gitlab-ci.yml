@@ -12,14 +12,10 @@ stages:
   - test
   - deploy
 
-before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DEV_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/test-env:latest
   DOCKER_DRIVER: overlay2
-
 
 build-webapp:
   stage: build
@@ -35,6 +31,9 @@ build-webapp:
 
 build-test-env:
   stage: build
+  before_script:
+    - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
   services:
       - docker:dind
   script:
