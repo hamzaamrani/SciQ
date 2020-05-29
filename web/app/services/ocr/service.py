@@ -44,7 +44,7 @@ class _OCRService():
         with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
             zip_ref.extractall(dir_output)
 
-        shutil.rmtree(tmp_dir)
+        # shutil.rmtree(tmp_dir)
 
     def predict(self, img_path):
         """Translates an ASCIIMath string to LaTeX

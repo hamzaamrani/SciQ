@@ -5,6 +5,7 @@ from flask import Markup, jsonify, render_template, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from user_agents import parse
 from web.app.services.utils.utils import raw
+import json
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -28,7 +29,20 @@ def collections():
             collections_infos=collections_infos,
             expressions_by_collection=expressions_by_collection,
         )
+    else:
+        return create_collection_json(collections_names, collections_infos,expressions_by_collection)
 
+def create_collection_json(collections_names, collections_infos,expressions_by_collection):
+    collections = []
+
+    for name, info, expressions in zip(collections_names, collections_infos,expressions_by_collection):
+        expressions_json=[]
+        for expression in expressions:
+            expressions_json.append( {k: v for k, v in expression.__dict__.items()} )
+
+        collections.append({'name':name, 'info':info, 'expressions':expressions_json})
+    
+    return jsonify({'collections':collections})
 
 @jwt_required
 def get_idUser():
