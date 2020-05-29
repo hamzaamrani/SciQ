@@ -95,6 +95,134 @@
             </div>
         </div>
     </div>
+
+    <div class="readme" id="AsciMathInfo">
+        <h4 style="text-align: left; color: green; font-weight: bold;">ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">We use <b>ASCIIMath</b> to work with the expressions.
+            <br>We built a parser that get ASCIIMath expressions and convert them into latex format.
+            <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath
+            for you.
+            <br>If there is not what you are looking for in the extended keyboard please refer to <a
+                href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
+            <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted"
+                target="_blank">ASCIIMath</a>
+        </p>
+
+        <h4 style="text-align: left; color: green; font-weight: bold;">py-ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">As said above, we built a parser to convert <b>ASCIIMath</b>
+            expression to <b>LateX</b> expressions.
+            <br>We decided to develop our own parser because we think that <b>ASCIIMath</b> is a more simple syntax to
+            write Mathematical concepts compared to LateX's syntax.
+            <br>In this way we provide to the user a better experience on SciQ.
+            <br>Why we need LateX? Just because <b>Wolfram|Alpha</b>'s API understand also LateX's syntax.
+            <br>If you wanna go deep into our parser please go to <a href="https://github.com/belerico/py_asciimath">
+                py-asciimath</a>
+        </p>
+
+
+        <h4 style="text-align: left; color: green; font-weight: bold;">Important - Matrices and systems of equations
+        </h4>
+        <p style=" padding-top: 7px; ">For a text to be rendered as a matrix must have a structure like</p>
+        <div class="text-center ">
+            <code>L '[' ... (, ...)* ']', '[' ... (, ...)* ']' (, '[' ... (, ...)* ']' )* R</code>
+            <br> or
+            <br>
+            <code>L '(' ... (, ...)* ')', '(' ... (, ...)* ')' (, '(' ... (, ...)* ')' )* R</code>
+        </div>
+        <p>that is:</p>
+        <ul>
+            <li>It must be delimited by a left (<code>L</code>) and right (<code>R</code>) parenthesis</li>
+            <li>Every row can be separated by <code>[]</code> XOR <code>()</code> (if one starts with <code>[]</code>,
+                every row will be recognized with the same parenthesis, same for <code>()</code>), followed by
+                <code>,</code> and possibly another row</li>
+            <li>Every matrix must contain at least two rows</li>
+            <li>Every rows contains zero or more columns, where <code>...</code> can be any ASCIIMath expression</li>
+            <li>Every row must contain the same number of columns</li>
+        </ul>
+
+        <p>Since <code>L</code> and <code>R</code> can be any left or right parenthesis, and every matrices must have
+            the same number of columns, to render a system of equation one can write something like
+            <code>{[(root n x)/(x) &lt;= 4], [x^2=e^x]:}</code>.
+            <br>On the other hand a matrix can be somenthing like
+            <code>[[(root n x)/(x) &lt;= 4, int x dx], [x^2=e^x, lim_(x to infty) 1 / (x^2)]]</code>.</p>
+
+        <h4 style="text-align: left; color: green; padding-top: 25px; font-weight:bold">Some examples</h4>
+        <p style="text-align: left; padding-top: 7px; ">In this section we provide some examples of the <b>main</b>
+            expressions you can get in touch with SciQ.</p>
+
+
+        <div>
+            <div class="row ">
+                <div class="col-4 ">
+                    <h5 style="font-weight: bold; color:green">Expression type</h5>
+                </div>
+                <div class="col-8 ">
+                    <h5 style="font-weight: bold; color:green">Rendering</h5>
+                </div>
+            </div>
+        </div>
+        <div>
+            <b>System of equations</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>{[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:}</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` {[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:} `</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <b>Integral</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>int_0^1 f(x)dx</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` int_0^1 f(x)dx `</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Matrix</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>[[2, 3], [5,6]]</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> ` [[2, 3], [5,6]] ` </p>
+                </div>
+            </div>
+            <b>Vector</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>( ((root n x)/(x)) , (3) )</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> `( ((root n x)/(x)) , (3) )` </p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Limits</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>lim_(N->oo) sum_(i=0)^N</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">`lim_(N->oo) sum_(i=0)^N`</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </body>
 
 </html>
