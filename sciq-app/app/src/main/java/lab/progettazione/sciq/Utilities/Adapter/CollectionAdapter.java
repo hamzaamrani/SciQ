@@ -30,7 +30,6 @@ import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 import static java.lang.String.valueOf;
 
 public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.MyViewHolder>  implements ExpressionAdapter.ExpressionDeleted, ReturnString {
-
     private Context mContext;
     private ArrayList<Collection> collectionList;
     private ExpressionAdapter.ExpressionItemListener listener;
@@ -59,12 +58,13 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView title_collection;
         private TextView collection_count;
-        private RecyclerView expression_list;
         private Boolean expanded;
         private LinearLayout if_expression;
+        private RecyclerView expression_list;
 
         public MyViewHolder(View itemView){
             super(itemView);
+
             title_collection = itemView.findViewById(R.id.title_collection);
             expression_list = itemView.findViewById(R.id.lista_expression);
             collection_count = itemView.findViewById(R.id.expression_count);
@@ -78,6 +78,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
 
         public Boolean getExpanded() {
             return expanded;
+        }
+
+        public RecyclerView getExpression_list() {
+            return expression_list;
         }
     }
 
@@ -129,9 +133,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
 
     @Override
     public void onDeleteExpression(View v, int position, Expression expression) {
+
         collectionList.get(position).getLista_expression().remove(position);
         expressionAdapter.notifyDataSetChanged();
-
         JSONObject postData = new JSONObject();
         try{
             postData.put("id_expr" , expression.getId());
@@ -142,7 +146,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
         check = new SharedUtils();
         DeleteExpression deleteExpression = new DeleteExpression(mContext);
         deleteExpression.setDelegate(CollectionAdapter.this);
-        deleteExpression.execute("https://sciq-dev-unimib.herokuapp.com/delete_expression", check.getToken(mContext), postData);
+        deleteExpression.execute("https://sciq-unimib-dev.herokuapp.com/delete_expression", check.getToken(mContext), postData);
     }
 
     @Override

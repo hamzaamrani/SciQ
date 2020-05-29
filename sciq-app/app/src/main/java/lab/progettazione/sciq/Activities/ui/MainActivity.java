@@ -6,21 +6,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hbisoft.pickit.PickiT;
+import com.hbisoft.pickit.PickiTCallbacks;
 import com.progettazione.sciq.R;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,10 +36,14 @@ import java.io.ByteArrayOutputStream;
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static androidx.constraintlayout.widget.Constraints.TAG;
+import static java.lang.String.valueOf;
+
 public class MainActivity extends AppCompatActivity {
 
     private SharedUtils check = new SharedUtils();
-    private PickiT pickiT;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +58,15 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // Check Permission for read storage because we will need them further
+        if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG,"Permission is granted");
+        } else {
+            Log.v(TAG,"Permission is revoked");
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
     }
 
     // Define menu to be inflated on the action bar
@@ -106,32 +124,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int codiceRichiesta, int codiceRisultato, Intent data) {
         super.onActivityResult(codiceRichiesta, codiceRisultato, data);
-        if(codiceRisultato == Activity.RESULT_OK){
-            switch (codiceRichiesta) {
-                case 100:
-                    Uri tempUri = null;
-                    try{
-                        Bitmap bp = (Bitmap) data.getExtras().get("data");
-                        tempUri = getImageUri(getApplicationContext(), bp);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    if(tempUri != null){
-                        //case_camera = true;
-                        pickiT.getPath(tempUri, Build.VERSION.SDK_INT);
-                    }
-                    break;
-            }
+
+        for (Fragment fragment : getSupportFragmentManager().getPrimaryNavigationFragment().getChildFragmentManager().getFragments())
+        {
+            fragment.onActivityResult(codiceRichiesta, codiceRisultato, data);
         }
 
+
     }
 
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
+
+
+
+
 
 }

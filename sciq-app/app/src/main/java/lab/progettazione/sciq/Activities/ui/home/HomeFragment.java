@@ -1,9 +1,12 @@
 package lab.progettazione.sciq.Activities.ui.home;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -20,28 +23,46 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.hbisoft.pickit.PickiT;
+import com.hbisoft.pickit.PickiTCallbacks;
 import com.nishant.math.MathView;
 import com.progettazione.sciq.R;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
+import lab.progettazione.sciq.Activities.ui.MainActivity;
 import lab.progettazione.sciq.Activities.ui.ShowResults;
 import lab.progettazione.sciq.Model.Expression;
+import lab.progettazione.sciq.Utilities.AsyncTasks.SendImage;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SubmitExpression;
 import lab.progettazione.sciq.Utilities.Interfaces.ExpressionInterface;
+import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
+import static java.lang.String.valueOf;
 
-public class HomeFragment extends Fragment implements ExpressionInterface {
+
+public class HomeFragment extends Fragment implements ExpressionInterface, PickiTCallbacks, ReturnString {
 
     private static final int CAMERA_REQUEST =100;
+    private static final int PICK_FROM_GALLERY = 42;
+    private PickiT pickiT;
     private HomeViewModel homeViewModel;
     private SubmitExpression submitExpression;
     private SharedUtils check = new SharedUtils();
@@ -57,7 +78,9 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
         final Button submit_expression = root.findViewById(R.id.submit_expression);
         final ProgressBar progressBar = root.findViewById(R.id.my_progressBar);
         final ImageButton send_photo = root.findViewById(R.id.send_photo);
+        final ImageButton attach_photo = root.findViewById(R.id.attach_photo);
 
+        pickiT = new PickiT(getContext(), this);
 
 
         expression_input.addTextChangedListener(new TextWatcher() {
@@ -113,6 +136,12 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
             }
         });
 
+        attach_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFolder();
+            }
+        });
 
 
         return root;
@@ -153,5 +182,121 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
         }
     }
 
+    public void openFolder() {
+        String[] mimeTypes =
+                {"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx"application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+                        "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+                        "text/plain",
+                        "application/pdf",
+                        "application/zip",
+                        "image/*"};
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, PICK_FROM_GALLERY);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode) {
+                case 100:
+                    Uri tempUri = null;
+                    try{
+                        Bitmap bp = (Bitmap) data.getExtras().get("data");
+                        tempUri = getImageUri(getContext(), bp);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    if(tempUri != null){
+                        //case_camera = true;
+                        pickiT.getPath(tempUri, Build.VERSION.SDK_INT);
+                    }
+                    break;
+                case PICK_FROM_GALLERY:
+                    InputStream is = null;
+                    String path = null;
+                    Uri uri;
+                    String filename;
+                    int i;
+                    String current_path;
+                    if(null != data){ // checking empty selection
+                        if(null != data.getClipData()) { // checking multiple selection or not
+                            for(i = 0; i < data.getClipData().getItemCount(); i++) {
+                                uri = data.getClipData().getItemAt(i).getUri();
+                                pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                            }
+                        }else{ // single selection
+                            uri = data.getData();
+                            //System.out.println(uri);
+                            if(uri!= null){
+                                pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                            }
+                        }
+                    }else
+                        Toast.makeText(getContext(), "Something went wrong getting file!", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        System.out.println(path);
+        return Uri.parse(path);
+    }
+
+    @Override
+    public void PickiTonStartListener() {
+
+    }
+
+    @Override
+    public void PickiTonProgressUpdate(int progress) {
+
+    }
+
+    @Override
+    public void PickiTonCompleteListener(String path, boolean wasDriveFile, boolean wasUnknownProvider, boolean wasSuccessful, String Reason) {
+        //Attachments attach;
+        Log.d("PickIT", valueOf(wasSuccessful));
+        ArrayList<String> paths = new ArrayList<>();
+
+
+        paths.add(check.getToken(getContext()));
+        paths.add(path);
+
+        SendImage sendImage = new SendImage(getContext());
+        sendImage.setDelegate(HomeFragment.this);
+        sendImage.execute(paths);
+    }
+
+    @Override
+    public void processFinish(String output) {
+        Boolean success;
+        try{
+            JSONObject response = new JSONObject(output);
+            if(response.has("success")){
+                success = response.getBoolean("success");
+                if(success){
+                    Expression response_exp = new Expression(response);
+                    System.out.println("Success =  " + response_exp.getSuccess());
+                    Intent i = new Intent(getContext(), ShowResults.class);
+                    i.putExtra("Expression", response_exp);
+                    startActivity(i);
+                }else
+                    Toast.makeText(getContext(), "OPS, I didn't found an expression, please retry!", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(getContext(), "Connection error", Toast.LENGTH_LONG).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
