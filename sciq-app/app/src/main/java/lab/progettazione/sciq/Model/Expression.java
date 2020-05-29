@@ -13,6 +13,7 @@ public class Expression implements Parcelable {
     private Boolean success;
     private String query;
     private String execution_time;
+    private String id;
     private ArrayList<String> plots = new ArrayList<>();
     private ArrayList<String> alternate_forms = new ArrayList<>();
     private ArrayList<String> solutions  = new ArrayList<>();
@@ -32,6 +33,12 @@ public class Expression implements Parcelable {
             this.query = expression.getString("query");
         else
             this.query = null;
+
+        if(expression.has("_id"))
+            this.id = expression.getString("_id");
+        else
+            this.id = null;
+
 
         if(expression.has("execution_time"))
             this.execution_time = expression.getString("execution_time");
@@ -98,11 +105,13 @@ public class Expression implements Parcelable {
 
     }
 
+
     protected Expression(Parcel in) {
         byte tmpSuccess = in.readByte();
         success = tmpSuccess == 0 ? null : tmpSuccess == 1;
         query = in.readString();
         execution_time = in.readString();
+        id = in.readString();
         plots = in.createStringArrayList();
         alternate_forms = in.createStringArrayList();
         solutions = in.createStringArrayList();
@@ -164,20 +173,7 @@ public class Expression implements Parcelable {
         return integral;
     }
 
-    @Override
-    public String toString() {
-        return "Expression{" +
-                "success=" + success +
-                ", query=" + query  +
-                ", execution_time=" + execution_time +
-                ", alternate_forms=" + alternate_forms +
-                ", solutions=" + solutions +
-                ", symbolic_solutions=" + symbolic_solutions +
-                ", limits=" + limits +
-                ", partial_derivatives=" + partial_derivatives +
-                ", integral=" + integral +
-                '}';
-    }
+    public String getId() { return id; }
 
     @Override
     public int describeContents() {
@@ -189,6 +185,7 @@ public class Expression implements Parcelable {
         dest.writeByte((byte) (success == null ? 0 : success ? 1 : 2));
         dest.writeString(query);
         dest.writeString(execution_time);
+        dest.writeString(id);
         dest.writeStringList(plots);
         dest.writeStringList(alternate_forms);
         dest.writeStringList(solutions);
@@ -196,5 +193,22 @@ public class Expression implements Parcelable {
         dest.writeStringList(limits);
         dest.writeStringList(partial_derivatives);
         dest.writeStringList(integral);
+    }
+
+    @Override
+    public String toString() {
+        return "Expression{" +
+                "success=" + success +
+                ", query='" + query + '\'' +
+                ", execution_time='" + execution_time + '\'' +
+                ", id='" + id + '\'' +
+                ", plots=" + plots +
+                ", alternate_forms=" + alternate_forms +
+                ", solutions=" + solutions +
+                ", symbolic_solutions=" + symbolic_solutions +
+                ", limits=" + limits +
+                ", partial_derivatives=" + partial_derivatives +
+                ", integral=" + integral +
+                '}';
     }
 }

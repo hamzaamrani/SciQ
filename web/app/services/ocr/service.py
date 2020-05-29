@@ -31,6 +31,7 @@ class _OCRService():
         self.model = Img2SeqModel(config_model, dir_output, vocab)
         self.model.build_pred()
         self.model.restore_session(dir_output + "model.weights/")
+        pass
 
     def _get_model_data(self, tmp_dir='./tmp'):
         os.makedirs(tmp_dir, exist_ok=True)

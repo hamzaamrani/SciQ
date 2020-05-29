@@ -9,6 +9,7 @@ from web.app.api.parser_api import exp2latex
 from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.utils.utils import raw
 
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 

@@ -97,6 +97,77 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:gravity="center">
+
+
+            <ImageButton
+                android:elevation="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/send_photo"
+                android:src="@drawable/ic_camera_alt_24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:background="@color/backgroundColor"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture expression"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryDark"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:gravity="center">
+
+
+            <ImageButton
+                android:elevation="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/attach_photo"
+                android:src="@drawable/ic_attach_file_black_24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:background="@color/backgroundColor"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick an expression"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryDark"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
 
     <TextView
         android:layout_weight="0.1"

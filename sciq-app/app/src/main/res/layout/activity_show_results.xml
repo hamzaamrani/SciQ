@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-    tools:context="lab.progettazione.sciq.Activities.ShowResults"
+    tools:context="lab.progettazione.sciq.Activities.ui.ShowResults"
     android:padding="10dp">
 
     <LinearLayout
