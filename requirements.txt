@@ -46,5 +46,5 @@ pymongo
 Flask-PyMongo
 mongomock
 numpy
-cv2
+opencv-python
 zipfile
