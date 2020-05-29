@@ -95,7 +95,6 @@ deploy-prod:
   script:
       - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
-    - sprint2
     - master
 
 deploy-dev:
