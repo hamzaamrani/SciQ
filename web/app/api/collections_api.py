@@ -1,11 +1,13 @@
 import logging
 
-from bson import ObjectId
-from flask import Markup, jsonify, render_template, request
+from flask import Markup, jsonify, render_template, request, redirect, url_for
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from user_agents import parse
+
+from bson import ObjectId
+from web.app.api.parser_api import exp2latex
+from web.app.services.api_wolfram.waAPI import compute_expression
 from web.app.services.utils.utils import raw
-import json
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -30,20 +32,32 @@ def collections():
             expressions_by_collection=expressions_by_collection,
         )
     else:
-        return create_collection_json(collections_names, collections_infos,expressions_by_collection)
+        return create_collection_json(
+            collections_names, collections_infos, expressions_by_collection
+        )
 
-def create_collection_json(collections_names, collections_infos,expressions_by_collection):
+
+def create_collection_json(
+    collections_names, collections_infos, expressions_by_collection
+):
     collections = []
 
-    for name, info, expressions in zip(collections_names, collections_infos,expressions_by_collection):
-        expressions_json=[]
+    for name, info, expressions in zip(
+        collections_names, collections_infos, expressions_by_collection
+    ):
+        expressions_json = []
         for expression in expressions:
-            expression['_id'] = str(expression['_id'])
-            expressions_json.append( {k: v for k, v in expression.__dict__.items()} )
+            expression["_id"] = str(expression["_id"])
+            expressions_json.append(
+                {k: v for k, v in expression.__dict__.items()}
+            )
 
-        collections.append({'name':name, 'info':info, 'expressions':expressions_json})
-    
-    return jsonify({'collections':collections})
+        collections.append(
+            {"name": name, "info": info, "expressions": expressions_json}
+        )
+
+    return jsonify({"collections": collections})
+
 
 @jwt_required
 def get_idUser():
@@ -301,3 +315,44 @@ def delete_expression():
             "false",
             "true",
         )
+
+
+@jwt_required
+def update_expression():
+    if request.method == "GET":
+        logging.info("REQUEST: " + request.method)
+        exp_id = request.args.get("exp_id")
+        symbolic_expression = request.args.get("symbolic_expression")
+        public = request.args.get("public")
+        return render_template(
+            "update_expression.html",
+            symbolic_expression=symbolic_expression,
+            exp_id=exp_id,
+            public=public,
+        )
+    elif request.method == "POST":
+        exp_id = request.form["exp_id"]
+        exp = request.form["symbolic_expression"]
+        public = request.form["public"]
+        parsed = exp2latex(exp)
+        solved = compute_expression(parsed).to_json()
+
+        from web.app import mongo
+
+        users = mongo.db.users
+        id_user = get_idUser()
+        users.update(
+            {"id_user": id_user},
+            {"$pull": {"expressions": {"_id": ObjectId(exp_id)}}},
+            False,
+            True,
+        )
+        exp_id = ObjectId(exp_id)
+        solved = solved.get_json()
+        solved["_id"] = exp_id
+        solved["public"] = public
+        users.update(
+            {"id_user": id_user}, {"$addToSet": {"expressions": solved}},
+        )
+        return redirect(url_for("collections"))
+

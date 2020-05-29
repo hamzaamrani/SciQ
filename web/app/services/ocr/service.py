@@ -22,18 +22,19 @@ class _OCRService():
     """
 
     def __init__(self):
-        dir_output = OCR_CONFIG['model_dir']
-        if (not os.path.isdir(dir_output)):
-            self._get_model_data()
+        # dir_output = OCR_CONFIG['model_dir']
+        # if (not os.path.isdir(dir_output)):
+        #     self._get_model_data()
 
-        config_vocab = Config(dir_output + "vocab.json")
-        config_model = Config(dir_output + "model.json")
-        vocab_path = os.path.join(dir_output, 'vocab.txt')
-        vocab = Vocab(config_vocab, vocab_path)
+        # config_vocab = Config(dir_output + "vocab.json")
+        # config_model = Config(dir_output + "model.json")
+        # vocab_path = os.path.join(dir_output, 'vocab.txt')
+        # vocab = Vocab(config_vocab, vocab_path)
 
-        self.model = Img2SeqModel(config_model, dir_output, vocab)
-        self.model.build_pred()
-        self.model.restore_session(dir_output + "model.weights/")
+        # self.model = Img2SeqModel(config_model, dir_output, vocab)
+        # self.model.build_pred()
+        # self.model.restore_session(dir_output + "model.weights/")
+        pass
 
     def _get_model_data(self, tmp_dir='./tmp'):
         os.makedirs(tmp_dir, exist_ok=True)

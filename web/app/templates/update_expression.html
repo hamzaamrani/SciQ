@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include Bootstrap stuff-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+
+
+    <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
+    <script>
+        window.MathJax = {
+            "fast-preview": {
+                disabled: true
+            },
+            AuthorInit: function () {
+                MathJax.Hub.Register.StartupHook('End', function () {
+                    MathJax.Hub.processSectionDelay = 0
+                    var demoSource = document.getElementById('symbolic_expression')
+                    var demoRendering = document.getElementById('MathOutput')
+                    var math = MathJax.Hub.getAllJax('MathOutput')[0]
+                    demoSource.addEventListener('input', function () {
+                        MathJax.Hub.Queue(['Text', math, demoSource.value])
+                    })
+                })
+            }
+        }
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
+    <script>
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    </script>
+</head>
+
+
+<body onLoad="checkCookie();">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            {% include 'navbar.html' %}
+        </div>
+    </nav>
+
+    <div class="text-center">
+        <div class="container container-fluid">
+            <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
+            {% if alert is sameas true%}
+            <div class="alert alert-danger" role="alert">
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+            <h1 style="padding-bottom: 10px;">Update your expression</h1>
+            <div class="container container-fluid">
+                <form class="enter-equation" method="POST" action="/update_expression">
+                    <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off"
+                        class="use-keyboard-input input-equation" value="{{ symbolic_expression }}">
+                    <input required id="exp_id" name="exp_id" type="hidden" value="{{ exp_id }}">
+                    <input required id="public" name="public" type="hidden" value="{{ public }}">
+                    <button type="submit" id="search-button" aria-label="compute" class="btn-outline-success equals-key"
+                        title="Update expression">
+                        <img src="{{ url_for('static', filename='images/done.svg') }}">
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" style="padding-bottom: 10px;">
+        <div class="container container-fluid">
+            <div class="box" id="box">
+                <div id="MathOutput" class="output">` {{ symbolic_expression }} `</div>
+            </div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+
+</html>
