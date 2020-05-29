@@ -91,37 +91,42 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
 
     @Override
     public void processFinish(String output) {
-        try{
-            JSONObject login_response = new JSONObject(output);
-            if(login_response.has("access_token")){
-                String tkn = login_response.getString("access_token");
+        if(output.equalsIgnoreCase("Connection error!")){
+            Toast.makeText(this, "Something went wrong, check your connection", Toast.LENGTH_LONG).show();
+        }else{
+            try{
+                JSONObject login_response = new JSONObject(output);
+                if(login_response.has("access_token")){
+                    String tkn = login_response.getString("access_token");
 
-                //Todo encrypt preferences
-                SharedPreferences pref = getSharedPreferences("Info", MODE_PRIVATE);
-                SharedPreferences.Editor edit_pref = pref.edit();
-                edit_pref.clear();
-                edit_pref.putString("token", tkn);
-                edit_pref.apply();
+                    //Todo encrypt preferences
+                    SharedPreferences pref = getSharedPreferences("Info", MODE_PRIVATE);
+                    SharedPreferences.Editor edit_pref = pref.edit();
+                    edit_pref.clear();
+                    edit_pref.putString("token", tkn);
+                    edit_pref.apply();
 
-                SharedPreferences isLogged = getSharedPreferences("Logged", 0);
-                SharedPreferences.Editor login = isLogged.edit();
-                login.clear();
-                login.putBoolean("isLogged", true );
-                login.putLong("lastLogin", new Date().getTime());
-                login.apply();
+                    SharedPreferences isLogged = getSharedPreferences("Logged", 0);
+                    SharedPreferences.Editor login = isLogged.edit();
+                    login.clear();
+                    login.putBoolean("isLogged", true );
+                    login.putLong("lastLogin", new Date().getTime());
+                    login.apply();
 
-                input_password_login.setError(null);
-                input_name_login.setError(null);
-                Intent i  = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
-            }else{
-                Toast.makeText(getApplicationContext(), login_response.getString("results"), Toast.LENGTH_LONG).show();
-                input_name_login.setError("Username could be wrong");
-                input_password_login.setError("Password could be wrong");
+                    input_password_login.setError(null);
+                    input_name_login.setError(null);
+                    Intent i  = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else{
+                    Toast.makeText(getApplicationContext(), login_response.getString("results"), Toast.LENGTH_LONG).show();
+                    input_name_login.setError("Username could be wrong");
+                    input_password_login.setError("Password could be wrong");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
+
 
 
     }

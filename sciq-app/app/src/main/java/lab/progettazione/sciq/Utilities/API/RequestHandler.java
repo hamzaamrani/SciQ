@@ -66,7 +66,7 @@ public class RequestHandler {
                 if(responseCode == 429){
                     return "Limit exceeded";
                 }else{
-                    err = "Username or Password invalid";
+                    err = "Connection error!";
                     return err;
                 }
 
