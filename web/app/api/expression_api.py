@@ -111,7 +111,7 @@ def raw(text):
 
 
 @jwt_optional
-# @limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
+@limiter.limit(LIMIT, exempt_when=lambda: get_jwt_identity() is not None)
 def send_file():
     logging.info("Current working location is = " + os.getcwd())
     fileob = request.files["file2upload"]
