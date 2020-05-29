@@ -43,5 +43,4 @@ scipy==1.2.3
 nltk==3.2
 distance==0.1.3
 numpy
-opencv
-zipfile
+opencv-python
