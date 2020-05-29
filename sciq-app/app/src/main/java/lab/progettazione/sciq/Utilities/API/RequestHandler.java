@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -71,6 +72,31 @@ public class RequestHandler {
                 }
 
             }
+        }
+    }
+
+
+    public static String sendGetToken(String url, String token) throws IOException {
+        System.out.print("*************"+url +" TOKEN : "+ token);
+        URL obj = new URL(url);
+        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+        System.out.println(token);
+        con.setRequestProperty("Cookie","access_token_cookie="+token);
+        con.setRequestMethod("GET");
+        int responseCode = con.getResponseCode();
+        System.out.println(url);
+        System.out.println("\nResponse Code : " + responseCode);
+        if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
+            BufferedReader in = new BufferedReader(new InputStreamReader( con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            return response.toString();
+        } else {
+            return "Error in get request";
         }
     }
 }
