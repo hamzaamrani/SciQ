@@ -1,4 +1,3 @@
-opencv-python
 alembic==1.4.2
 certifi==2019.11.28
 click==7.1.1
@@ -37,3 +36,4 @@ pymongo
 Flask-PyMongo
 numpy
 mongomock
+opencv-python-headless
