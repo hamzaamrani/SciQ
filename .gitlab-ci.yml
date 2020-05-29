@@ -31,7 +31,7 @@ build-webapp:
     - echo 'build webapp'
     - docker-compose build
   only:
-    - master
+    - sprint2
 
 build-test-env:
   stage: build
@@ -42,7 +42,7 @@ build-test-env:
       - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
       - docker push $DOCKER_DEV_ENV_IMAGE
   only:
-    - master
+    - sprint2
     
 test-db:
   stage: test
