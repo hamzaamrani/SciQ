@@ -167,6 +167,18 @@ def create_app(config_name):
         view_func=collections_api.show_expression,
     )
 
+    app.add_url_rule(
+        "/update_expression",
+        methods=["GET", "POST"],
+        view_func=collections_api.update_expression,
+    )
+    
+    app.add_url_rule(
+        "/delete_expression",
+        methods=["POST"],
+        view_func=collections_api.delete_expression,
+    )
+
     return app
 
 

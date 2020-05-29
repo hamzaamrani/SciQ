@@ -148,6 +148,7 @@ class TestExpressionDb(unittest.TestCase):
         )
 
         expression_id = self.database.users.find({"id_user": id_user}, { 'expressions': { '$elemMatch': { '_id': id_obj } } })[0]['expressions'][0]['_id']
+
         default_expression_id = self.database.users.find({"id_user": id_user}, { 'collections.default.ids':1 } )[0]['collections']['default']['ids'][0]
         collection_expression_id = self.database.users.find({"id_user": id_user}, { 'collections.'+name+'.ids':1 } )[0]['collections'][name]['ids'][0]
 

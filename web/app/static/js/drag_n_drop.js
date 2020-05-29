@@ -1,6 +1,6 @@
-$(function() {
+$(function () {
 
-    var refreshFilenameList = function(data) {
+    var refreshFilenameList = function (data) {
         var templateText = $("#tableTemplate").html();
         var template = Handlebars.compile(templateText);
         var renderedText = template(data);
@@ -9,20 +9,20 @@ $(function() {
         $("#tablearea").append(renderedDom);
     };
 
-    var fileUploadSuccess = function(data) {
+    var fileUploadSuccess = function (data) {
         var url = "/filenames";
         var promise = $.get(url);
         promise.then(refreshFilenameList);
-	
+
     };
 
-    var fileUploadFail = function(data) {};
+    var fileUploadFail = function (data) { };
 
-    var dragHandler = function(evt) {
+    var dragHandler = function (evt) {
         evt.preventDefault();
     };
 
-    var dropHandler = function(evt) {
+    var dropHandler = function (evt) {
         evt.preventDefault();
         var files = evt.originalEvent.dataTransfer.files;
 
@@ -35,15 +35,15 @@ $(function() {
             processData: false,
             contentType: false,
             data: formData,
-            success: function(data) {
-		alert("Upload succesful!");
-		console.log(data);
-		document.open();
-		document.write(data);
-		document.close();
+            success: function (data) {
+                alert("Upload succesful!");
+                console.log(data);
+                document.open();
+                document.write(data);
+                document.close();
 
             },
-            error: function(data) {
+            error: function (data) {
                 alert("Upload failed!");
             }
         };

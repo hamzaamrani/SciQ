@@ -1,3 +1,5 @@
+
+opencv-python-headless
 alembic==1.4.2
 certifi==2019.11.28
 click==7.1.1
@@ -37,8 +39,8 @@ pymongo
 Flask-PyMongo
 mongomock
 tensorflow==1.13.1
-opencv-python
 tqdm
 scipy==1.2.3
 nltk==3.2
 distance==0.1.3
+numpy
