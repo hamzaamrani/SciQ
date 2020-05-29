@@ -45,3 +45,4 @@ flask-jwt-extended
 pymongo
 Flask-PyMongo
 mongomock
+numpy
