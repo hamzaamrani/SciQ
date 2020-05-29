@@ -107,17 +107,19 @@
                         {{ response_obj.execution_time }} </p>
                 </div>
                 <div class="col-3">
-                    {% if (response_obj.success) and (response_obj._id is not defined) %}
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal"
-                        id="saveButton">
-                        Save Expression
-                    </button>
-                    {% else %}
-                    <button type="button" class="btn btn-success" id="updateButton"
-                        onclick="update_expression()">Update</button>
-                    <button type="button" class="btn btn-success" onclick="delete_expression()">
-                        Delete
-                    </button>
+                    {% if collections_names is not none %}
+                        {% if (response_obj.success) and (response_obj._id is not defined) %}
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal"
+                            id="saveButton">
+                            Save Expression
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn btn-success" id="updateButton"
+                            onclick="update_expression()">Update</button>
+                        <button type="button" class="btn btn-success" onclick="delete_expression()">
+                            Delete
+                        </button>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -315,6 +317,7 @@
         {% endif %}
     </div>
 
+    {% if collections_names is not none and collections_infos is not none %}
     <!-- BEGIN SAVE expression Modal -->
     <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel"
         aria-hidden="true">
@@ -387,6 +390,7 @@
         </div>
     </div>
     <!-- END SAVE expression Modal -->
+    {% endif %}
 </body>
 
 </html>
