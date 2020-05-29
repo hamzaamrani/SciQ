@@ -35,6 +35,8 @@ build-webapp:
 
 build-test-env:
   stage: build
+    before_script:
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
   services:
       - docker:dind
   script:
