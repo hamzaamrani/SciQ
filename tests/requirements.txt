@@ -36,3 +36,5 @@ pymongo
 Flask-PyMongo
 numpy
 mongomock
+cv2
+zipfile
