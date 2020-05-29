@@ -38,11 +38,10 @@ def create_collection_json(collections_names, collections_infos,expressions_by_c
     for name, info, expressions in zip(collections_names, collections_infos,expressions_by_collection):
         expressions_json=[]
         for expression in expressions:
-            expression['_id'] = str(expression['_id'])
             expressions_json.append( {k: v for k, v in expression.__dict__.items()} )
 
         collections.append({'name':name, 'info':info, 'expressions':expressions_json})
-    
+
     return jsonify({'collections':collections})
 
 @jwt_required
@@ -55,7 +54,6 @@ def save_expression_to_db():
     logging.info("Saving expression to db...")
 
     json_obj = request.get_json()
-    logging.info(json_obj)
 
     from web.app import mongo
 
@@ -95,12 +93,9 @@ def create_default_collection(id_user):
 
     users = mongo.db.users
 
-    # id_user = get_idUser()
-
     logging.info("Saving current expression to db...")
 
     # Check if user collection exists
-    # logging.info(users.find({ 'id_user': id_user } ).count())
     if users.find({"id_user": id_user}).count() == 0:
         logging.info("Creating collection for user: " + id_user)
         printer = {
@@ -173,6 +168,7 @@ def get_expressions(collection_name):
                     {"id_user": id_user},
                     {"expressions": {"$elemMatch": {"_id": collection_id}}},
                 )[0]["expressions"][0]
+                expression['_id']=str(expression['_id'])
                 expression_obj = dict2obj(expression)
                 collection_expressions.append(expression_obj)
             except Exception:
@@ -223,8 +219,6 @@ def delete_collection():
     id_user = get_idUser()
     name = request.form["name_collection"]
 
-    logging.info("User " + id_user + ": deliting collection " + name + "...")
-
     users.update({"id_user": id_user}, {"$unset": {"collections." + name: 1}})
 
     logging.info("User " + id_user + ": deleted collection " + name + "!")
@@ -272,7 +266,8 @@ def show_expression():
 
 
 def delete_expression():
-    id_expr = request.form["id_expr"]
+    response = request.get_json()
+    id_expr = response["id_expr"]
 
     from web.app import mongo
 
@@ -280,14 +275,12 @@ def delete_expression():
     id_user = get_idUser()
 
     collections_names, collections_infos = get_collections()
-
     users.update(
         {"id_user": id_user},
         {"$pull": {"expressions": {"_id": ObjectId(id_expr)}}},
-        "false",
-        "true",
+        False,
+        True
     )
-
     for collection_name in collections_names:
         users.update(
             {"id_user": id_user},
@@ -298,6 +291,10 @@ def delete_expression():
                     + ".ids": ObjectId(id_expr)
                 }
             },
-            "false",
-            "true",
+            False,
+            True
         )
+
+    logging.info("User " + id_user + ": expression " + id_expr + " deleted.")
+
+    return jsonify({"result": "expression deleted"})
