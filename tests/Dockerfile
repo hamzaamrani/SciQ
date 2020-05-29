@@ -1,9 +1,7 @@
 FROM python:latest
-RUN apt update
-RUN apt install python3
-RUN apt install py3-pip
-RUN apt install git
-RUN apt install build-base python3-dev jpeg-dev zlib-dev
+RUN apt update && \
+    apt install -y netcat-openbsd
+
 COPY . tests
 WORKDIR /tests
 RUN pip3 install --upgrade pip
