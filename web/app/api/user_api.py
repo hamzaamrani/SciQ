@@ -129,7 +129,6 @@ def get_md5(password):
 @limiter.exempt
 @jwt_required
 def add_application():
-    logging.info("PROVAAAA***************")
     userid = get_jwt_identity()["id_user"]
     appid = request.get_json()["appid"]
     appname = request.get_json()["appname"]
