@@ -123,7 +123,7 @@
                 + "&symbolic_expression=" + encodeURIComponent(query)
                 + "&public={{ response_obj.public }}"
         }
-        
+
         function delete_expression() {
             var id_expr = "{{ response_obj._id }}";
 
@@ -187,15 +187,12 @@
                         Save Expression
                     </button>
                     {% else %}
-                    <<<<<<< HEAD Delete <button type="button" class="btn btn-success" id="updateButton"
-                        onclick="update_expression()">
-                        Update
-                        =======
-                        <button type="button" class="btn btn-success" onclick="delete_expression()">
-                            Delete Expression
-                            >>>>>>> be8cee4315fa2f3ad93d43589030dc407b9d0e97
-                        </button>
-                        {% endif %}
+                    <button type="button" class="btn btn-success" id="updateButton"
+                        onclick="update_expression()">Update</button>
+                    <button type="button" class="btn btn-success" onclick="delete_expression()">
+                        Delete
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
