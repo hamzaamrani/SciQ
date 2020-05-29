@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
             @Override
             public void onClick(View v) {
                 submitExpression = new SubmitExpression(getContext(), progressBar);
-                submitExpression.delegate = HomeFragment.this;
+                submitExpression.setDelegate(HomeFragment.this);
                 if(expression_input.getText().length() > 0){
                     expression_input.setError(null);
                     if(check.userLogged(getContext())){
