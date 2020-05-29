@@ -109,6 +109,22 @@
                 window.location.replace('/collections');
             });
         }
+
+        function delete_expression() {
+            var id_expr = "{{ response_obj._id }}";
+
+            $.ajax({
+                type: "POST",
+                url: "/delete_expression",
+                contentType: "application/json;charset=UTF-8",
+                data:
+                    JSON.stringify({ "id_expr": id_expr })
+            });
+
+            $(document).ajaxStop(function () {
+                window.location.replace('/collections');
+            });
+        }
     </script>
     <script>
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
@@ -151,17 +167,15 @@
                         {{ response_obj.execution_time }} </p>
                 </div>
                 <div class="col-3">
-
                     {% if (response_obj.success) and (response_obj._id is not defined) %}
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal"
                         id="saveButton">
                         Save Expression
                     </button>
                     {% else %}
-                    Delete
-                    <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal" id="saveButton">
-                            Delete Expression
-                        </button> -->
+                    <button type="button" class="btn btn-success" onclick="delete_expression()">
+                        Delete Expression
+                    </button>
                     {% endif %}
                 </div>
             </div>
