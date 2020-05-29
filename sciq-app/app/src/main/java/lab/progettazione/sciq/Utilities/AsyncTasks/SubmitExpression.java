@@ -14,7 +14,7 @@ import lab.progettazione.sciq.Utilities.Interfaces.ExpressionInterface;
 
 public class SubmitExpression extends AsyncTask<Object, String, String> {
 
-    public ExpressionInterface delegate = null;
+    private ExpressionInterface delegate = null;
     private Context mContext;
     private ProgressBar progressBar;
 
@@ -89,6 +89,11 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
         }
     }
 
+    public void setDelegate(ExpressionInterface delegate) {
+        this.delegate = delegate;
+    }
 
-
+    public ExpressionInterface getDelegate() {
+        return delegate;
+    }
 }
