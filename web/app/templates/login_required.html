@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ Home Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <style>
+        .carousel-inner,
+        .carousel-item {
+            height: 100%;
+        }
+
+        .carousel-item img {
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .container {
+            margin-top: 25vh;
+        }
+    </style>
+    <script>
+        $(window).on('resize load', function () {
+            $('.carousel').css({
+                "height": "calc(100vh - " + $("nav").css("height") + ")"
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md fixed-top">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            {% include 'navbar.html' %}
+        </div>
+    </nav>
+
+    <script>
+        function toLoggedPage() {
+            window.location.replace("/math")
+        }
+    </script>
+
+    <div class="container text-center">
+        <h1>LOGIN or SIGN-UP for access</h1>
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <button type="button" href="#loginModal" class="btn btn btn-success" data-toggle="modal" data-target="#loginModal"> 
+                    <strong>LOGIN</strong> 
+                </button>
+                <button type="button" href="#signUpModal" class="btn btn btn-success" data-toggle="modal" data-target="#signUpModal"> 
+                    <strong>SIGNUP</strong> 
+                </button>
+        </div>
+        </div>
+    </div>
+
+    <!-- Carousel end-->
+    <!-- LOGIN Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog modal-login">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Log in</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="success_alert" class="alert alert-success" role="alert" style="display: none;"></div>
+                    <div id="error_alert" class="alert alert-danger" role="alert" style="display: none;"></div>
+                    <form name="loginData" id="login_form">
+                        <div class=".form-control">
+                            <label for="username_login"> Username </label>
+                            <input type="text" class="form-control" placeholder="Enter username" id="username_login"
+                                name="username_login" required="required">
+                        </div>
+                        <div class=".form-control">
+                            <label for="password_login">Password</label>
+                            <a href="#" class="pull-right text-muted">
+                                <small>Forgot?</small>
+                            </a>
+                            <input type="password" class="form-control" placeholder="Enter password" id="password_login"
+                                name="password_login" required="required">
+                        </div>
+                        <div class="text-center" style="padding-top: 20px;">
+                            <button id="submit_login" type="submit"
+                                class="btn btn-outline-success text-center mt-10">Log in</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                    <p class="top-inline ">Or <a data-toggle="modal" href="#signUpModal" data-target="#signUpModal"
+                            data-dismiss="modal">Sign up</a> and start using SciQ!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SIGNUP Modal -->
+    <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-login">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signUpTitle">Sign Up</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="success_alert_signup" class="alert alert-success" role="alert" style="display: none;">
+                    </div>
+                    <div id="error_alert_signup" class="alert alert-danger" role="alert" style="display: none;"></div>
+                    <form name="signUpData">
+                        <div class=".form-control">
+                            <label for="username_signup" class="font-weight-bold">Username</label>
+                            <input type="text" class="form-control" id="username_signup" name="username_signup"
+                                placeholder="Enter username" required="">
+                        </div>
+
+                        <div class=".form-control">
+                            <label for="password_signup1" class="font-weight-bold">Password</label>
+                            <input type="password" class="form-control" id="password_signup1" name="password_signup1"
+                                placeholder="Enter password" required="">
+                        </div>
+
+                        <div class=".form-control">
+                            <label for="password_signup2" class="font-weight-bold">Repeat password</label>
+                            <input type="password" class="form-control" id="password_signup2" name="password_signup2"
+                                placeholder="Re-enter password" required="">
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <button type="submit" id="submit_signup"
+                                class="btn btn-outline-success top-buffer">Register!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

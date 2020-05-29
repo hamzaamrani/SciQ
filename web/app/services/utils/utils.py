@@ -1,16 +1,66 @@
 import logging
 from collections.abc import Iterable
 
+from flask import request
+
+from flask_jwt_extended import get_jwt_identity
+from flask_limiter.util import get_remote_address
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
+
+def raw(text):
+    """
+    Returns a raw string representation of text
+    """
+    escape_dict = {
+        "\a": "\\a",
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+        "\v": "\\v",
+    }
+    for k, v in escape_dict.items():
+        text = text.replace(k, v)
+
+    return text
+
+
+def custom_key_func():
+    if request.headers.getlist("X-Forwarded-For"):
+        logging.info(request.headers.getlist("X-Forwarded-For"))
+        return str(request.headers.getlist("X-Forwarded-For")[0])
+    else:
+        return get_remote_address()
+
+
+def get_limit():
+    appid = request.args.get("appid")
+    if appid is None:
+        return "50 per hour;200 per day"
+    else:
+        return "200 per hour;800 per day"
+
+
+def exempt_limit():
+    if (
+        get_jwt_identity() is not None  # Buy unlimited API usage
+        and request.args.get("appid") is not None
+    ):
+        return True
+    else:
+        return False
 
 
 def concat(s: str):
     return '"' + s + '"'
 
 
-def flatten(l):
+def flatten(lst: list):
     """Flatten a list (or other iterable) recursively"""
-    for el in l:
+    for el in lst:
         if isinstance(el, Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
@@ -164,12 +214,12 @@ class UtilsMat(object):
                     empty_col = True
                 else:
                     # Does not include \\left in the result string
-                    if len(stack_par) == 0 and s[i: i + 5] == "\\left":
+                    if len(stack_par) == 0 and s[i : i + 5] == "\\left":
                         i = i + 4
                     # Does not include \\right in the result string
                     elif (
                         len(stack_par) == 1
-                        and s[i: i + 7] == "\\right" + row_par[1]
+                        and s[i : i + 7] == "\\right" + row_par[1]
                     ):
                         i = i + 5
                     else:

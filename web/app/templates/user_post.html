@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=3">
+    <!-- Include Bootstrap stuff-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/remarkable/1.7.1/remarkable.min.js"></script>
+
+    <style>
+        .custom {
+            width: 160px !important;
+        }
+        .sidebar {
+            margin: 0 0 0 0;
+            padding-left: 2rem;
+            top: 10rem !important; /*set it according to height of nav bar*/
+        }
+        .filterbar{
+            top: 10rem !important; /*set it according to height of nav bar*/
+        }
+        .main_post{
+            margin-bottom: 5rem;
+            margin-top: 10rem;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var md = new Remarkable();
+            var elements = document.getElementsByClassName("text_post");     
+            var id = "";       
+            for(var i=0; i<elements.length; i++) {
+                tex = elements[i].innerHTML;
+                mark = md.render(tex);
+                elements[i].innerHTML = mark;
+            }
+
+            $("#delete_post").on("click", function (event) {
+                console.log('click on share');
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '/post',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({ 'text': text, 'topic': topic, 'title': title }),
+                    dataType: "json",
+                    success: function (data) {
+                        window.location = '/posts'
+                    }
+                });
+            });
+
+            $("#button_filter").on("click", function(event){
+                console.log('click on filter');
+                var topic = $("#topic_filter").children("option:selected").val();
+                console.log('topic choose is ' + topic);
+
+                document.querySelectorAll(`.${topic}`).forEach(function(el) {
+                    el.style.display = 'block';
+                });
+
+                $(".card:not('."+ topic +"')").hide();
+
+            });
+
+            $("#button_disable_filter").on("click", function(event){
+                $(".card").show();
+            });
+        });
+
+        function delete_collection(event){
+            event = event || window.event; // IE
+            var target = event.target || event.srcElement; // IE
+            var id = target.id;
+
+            $.ajax({
+                type: "DELETE",
+                url: "/post",
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ 'id': id }),
+                success: function(){
+                    window.location.reload();
+                }
+            });
+        }
+
+    </script>
+</head>
+
+
+<body onLoad="checkCookie();">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md fixed-top">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            {% include 'navbar.html' %}
+        </div>
+    </nav>
+
+    <div class='container-fluid main_post'>
+        <div class="row">
+            <div class='col-10'>            
+                {% for post in posts %}
+                <div class="card border-light mb-1 {{post.topic}}" style="border: none;">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <a href="/post/{{post.id}}" class="card-link" style="color: #000000;">
+                                    <h3>{{ post.title }}</h3>
+                                </a>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <button id="{{ post.id }}" type="button" class="btn btn-danger" onclick="delete_collection(event)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body text-left">  
+                        <div class=row>
+                            <div class="col-md-10">
+                                <p class="card-text text_post">{{post.text}}</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 2rem;">
+                            <div class="col-md-2 float-left">
+                                <button type="button" class="btn btn-outline-info btn-sm" disabled>{{post.topic}}</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-2 align-self-start sticky-top filterbar">
+                <div class="form-group">
+                    <label>Filter by topic</label>
+                    <select class="form-control" id="topic_filter">
+                        <option value='Integral'>Integral</option>
+                        <option value='Derivates'>Derivates</option>
+                        <option value='Limit'>Limit</option>
+                        <option vlaue='General'>General</option>
+                    </select>
+                </div>  
+                <button type="button" class="btn btn-primary" id="button_filter">Apply filter</button>
+                <button type="button" class="btn btn-light" id="button_disable_filter">Disable filter</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

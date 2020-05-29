@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SciQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}?version=2">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include Bootstrap stuff-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/drag_n_drop.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+
+
+    <!-- Get and initialize MathJax, I'm saying to Mathjax to render the text within "MathOutput" object on input event triggered in "symbolic_expression" object -->
+    <script>
+        window.MathJax = {
+            "fast-preview": {
+                disabled: true
+            },
+            AuthorInit: function () {
+                MathJax.Hub.Register.StartupHook('End', function () {
+                    MathJax.Hub.processSectionDelay = 0
+                    var demoSource = document.getElementById('symbolic_expression')
+                    var demoRendering = document.getElementById('MathOutput')
+                    var math = MathJax.Hub.getAllJax('MathOutput')[0]
+                    demoSource.addEventListener('input', function () {
+                        MathJax.Hub.Queue(['Text', math, demoSource.value])
+                    })
+                })
+            }
+        }
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML-full"></script>
+    <script>
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    </script>
+</head>
+
+
+<body onLoad="checkCookie();">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo_upper_left.png')}}" />
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            {% include 'navbar.html' %}
+        </div>
+    </nav>
+
+    <div class="text-center">
+        <div class="container container-fluid">
+            <img id="logo" src="{{ url_for('static', filename='images/logo.jpg') }}">
+            {% if alert is sameas true%}
+            <div class="alert alert-danger" role="alert">
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+            <h1 style="padding-bottom: 10px;">Enter your expression</h1>
+            <div class="container container-fluid">
+                <form class="enter-equation" method="POST" action="/submit_expression">
+                    <input required id="symbolic_expression" name="symbolic_expression" type="text" autocomplete="off"
+                        class="use-keyboard-input input-equation" value="x^3 + x^2 + 4 = 0">
+                    <button type="submit" id="search-button" aria-label="compute" class="btn-outline-success equals-key"
+                        title="Submit expression">
+                        <img src="{{ url_for('static', filename='images/done.svg') }}">
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" style="padding-bottom: 10px;">
+        <div class="container container-fluid">
+            <div class="box" id="box">
+                <div id="MathOutput" class="output">` x^3 + x^2 + 4 = 0 `</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" style="padding-top: 5px;" id="drag_n_drop">
+        <div class="container container-fluid">
+            <h1 style="padding-bottom: 10px;">Upload image</h1>
+            <div class="container">
+                <div class="droparea">
+                    <p>Drop Here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result" class="container container-fluid response_global" style="padding-left: 5px; display: none;">
+        <div class="container container-response">
+            <div class="row">
+                <div class="col-4">
+                    <p id="query" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="success" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+                <div class="col-4">
+                    <p id="execution_time" class="res_title" style="vertical-align: middle;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="readme" id="AsciMathInfo">
+        <h4 style="text-align: left; color: green; font-weight: bold;">ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">We use <b>ASCIIMath</b> to work with the expressions.
+            <br>We built a parser that get ASCIIMath expressions and convert them into latex format.
+            <br>If you do not know ASCIIMath syntax we created a ready-to-use extended keyboard that write in ASCIIMath
+            for you.
+            <br>If there is not what you are looking for in the extended keyboard please refer to <a
+                href="http://asciimath.org/#syntax" target="_blank"> ASCIIMath documentation</a>
+            <br>Or maybe you wanna go deep into <a href="http://asciimath.org/#gettingStarted"
+                target="_blank">ASCIIMath</a>
+        </p>
+
+        <h4 style="text-align: left; color: green; font-weight: bold;">py-ASCIIMath</h4>
+        <p style="text-align:left; padding-top: 7px;">As said above, we built a parser to convert <b>ASCIIMath</b>
+            expression to <b>LateX</b> expressions.
+            <br>We decided to develop our own parser because we think that <b>ASCIIMath</b> is a more simple syntax to
+            write Mathematical concepts compared to LateX's syntax.
+            <br>In this way we provide to the user a better experience on SciQ.
+            <br>Why we need LateX? Just because <b>Wolfram|Alpha</b>'s API understand also LateX's syntax.
+            <br>If you wanna go deep into our parser please go to <a href="https://github.com/belerico/py_asciimath">
+                py-asciimath</a>
+        </p>
+
+
+        <h4 style="text-align: left; color: green; font-weight: bold;">Important - Matrices and systems of equations
+        </h4>
+        <p style=" padding-top: 7px; ">For a text to be rendered as a matrix must have a structure like</p>
+        <div class="text-center ">
+            <code>L '[' ... (, ...)* ']', '[' ... (, ...)* ']' (, '[' ... (, ...)* ']' )* R</code>
+            <br> or
+            <br>
+            <code>L '(' ... (, ...)* ')', '(' ... (, ...)* ')' (, '(' ... (, ...)* ')' )* R</code>
+        </div>
+        <p>that is:</p>
+        <ul>
+            <li>It must be delimited by a left (<code>L</code>) and right (<code>R</code>) parenthesis</li>
+            <li>Every row can be separated by <code>[]</code> XOR <code>()</code> (if one starts with <code>[]</code>,
+                every row will be recognized with the same parenthesis, same for <code>()</code>), followed by
+                <code>,</code> and possibly another row</li>
+            <li>Every matrix must contain at least two rows</li>
+            <li>Every rows contains zero or more columns, where <code>...</code> can be any ASCIIMath expression</li>
+            <li>Every row must contain the same number of columns</li>
+        </ul>
+
+        <p>Since <code>L</code> and <code>R</code> can be any left or right parenthesis, and every matrices must have
+            the same number of columns, to render a system of equation one can write something like
+            <code>{[(root n x)/(x) &lt;= 4], [x^2=e^x]:}</code>.
+            <br>On the other hand a matrix can be somenthing like
+            <code>[[(root n x)/(x) &lt;= 4, int x dx], [x^2=e^x, lim_(x to infty) 1 / (x^2)]]</code>.</p>
+
+        <h4 style="text-align: left; color: green; padding-top: 25px; font-weight:bold">Some examples</h4>
+        <p style="text-align: left; padding-top: 7px; ">In this section we provide some examples of the <b>main</b>
+            expressions you can get in touch with SciQ.</p>
+
+
+        <div>
+            <div class="row ">
+                <div class="col-4 ">
+                    <h5 style="font-weight: bold; color:green">Expression type</h5>
+                </div>
+                <div class="col-8 ">
+                    <h5 style="font-weight: bold; color:green">Rendering</h5>
+                </div>
+            </div>
+        </div>
+        <div>
+            <b>System of equations</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>{[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:}</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` {[(root n x)/(x)
+                        <=4 ], [x^2=e^x]:} `</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <b>Integral</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>int_0^1 f(x)dx</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">` int_0^1 f(x)dx `</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Matrix</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>[[2, 3], [5,6]]</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> ` [[2, 3], [5,6]] ` </p>
+                </div>
+            </div>
+            <b>Vector</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>( ((root n x)/(x)) , (3) )</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example"> `( ((root n x)/(x)) , (3) )` </p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <b>Limits</b>
+            <div class="row ">
+                <div class="col-4 ">
+                    <p>lim_(N->oo) sum_(i=0)^N</p>
+                </div>
+                <div class="col-8 ">
+                    <p class="expr_example">`lim_(N->oo) sum_(i=0)^N`</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% include 'footer.html' %}
+</body>
+
+</html>

@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    tools:context="lab.progettazione.sciq.Activities.ui.ShowResults"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/query_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="1dp"
+            android:layout_gravity="center_vertical"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:contentPadding="2dp">
+
+            <LinearLayout
+                android:background="@color/backgroundColor"
+                android:padding="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_weight="0.4"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="Query"
+                            android:layout_marginEnd="10dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+
+
+                        <io.github.kexanie.library.MathView
+                            android:layout_gravity="center"
+                            android:foregroundGravity="center"
+                            android:id="@+id/latex_query"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:engine="MathJax"/>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimaryDark"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:gravity="center"
+                        android:elevation="5dp"
+                        android:layout_gravity="center">
+
+                        <LinearLayout
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="Response"
+                                android:textSize="14sp"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorPrimaryDark"
+                            />
+
+                        <LinearLayout
+                            android:padding="5dp"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="Execution time"
+                                android:textSize="14sp"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"/>
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:gravity="center"
+                        android:elevation="5dp"
+                        android:layout_gravity="center">
+
+
+
+                        <LinearLayout
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="5dp">
+
+
+                            <TextView
+                                android:id="@+id/execution_response"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="boolean"
+                                android:layout_gravity="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:gravity="center"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorPrimaryDark"
+                            />
+
+
+                        <LinearLayout
+                            android:padding="5dp"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+
+                            <TextView
+                                android:id="@+id/execution_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Execution time"
+                                android:textSize="16sp"
+                                android:textColor="@android:color/black"
+                                android:layout_gravity="center"
+                                android:gravity="center"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_plot"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:orientation="vertical"
+            android:background="@color/backgroundColor"
+            android:elevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Plots"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:id="@+id/expand_plots"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lista_plots"
+                android:visibility="gone"/>
+
+            <TextView
+                android:padding="5dp"
+                android:id="@+id/no_plots"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:text="No plots retrieved"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+        <LinearLayout
+            android:elevation="5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/backgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_solutions"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Solutions"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:id="@+id/expand_solutions"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:id="@+id/lista_solutions" />
+
+            <TextView
+                android:padding="5dp"
+                android:id="@+id/no_solution"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:text="No solution"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_symbolic_solutions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:background="@color/backgroundColor"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Symbolic solutions"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:id="@+id/expand_symbolic_solutions"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_symbolic_solutions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/no_symbolic_solution"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="No symbolic solution"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_limits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:elevation="5dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            android:background="@color/backgroundColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Limits"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:id="@+id/expand_limits"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_limits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/no_limits"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="No limits"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_partial_derivatives"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:background="@color/backgroundColor"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Partial derivatives"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:id="@+id/expand_partial_derivatives"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_partial_derivatives"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/no_partial_derivatives"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="No partial derivatives"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_integral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:weightSum="1"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:background="@color/backgroundColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Integral"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="0.9"/>
+
+                <ImageView
+                    android:id="@+id/expand_integral"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_integral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/no_integral"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="No integral"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,37 +1,23 @@
 import base64
+import logging
 import os.path
 import urllib.parse
 import urllib.request
 from io import BytesIO
-from flask import Markup
-import logging
+
 import requests
+
+from flask import Markup, jsonify
 from PIL import Image
+
+from web.app.services.utils.utils import raw
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 API_URL = "https://api.wolframalpha.com/v2/query"
 API_SIGNUP_PAGE = "https://developer.wolframalpha.com"
-KEY = "V2WJ46-EEXEV95WXG"
-
-
-def raw(text):
-    """
-    Returns a raw string representation of text
-    """
-    escape_dict = {
-        "\a": "\\a",
-        "\b": "\\b",
-        "\f": "\\f",
-        "\n": "\\n",
-        "\r": "\\r",
-        "\t": "\\t",
-        "\v": "\\v",
-    }
-    for k, v in escape_dict.items():
-        text = text.replace(k, v)
-
-    return text
+# KEY = "V2WJ46-EEXEV95WXG"
+KEY = "23AR8V-3HGY7TGWPT"
 
 
 def to_mathml(text_mml):
@@ -61,7 +47,8 @@ class waAPI(object):
 
         Request a key at https://developer.wolframalpha.com
 
-        :param key: Wolfram Alpha App ID Developer Key
+        Arguments:
+            key (str, optional): Wolfram Alpha App ID Developer Key
         """
         self.key = key
         self.response_format = "json"
@@ -73,15 +60,22 @@ class waAPI(object):
                 + " to register for a key."
             )
 
-    def full_results(self, response_format=None, key=None, query=None):
+    def full_results(
+        self, response_format=None, key=None, query=None, pods_format="mathml"
+    ):
         """
-        Calls the API and returns a dictionary of the search results
+        Calls the Wolfram|Alpha API and returns a dictionary of the search results
 
-        :param response_format: the format that the API uses for its response,
-                                includes JSON (.json) and XML.
-                                Defaults to '.xml'.
-
-        :param key: a developer key. Defaults to key given when the waAPI class was initialized.
+        Arguments:
+            response_format (str, optional): the format that the API uses for its response,
+                includes JSON (.json) and XML. Defaults to '.xml'
+            key (str, optional): the developer key. Defaults to key given when the waAPI class was initialized
+            query (str, optional): the query string
+            pods_format (str, optional): format of the result's pods.
+                It must be one from 'mathml' or 'plaintex'. Defaults to 'mathml'
+   
+        Returns:
+            result (json): a json containing the query result from Wolfram|Alpha API
 
         """
         if key is None:
@@ -93,15 +87,18 @@ class waAPI(object):
         else:
             query = raw(query)
             url = (
-                "%s?input=%s&podstate%s&output=%s&appid=%s&format=mathml,image"
+                "%s?input=%s&podstate%s&output=%s&appid=%s&format=%s,image"
                 % (
                     API_URL,
                     urllib.parse.quote(query),
                     "Result__Step-by-step+solution",
                     self.response_format,
                     key,
+                    pods_format,
                 )
             )
+
+            logging.info(url)
 
             r = requests.get(url)
             r = r.json()
@@ -117,17 +114,25 @@ class ExpressionException(Exception):
 
 
 class Expression(object):
-    def __init__(self, query, results, id_equation=None, dir_plots=None):
+    def __init__(
+        self,
+        query,
+        results,
+        id_equation=None,
+        dir_plots=None,
+        pods_format="mathml",
+        output_result="default",
+    ):
         """
         Initializes the Expression class with a results from Wolfram Alpha API.
 
-        Request a query.
-        Request a JSON results.
-
-        :param query: expression query
-        :param results: results of query from Wolfram Alpha API
-        :param dir_plots: rir where to save plots
-        :param id_equation: identifier of expression
+        Arguments:
+            query (str): expression query
+            results (dict): results of query from Wolfram Alpha API
+            id_equation (int, optional): identifier of expression
+            dir_plots (str, optional): dir where to save plots
+            pods_format (str, optional): pod format. It can be 'mathml' or 'plaintext'
+            output_results (str, optional): Output default result or full results. It can be default or full
         """
 
         if query is None:
@@ -141,7 +146,7 @@ class Expression(object):
 
         self.query = query
         self.success = results["success"]
-        self.execution_time = results["timing"]
+        self.execution_time = str(results["timing"])
         self.plots = []
         self.alternate_forms = []
         self.solutions = []
@@ -152,67 +157,116 @@ class Expression(object):
         self.integral = []
 
         if self.success:
-            for pod in results["pods"]:
-                try:
-                    # print(pod['id'])
-                    if "Plot" in pod["id"] or "Parallelogram" in pod["id"]:
-                        if isinstance(pod["subpods"], list):
-                            for subpod in pod["subpods"]:
-                                src_plot = subpod["img"]["src"]
+            if output_result == "default":
+                for pod in results["pods"]:
+                    try:
+                        # print(pod['id'])
+                        if "Plot" in pod["id"] or "Parallelogram" in pod["id"]:
+                            if isinstance(pod["subpods"], list):
+                                for subpod in pod["subpods"]:
+                                    src_plot = subpod["img"]["src"]
+                                    self.plots.append(
+                                        base64.b64encode(
+                                            requests.get(src_plot).content
+                                        ).decode("utf-8")
+                                    )
+                            else:
+                                src_plot = pod["subpods"]["img"]["src"]
                                 self.plots.append(
                                     base64.b64encode(
                                         requests.get(src_plot).content
                                     ).decode("utf-8")
                                 )
-                        else:
-                            src_plot = pod["subpods"]["img"]["src"]
-                            self.plots.append(
-                                base64.b64encode(
-                                    requests.get(src_plot).content
-                                ).decode("utf-8")
+
+                        if "AlternateForm" in pod["id"]:
+                            self.alternate_forms.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if (
+                            "Solution" in pod["id"]
+                            and "SolutionForTheVariable" not in pod["id"]
+                            and "SymbolicSolution" not in pod["id"]
+                        ):
+                            self.solutions.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if "SymbolicSolution" in pod["id"]:
+                            self.symbolic_solutions.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if "Result" in pod["id"]:
+                            self.results.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if "Limit" in pod["id"]:
+                            self.limits.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if "Derivative" in pod["id"]:
+                            self.partial_derivatives.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
+                            )
+                        if "Integral" in pod["id"]:
+                            self.integral.extend(
+                                self.extract_mathml(pod=pod)
+                                if pods_format == "mathml"
+                                else self.extract_plaintext(pod=pod)
                             )
 
-                    if "AlternateForm" in pod["id"]:
-                        self.alternate_forms.extend(
-                            self.extract_mathml(pod=pod)
-                        )
-                    if (
-                        "Solution" in pod["id"]
-                        and "SolutionForTheVariable" not in pod["id"]
-                        and "SymbolicSolution" not in pod["id"]
-                    ):
-                        self.solutions.extend(self.extract_mathml(pod=pod))
-                    if "SymbolicSolution" in pod["id"]:
-                        self.symbolic_solutions.extend(
-                            self.extract_mathml(pod=pod)
-                        )
-                    if "Result" in pod["id"]:
-                        self.results.extend(self.extract_mathml(pod=pod))
-                    if "Limit" in pod["id"]:
-                        self.limits.extend(self.extract_mathml(pod=pod))
-                    if "Derivative" in pod["id"]:
-                        self.partial_derivatives.extend(
-                            self.extract_mathml(pod=pod)
-                        )
-                    if "Integral" in pod["id"]:
-                        self.integral.extend(self.extract_mathml(pod=pod))
-
-                except BaseException:
-                    print("Error in extraction:", pod["id"])
+                    except BaseException:
+                        print("Error in extraction:", pod["id"])
+            elif output_result == "full":
+                self.compute_full_result(results, output=pods_format)
 
         if id_equation is not None:
             self.save_plots(id_equation, dir_plots)
+
+    def compute_full_result(self, results, output="mathml"):
+        """Extract relevant information from the Wolfram|Alpha API response
+
+        Args:
+            results (list): the result list from Wolfram|Alpha API
+            output (str, optional): the output type to search for into the 'results' object.
+                Defaults to "plaintext".
+        """
+        for pod in results["pods"]:
+            subpods = []
+            if isinstance(pod["subpods"], list):
+                for subpod in pod["subpods"]:
+                    if subpod["title"] != "":
+                        subpods.append({subpod["title"]: subpod[output]})
+                    else:
+                        subpods.append(subpod[output])
+            else:
+                if pod["subpods"]["title"] != "":
+                    subpods.append({pod["subpods"]["title"]: subpod[output]})
+                else:
+                    subpods.append(pod["subpods"][output])
+            if pod["id"] != "Plot":
+                setattr(self, "" + pod["id"] + "", subpods)
 
     def extract_plaintext(self, pod):
         """
         Extract plaintext field from subpods
         """
         plaint_text = []
-        if isinstance(pod["subpod"], list):
-            for subpod in pod["subpod"]:
+        if isinstance(pod["subpods"], list):
+            for subpod in pod["subpods"]:
                 plaint_text.append(subpod["plaintext"])
         else:
-            plaint_text.append(pod["subpod"]["plaintext"])
+            plaint_text.append(pod["subpods"]["plaintext"])
         return plaint_text
 
     def extract_mathml(self, pod):
@@ -268,33 +322,48 @@ class Expression(object):
         )
         logging.info("Integral: {}".format(self.integral))
 
+    def to_json(self):
+        """
+        Convert expression object to json
+        """
+        return jsonify({k: v for k, v in self.__dict__.items()})
 
-def compute_expression(query, key=KEY, id_equation=None, dir_plots=None):
+
+def compute_expression(
+    query,
+    key=KEY,
+    id_equation=None,
+    dir_plots=None,
+    response_format=None,
+    pods_format="mathml",
+    output_result="default",
+):
     """
     Returns an Expression object containing the query results
 
-    :param query: expression query
-    :param key: key to use Wolfram Alpha API
-    :param id_equation: identifier to rename plot images
-    :param dir_plots: directory where to save plot images
+    Arguments:
+        query (str): expression query
+        key (str, optional): key to use Wolfram Alpha API
+        id_equation (int, optional): identifier to rename plot images
+        dir_plots (str, optional): directory where to save plot images
+        pods_format (str, optional): output for results: mathml or plaintext
 
-
-    Expression examples:
-        x^3 - y^2 = 23
-        x^3 + x^2 y + x y^2 + y^3
-        3x^3 + 2x^2 - 4ax +2 = 0
-        \frac{x^2-1}{x^2+1}
-        \cos{\frac{\arcsin{x}}{2}}
-        2x+17y=23,x-y=5,\int_{0}^{x} x dx
-        \int x^2 dx
+    Returns:
+        expression: object of class Expression, to be
+            further analyzed
     """
+    logging.info("Computing expression...")
     client_api = waAPI(key)
-    query = "\left( " + query + "\right)"
-    results_json = client_api.full_results(query=query)
+
+    results_json = client_api.full_results(
+        query=raw("\left( " + query + " \right)"), pods_format=pods_format
+    )
     obj_expression = Expression(
-        query=query,
+        query=raw(query),
         results=results_json,
         id_equation=id_equation,
         dir_plots=dir_plots,
+        pods_format=pods_format,
+        output_result=output_result,
     )
     return obj_expression

@@ -1,9 +1,7 @@
-FROM docker:3.7
-RUN apk update
-RUN apk add python3
-RUN apk add py3-pip
-RUN apk add git
-RUN apk add build-base python3-dev jpeg-dev zlib-dev
+FROM python:3.7
+RUN apt update && \
+    apt install -y netcat-openbsd
+
 COPY . tests
 WORKDIR /tests
 RUN pip3 install --upgrade pip
