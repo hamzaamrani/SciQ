@@ -61,39 +61,39 @@ def submit_expression():
                  str(get_remote_address()))
     user_agent = parse(request.headers.get("User-Agent"))
     if user_agent.is_pc:
-        # try:
-        logging.info("Requests from Desktop")
-        expression = request.form["symbolic_expression"]
-        parsed = exp2latex(expression)
-        logging.debug('DEBUG: results' + parsed)
-        response_obj = compute_expression(parsed)
-        response_obj_json = response_obj.to_json()
-        if get_jwt_identity() is not None:
-            (
-                collections_names,
-                collections_infos,
-            ) = collections_api.get_collections()
-            logging.info(response_obj_json.get_json())
-            return render_template(
-                "show_results.html",
-                response_obj=response_obj,
-                response_obj_json=response_obj_json,
-                collections_names=collections_names,
-                collections_infos=collections_infos,
-            )
-        else:
-            return render_template(
-                "show_results.html",
-                response_obj=response_obj,
-                response_obj_json=response_obj_json,
-                collections_names=None,
-                collections_infos=None,
-            )
-        # except Exception as e:
-        #     logging.info(e)
-        #     return render_template("math.html",
-        #                            alert=True,
-        #                            error="something goes wrong")
+        try:
+            logging.info("Requests from Desktop")
+            expression = request.form["symbolic_expression"]
+            parsed = exp2latex(expression)
+            logging.debug('DEBUG: results' + parsed)
+            response_obj = compute_expression(parsed)
+            response_obj_json = response_obj.to_json()
+            if get_jwt_identity() is not None:
+                (
+                    collections_names,
+                    collections_infos,
+                ) = collections_api.get_collections()
+                logging.info(response_obj_json.get_json())
+                return render_template(
+                    "show_results.html",
+                    response_obj=response_obj,
+                    response_obj_json=response_obj_json,
+                    collections_names=collections_names,
+                    collections_infos=collections_infos,
+                )
+            else:
+                return render_template(
+                    "show_results.html",
+                    response_obj=response_obj,
+                    response_obj_json=response_obj_json,
+                    collections_names=None,
+                    collections_infos=None,
+                )
+        except Exception as e:
+            logging.info(e)
+            return render_template("math.html",
+                                   alert=True,
+                                   error="something goes wrong")
     else:
         logging.info("Request from mobile")
         _json = request.get_json()
