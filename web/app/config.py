@@ -30,11 +30,13 @@ class Config(object):
     # configuration for json
     JWT_JSON_KEY = 'access_token'
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_DEV")
     MONGO_URI = os.environ.get("MONGO_URI")
     FLASK_ENV = "development"
+
 
 
 class TestingConfig(Config):
@@ -44,6 +46,7 @@ class TestingConfig(Config):
     FLASK_ENV = "development"
 
 
+
 class PreProductionConfig(Config):
     DEBUG = False
     TESTING = False
@@ -51,7 +54,6 @@ class PreProductionConfig(Config):
     MONGO_URI = os.environ.get("MONGO_URI_PRE_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
-    JWT_COOKIE_SECURE = False
     
 
 class ProductionConfig(Config):
@@ -61,7 +63,7 @@ class ProductionConfig(Config):
     MONGO_URI = os.environ.get("MONGO_URI_PROD")
     FLASK_ENV = "production"
     FLASK_APP = "run_prod.py"
-    JWT_COOKIE_SECURE = False
+
 
 
 config = {
@@ -86,6 +88,11 @@ DB_CONFIG_PROD = {
     "host": "eu-cdbr-west-02.cleardb.net",
     "port": "3306",
     "database": "heroku_62e37664534fe76",
+}
+
+OCR_CONFIG = {
+    'model_dir': "./data/ocr/",
+    'drive_id': '1pK9mMjQpkwxeoievIM2Vzoo8NDvTZZdW'
 }
 
 DB_CONFIG_PRE_PROD = {

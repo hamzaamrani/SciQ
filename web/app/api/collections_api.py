@@ -50,7 +50,6 @@ def save_expression_to_db():
     id_obj = ObjectId()
     json_obj["response"]["_id"] = id_obj
     json_obj["response"]["public"] = json_obj["public"]
-
     json_obj["response"]["query"] = raw(json_obj["response"]["query"])
 
     # Add current expression and add to default collection
@@ -73,7 +72,7 @@ def save_expression_to_db():
 
     logging.info("Saving expression to db has been completed with success!")
 
-    return "200"
+    return jsonify({"result": "expression saved in collection"})
 
 
 def create_default_collection(id_user):
@@ -187,11 +186,18 @@ def create_collection():
             }
         },
     )
+    """
     users.createIndex(
         {"id_user": id_user, "collections.default": 1}, {"unique": "true"}
     )
+    """
+    """
+    users.create_index([("id_user"),("collections.default")], unique=True)
+    """
 
     logging.info("User " + id_user + ": created collection " + name + "!")
+
+    return jsonify({"result": "collection created"})
 
 
 def delete_collection():
@@ -207,6 +213,8 @@ def delete_collection():
     users.update({"id_user": id_user}, {"$unset": {"collections." + name: 1}})
 
     logging.info("User " + id_user + ": deleted collection " + name + "!")
+
+    return jsonify({"result": "collection deleted"})
 
 
 def show_expression():
