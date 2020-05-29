@@ -315,7 +315,6 @@ def delete_expression():
 @jwt_required
 def update_expression():
     if request.method == "GET":
-        logging.info("REQUEST: " + request.method)
         exp_id = request.args.get("exp_id")
         symbolic_expression = request.args.get("symbolic_expression")
         public = request.args.get("public")
