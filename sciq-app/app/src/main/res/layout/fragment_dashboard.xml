@@ -33,7 +33,8 @@
         android:orientation="vertical"
         android:id="@+id/if_logged"
         android:visibility="visible"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:gravity="center">
 
 
         <androidx.cardview.widget.CardView
@@ -44,7 +45,8 @@
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="10dp"
-            android:foreground="?attr/selectableItemBackground">
+            android:foreground="?attr/selectableItemBackground"
+            android:id="@+id/my_collections">
 
             <LinearLayout
                 android:background="@color/backgroundColor"
@@ -90,6 +92,7 @@
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/my_applications"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,6 +145,58 @@
         </androidx.cardview.widget.CardView>
 
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/community"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:contentPadding="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="10dp"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:background="@color/backgroundColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="0.5"
+                    android:src="@drawable/community_logo"/>
+
+
+                <View
+                    android:layout_weight="0.01"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_margin="5dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My applications"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
 
 
