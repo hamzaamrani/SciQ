@@ -12,7 +12,7 @@ public class Collection implements Parcelable {
 
     private String nome;
     private String info;
-    private ArrayList<Expression> lista_expression;
+    private ArrayList<Expression> lista_expression = new ArrayList<>();
 
     public Collection(JSONObject collection_item) throws Exception {
 

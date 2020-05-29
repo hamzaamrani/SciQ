@@ -1,16 +1,22 @@
 package lab.progettazione.sciq.Activities.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.hbisoft.pickit.PickiT;
 import com.progettazione.sciq.R;
 
 import androidx.annotation.NonNull;
@@ -20,12 +26,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.ByteArrayOutputStream;
+
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedUtils check = new SharedUtils();
+    private PickiT pickiT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,4 +101,37 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    //ON RESULT CAMERA ACTION
+    @Override
+    protected void onActivityResult(int codiceRichiesta, int codiceRisultato, Intent data) {
+        super.onActivityResult(codiceRichiesta, codiceRisultato, data);
+        if(codiceRisultato == Activity.RESULT_OK){
+            switch (codiceRichiesta) {
+                case 100:
+                    Uri tempUri = null;
+                    try{
+                        Bitmap bp = (Bitmap) data.getExtras().get("data");
+                        tempUri = getImageUri(getApplicationContext(), bp);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    if(tempUri != null){
+                        //case_camera = true;
+                        pickiT.getPath(tempUri, Build.VERSION.SDK_INT);
+                    }
+                    break;
+            }
+        }
+
+    }
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
 }

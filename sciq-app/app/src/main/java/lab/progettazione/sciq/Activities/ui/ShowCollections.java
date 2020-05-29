@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.flexbox.AlignItems;
 import com.google.android.flexbox.FlexDirection;
@@ -22,12 +24,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import lab.progettazione.sciq.Model.Collection;
+import lab.progettazione.sciq.Model.Expression;
 import lab.progettazione.sciq.Utilities.Adapter.CollectionAdapter;
+import lab.progettazione.sciq.Utilities.Adapter.ExpressionAdapter;
 import lab.progettazione.sciq.Utilities.AsyncTasks.GetCollections;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
-public class ShowCollections extends AppCompatActivity implements ReturnString {
+public class ShowCollections extends AppCompatActivity implements ReturnString, ExpressionAdapter.ExpressionItemListener {
 
     private GetCollections getCollections;
     private SharedUtils check = new SharedUtils();
@@ -60,10 +64,11 @@ public class ShowCollections extends AppCompatActivity implements ReturnString {
         try{
             JSONObject response = new JSONObject(output);
             if(response.has("collections")){
-                JSONArray list_collections = new JSONArray();
+                JSONArray list_collections = response.getJSONArray("collections");
                 for(int i = 0 ; i < list_collections.length(); i ++){
                     JSONObject collection = list_collections.getJSONObject(i);
                     Collection current_collection = new Collection(collection);
+                    System.out.println();
                     collection_list.add(current_collection);
                 }
             }
@@ -71,7 +76,7 @@ public class ShowCollections extends AppCompatActivity implements ReturnString {
             e.printStackTrace();
         }
 
-        collectionAdapter = new CollectionAdapter(getApplicationContext(), collection_list);
+        collectionAdapter = new CollectionAdapter(ShowCollections.this, collection_list, this::onClickViewExpression);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
@@ -89,5 +94,13 @@ public class ShowCollections extends AppCompatActivity implements ReturnString {
             super.onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public void onClickViewExpression(View v, int position, Expression expression) {
+        System.out.println(expression.getId());
+        Intent i = new Intent(ShowCollections.this, ShowResults.class);
+        i.putExtra("Expression", expression);
+        this.startActivity(i);
     }
 }

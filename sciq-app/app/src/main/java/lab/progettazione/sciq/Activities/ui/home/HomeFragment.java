@@ -1,9 +1,14 @@
 package lab.progettazione.sciq.Activities.ui.home;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -36,6 +41,7 @@ import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
 public class HomeFragment extends Fragment implements ExpressionInterface {
 
+    private static final int CAMERA_REQUEST =100;
     private HomeViewModel homeViewModel;
     private SubmitExpression submitExpression;
     private SharedUtils check = new SharedUtils();
@@ -101,6 +107,9 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
             @Override
             public void onClick(View v) {
                 //TODO Camera intent
+                /* Create an intent to handle photo */
+                Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intentCamera, CAMERA_REQUEST);
             }
         });
 
@@ -143,4 +152,6 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
                     }).show();
         }
     }
+
+
 }

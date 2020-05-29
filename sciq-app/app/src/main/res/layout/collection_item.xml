@@ -25,8 +25,8 @@
             <TextView
                 android:id="@+id/title_collection"
                 android:clickable="true"
-                android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
+                android:focusable="true"
                 android:layout_width="0dp"
                 android:layout_weight="0.8"
                 android:layout_height="wrap_content"
@@ -40,7 +40,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/expression_count"
-                android:text="10"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -69,7 +68,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lista_expression"/>
+                android:id="@+id/lista_expression"
+                />
 
         </LinearLayout>
 

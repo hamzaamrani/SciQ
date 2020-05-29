@@ -23,12 +23,13 @@ import java.text.Normalizer;
 
 import io.github.kexanie.library.MathView;
 import lab.progettazione.sciq.Model.Expression;
+import lab.progettazione.sciq.Utilities.Adapter.ExpressionAdapter;
 import lab.progettazione.sciq.Utilities.Adapter.FormulaListAdapter;
 import lab.progettazione.sciq.Utilities.Adapter.PlotListAdapter;
 
 import static java.lang.String.valueOf;
 
-public class ShowResults extends AppCompatActivity {
+public class ShowResults extends AppCompatActivity  {
 
     private Expression current_expression;
     private MathView latex_query;
@@ -357,4 +358,6 @@ public class ShowResults extends AppCompatActivity {
         }
         return true;
     }
+
+
 }

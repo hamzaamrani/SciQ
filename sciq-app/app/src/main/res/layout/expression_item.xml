@@ -1,34 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    app:cardBackgroundColor="@color/colorPrimaryDark"
+    app:contentPadding="2dp"
+    app:cardCornerRadius="10dp">
 
-    <io.github.kexanie.library.MathView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:id="@+id/query_title"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.2"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/view_expression"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/sliding_view"
+            android:background="@color/backgroundColor"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View"
-            android:background="@drawable/button_selector"
-            android:textColor="@color/backgroundColor"
-            android:layout_margin="10dp"/>
-
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
 
 
+            <io.github.kexanie.library.MathView
+                android:layout_margin="5dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:id="@+id/query_title"
+                app:engine="MathJax"/>
 
-</LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/view_expression"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View"
+                    android:src="@drawable/ic_chevron_right_black_24dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:textColor="@color/backgroundColor"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/delete_expression"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_delete_white_24dp"
+                    android:background="@color/backgroundColor"
+                    android:textColor="@color/backgroundColor" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+</androidx.cardview.widget.CardView>

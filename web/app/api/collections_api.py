@@ -274,7 +274,8 @@ def show_expression():
 
 
 def delete_expression():
-    id_expr = request.form["id_expr"]
+    response = request.get_json()
+    id_expr = response["id_expr"]
 
     from web.app import mongo
 
@@ -282,14 +283,12 @@ def delete_expression():
     id_user = get_idUser()
 
     collections_names, collections_infos = get_collections()
-
     users.update(
         {"id_user": id_user},
         {"$pull": {"expressions": {"_id": ObjectId(id_expr)}}},
-        "false",
-        "true",
+        False,
+        True
     )
-
     for collection_name in collections_names:
         users.update(
             {"id_user": id_user},
@@ -300,6 +299,10 @@ def delete_expression():
                     + ".ids": ObjectId(id_expr)
                 }
             },
-            "false",
-            "true",
+            False,
+            True
         )
+
+    logging.info("User " + id_user + ": expression " + id_expr + " deleted.")
+
+    return jsonify({"result": "expression deleted"})
