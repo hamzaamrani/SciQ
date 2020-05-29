@@ -38,6 +38,7 @@ def create_collection_json(collections_names, collections_infos,expressions_by_c
     for name, info, expressions in zip(collections_names, collections_infos,expressions_by_collection):
         expressions_json=[]
         for expression in expressions:
+            expression['_id'] = str(expression['_id'])
             expressions_json.append( {k: v for k, v in expression.__dict__.items()} )
 
         collections.append({'name':name, 'info':info, 'expressions':expressions_json})

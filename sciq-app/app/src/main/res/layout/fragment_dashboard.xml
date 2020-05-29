@@ -111,7 +111,7 @@
                     android:layout_width="0dp"
                     android:layout_height="100dp"
                     android:layout_weight="0.5"
-                    android:src="@drawable/math_library"/>
+                    android:src="@drawable/programmer"/>
 
 
                 <View
