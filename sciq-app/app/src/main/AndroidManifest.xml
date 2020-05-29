@@ -20,9 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name="lab.progettazione.sciq.Activities.ShowResults"></activity>
+        <activity android:name="lab.progettazione.sciq.Activities.ui.ShowCollections"></activity>
+        <activity android:name="lab.progettazione.sciq.Activities.ui.ShowResults" />
         <activity
-            android:name="lab.progettazione.sciq.Activities.MainActivity"
+            android:name="lab.progettazione.sciq.Activities.ui.MainActivity"
             android:label="@string/title_activity_main" />
         <activity
             android:name="lab.progettazione.sciq.Activities.Login.SplashActivity"

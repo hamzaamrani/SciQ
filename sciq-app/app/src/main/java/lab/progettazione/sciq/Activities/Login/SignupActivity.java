@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.progettazione.sciq.R;
 
-import lab.progettazione.sciq.Activities.MainActivity;
+import lab.progettazione.sciq.Activities.ui.MainActivity;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SignUpPostAsyncTask;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 

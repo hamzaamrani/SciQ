@@ -188,7 +188,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My applications"
+                        android:text="Community"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"/>

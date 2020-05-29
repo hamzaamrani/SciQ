@@ -32,17 +32,13 @@ def collections():
     else:
         return create_collection_json(collections_names, collections_infos,expressions_by_collection)
 
+
+
 def create_collection_json(collections_names, collections_infos,expressions_by_collection):
     collections = []
-
     for name, info, expressions in zip(collections_names, collections_infos,expressions_by_collection):
         expressions_json=[]
         for expression in expressions:
-            id_tmp = expression['_id']
-            logging.info(id_tmp)
-            logging.info(type(id_tmp))
-            expression['_id'] = id_tmp.toString()
-            logging.info(expression['_id'])
             expressions_json.append( {k: v for k, v in expression.__dict__.items()} )
 
         collections.append({'name':name, 'info':info, 'expressions':expressions_json})
@@ -177,6 +173,7 @@ def get_expressions(collection_name):
                     {"id_user": id_user},
                     {"expressions": {"$elemMatch": {"_id": collection_id}}},
                 )[0]["expressions"][0]
+                expression['_id'] = str(expression['_id'])
                 expression_obj = dict2obj(expression)
                 collection_expressions.append(expression_obj)
             except Exception:

@@ -17,7 +17,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-import lab.progettazione.sciq.Activities.MainActivity;
+import lab.progettazione.sciq.Activities.ui.MainActivity;
 import lab.progettazione.sciq.Utilities.AsyncTasks.LoginPostAsyncTask;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 

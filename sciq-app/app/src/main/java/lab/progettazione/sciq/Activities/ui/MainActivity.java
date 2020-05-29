@@ -1,4 +1,4 @@
-package lab.progettazione.sciq.Activities;
+package lab.progettazione.sciq.Activities.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,7 +20,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import lab.progettazione.sciq.Activities.Login.LoginActivity;
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 

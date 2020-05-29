@@ -1,4 +1,4 @@
-package lab.progettazione.sciq.Activities;
+package lab.progettazione.sciq.Activities.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

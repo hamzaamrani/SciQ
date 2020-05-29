@@ -1,7 +1,6 @@
 package lab.progettazione.sciq.Activities.ui.home;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,7 @@ import com.nishant.math.MathView;
 import com.progettazione.sciq.R;
 
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
-import lab.progettazione.sciq.Activities.ShowResults;
+import lab.progettazione.sciq.Activities.ui.ShowResults;
 import lab.progettazione.sciq.Model.Expression;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SubmitExpression;
 import lab.progettazione.sciq.Utilities.Interfaces.ExpressionInterface;
@@ -51,6 +50,7 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
         final MathView mathView = root.findViewById(R.id.math_view);
         final Button submit_expression = root.findViewById(R.id.submit_expression);
         final ProgressBar progressBar = root.findViewById(R.id.my_progressBar);
+        final ImageButton send_photo = root.findViewById(R.id.send_photo);
 
 
 
@@ -95,6 +95,17 @@ public class HomeFragment extends Fragment implements ExpressionInterface {
                 textView.setText(s);
             }
         });
+
+
+        send_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO Camera intent
+            }
+        });
+
+
+
         return root;
     }
 

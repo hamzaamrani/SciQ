@@ -12,7 +12,7 @@ import com.progettazione.sciq.R;
 
 import java.util.Date;
 
-import lab.progettazione.sciq.Activities.MainActivity;
+import lab.progettazione.sciq.Activities.ui.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
