@@ -81,7 +81,7 @@ public class RequestHandler {
         URL obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
         System.out.println(token);
-        con.setRequestProperty("Cookie","token="+token);
+        con.setRequestProperty("Cookie","access_token_cookie="+token);
         con.setRequestMethod("GET");
         int responseCode = con.getResponseCode();
         System.out.println(url);

@@ -1,5 +1,6 @@
 package lab.progettazione.sciq.Activities.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.progettazione.sciq.R;
+
+import lab.progettazione.sciq.Activities.ui.ShowCollections;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
 
@@ -56,7 +59,8 @@ public class DashboardFragment extends Fragment {
         my_collections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(getContext(), ShowCollections.class);
+                startActivity(i);
             }
         });
 

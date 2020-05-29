@@ -7,6 +7,7 @@ from user_agents import parse
 from web.app.services.utils.utils import raw
 import json
 
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
