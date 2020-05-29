@@ -27,7 +27,7 @@ build-webapp:
     - echo 'build webapp'
     - docker-compose build
   only:
-    - sprint2
+    # - sprint2
     - master
 
 build-test-env:
@@ -42,7 +42,7 @@ build-test-env:
       - docker build --cache-from $DOCKER_DEV_ENV_IMAGE -t $DOCKER_DEV_ENV_IMAGE tests/
       - docker push $DOCKER_DEV_ENV_IMAGE
   only:
-    - sprint2
+    # - sprint2
     - master
     
 test-db:
@@ -62,7 +62,7 @@ test-parser:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
   only:
-    - sprint2
+    # - sprint2
     - master
 
 test-api-wolfram:
@@ -72,7 +72,7 @@ test-api-wolfram:
     - echo 'test api wolfram'
     - python3 -m unittest discover tests.api_wolfram -v
   only:
-    - sprint2
+    # - sprint2
     - master
 
 test-services:
@@ -82,7 +82,7 @@ test-services:
     - echo 'test services'
     - python3 -m unittest discover tests.services -v
   only:
-    - sprint2
+    # - sprint2
     - master
 
 deploy-prod:
