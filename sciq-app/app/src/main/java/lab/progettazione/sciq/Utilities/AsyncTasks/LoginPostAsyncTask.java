@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 
 import org.json.JSONObject;
 
-import lab.progettazione.sciq.API.RequestHandler;
+import lab.progettazione.sciq.Utilities.API.RequestHandler;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 
 public class LoginPostAsyncTask extends AsyncTask<Object, String, String> {
@@ -34,7 +34,7 @@ public class LoginPostAsyncTask extends AsyncTask<Object, String, String> {
         String url = (String) objects[0];
         JSONObject postDataParameters = (JSONObject) objects[1];
         try {
-            return RequestHandler.sendPost(url, postDataParameters);
+            return RequestHandler.sendPost(url, postDataParameters, null);
         } catch (Exception e) {
             e.printStackTrace();
             return ("Exception: " + e.getMessage());
