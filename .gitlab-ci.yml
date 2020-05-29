@@ -105,4 +105,4 @@ deploy-dev:
   only:
       - sprint2
       - master
-      - 13-ma-manual-entry-of-an-expression
+  
