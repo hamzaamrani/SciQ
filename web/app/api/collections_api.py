@@ -1,7 +1,7 @@
 import logging
 
 from flask import Markup, jsonify, render_template, request, redirect, url_for
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from user_agents import parse
 
 from bson import ObjectId
@@ -59,7 +59,7 @@ def create_collection_json(
     return jsonify({"collections": collections})
 
 
-@jwt_required
+@jwt_optional
 def get_idUser():
     return str(get_jwt_identity()["id_user"])
 
@@ -127,6 +127,7 @@ def create_default_collection(id_user):
         users.insert_one(printer)
 
 
+@jwt_optional
 def get_collections():
     from web.app import mongo
 

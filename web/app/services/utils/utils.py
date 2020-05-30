@@ -21,6 +21,7 @@ def raw(text):
         "\r": "\\r",
         "\t": "\\t",
         "\v": "\\v",
+        "\l": "\\l",
     }
     for k, v in escape_dict.items():
         text = text.replace(k, v)
