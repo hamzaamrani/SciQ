@@ -38,9 +38,9 @@ public class DashboardFragment extends Fragment {
         final LinearLayout if_not_logged = root.findViewById(R.id.if_not_logged);
 
 
-        if(check.userLogged(getContext())){
+        if (check.userLogged(getContext())) {
             if_logged.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             if_not_logged.setVisibility(View.VISIBLE);
         }
 
@@ -70,8 +70,6 @@ public class DashboardFragment extends Fragment {
 
             }
         });
-
-
 
 
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

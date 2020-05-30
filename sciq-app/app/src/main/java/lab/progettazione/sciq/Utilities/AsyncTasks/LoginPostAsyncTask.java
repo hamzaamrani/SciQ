@@ -15,7 +15,7 @@ public class LoginPostAsyncTask extends AsyncTask<Object, String, String> {
     ProgressDialog progressDialog;
     public ReturnString delegate;
 
-    public LoginPostAsyncTask(Context context){
+    public LoginPostAsyncTask(Context context) {
         this.context = context;
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);

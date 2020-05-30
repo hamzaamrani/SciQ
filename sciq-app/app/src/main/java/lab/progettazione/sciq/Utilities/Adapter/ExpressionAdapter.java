@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +17,7 @@ import com.progettazione.sciq.R;
 import java.util.ArrayList;
 
 import io.github.kexanie.library.MathView;
+import lab.progettazione.sciq.Model.Collection;
 import lab.progettazione.sciq.Model.Expression;
 
 public class ExpressionAdapter extends RecyclerView.Adapter<ExpressionAdapter.MyViewHolder> {
@@ -28,21 +27,23 @@ public class ExpressionAdapter extends RecyclerView.Adapter<ExpressionAdapter.My
     private static String latex_delimiter_start = "\\(";
     private static String latex_delimiter_end = "\\)";
     private ExpressionItemListener expressionItemListener;
-    private ExpressionDeleted deleted;
+    public ExpressionDeleted onDeleteListener;
+    private Collection collection;
 
-    public ExpressionAdapter(Context context, ArrayList<Expression> expressionList, ExpressionItemListener listener, ExpressionDeleted deleted){
+    public ExpressionAdapter(Context context, ArrayList<Expression> expressionList, ExpressionItemListener listener, ExpressionDeleted deleted, Collection collection) {
         this.mContext = context;
         this.expressionList = expressionList;
         this.expressionItemListener = listener;
-        this.deleted = deleted;
+        this.onDeleteListener = deleted;
+        this.collection = collection;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         MathView expression_view;
         ImageButton view_expression;
         ImageView delete_expression;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             expression_view = itemView.findViewById(R.id.query_title);
             view_expression = itemView.findViewById(R.id.view_expression);
@@ -76,12 +77,14 @@ public class ExpressionAdapter extends RecyclerView.Adapter<ExpressionAdapter.My
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("Delete expression?")
-                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                deleted.onDeleteExpression(v, position, expressionList.get(position));
+                                onDeleteListener.onDeleteExpression(v, position, expressionList.get(position), collection);
+                                notifyDataSetChanged();
+                                expressionList.remove(position);
                             }
-                        }).setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // do nothing
@@ -97,12 +100,12 @@ public class ExpressionAdapter extends RecyclerView.Adapter<ExpressionAdapter.My
     }
 
 
-    public interface ExpressionItemListener{
+    public interface ExpressionItemListener {
         void onClickViewExpression(View v, int position, Expression expression);
     }
 
-    public interface  ExpressionDeleted{
-        void onDeleteExpression(View v, int position, Expression expression);
+    public interface ExpressionDeleted {
+        void onDeleteExpression(View v, int position, Expression expression, Collection collection);
     }
 
 }

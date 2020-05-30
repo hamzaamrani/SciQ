@@ -14,7 +14,7 @@ public class DeleteExpression extends AsyncTask<Object, String, String> {
     private Context mContext;
 
 
-    public DeleteExpression(Context context){
+    public DeleteExpression(Context context) {
         this.mContext = context;
     }
 
@@ -23,9 +23,9 @@ public class DeleteExpression extends AsyncTask<Object, String, String> {
         String url = (String) objects[0];
         String token = (String) objects[1];
         JSONObject postDataParameters = (JSONObject) objects[2];
-        try{
+        try {
             return RequestHandler.sendPost(url, postDataParameters, token);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return e.toString();
         }
@@ -35,7 +35,6 @@ public class DeleteExpression extends AsyncTask<Object, String, String> {
     protected void onPostExecute(String s) {
         delegate.processFinish(s);
     }
-
 
 
     public void setDelegate(ReturnString delegate) {

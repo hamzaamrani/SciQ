@@ -30,7 +30,7 @@
             if ($('#publicCheck').is(":checked")) {
                 public = true;
             }
-            var response = JSON.parse('{{ response_obj_json.get_json() | tojson | safe}}');
+            var response = JSON.parse('{{ response_obj_json.get_json() | tojson | safe}}'.split('\\').join('\\\\'));
             $.ajax({
                 type: "POST",
                 url: "/save_expression_to_db",

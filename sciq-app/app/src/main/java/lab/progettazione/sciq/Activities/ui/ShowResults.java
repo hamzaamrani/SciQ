@@ -1,9 +1,5 @@
 package lab.progettazione.sciq.Activities.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.AlignItems;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
@@ -19,17 +19,14 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.progettazione.sciq.R;
 
-import java.text.Normalizer;
-
 import io.github.kexanie.library.MathView;
 import lab.progettazione.sciq.Model.Expression;
-import lab.progettazione.sciq.Utilities.Adapter.ExpressionAdapter;
 import lab.progettazione.sciq.Utilities.Adapter.FormulaListAdapter;
 import lab.progettazione.sciq.Utilities.Adapter.PlotListAdapter;
 
 import static java.lang.String.valueOf;
 
-public class ShowResults extends AppCompatActivity  {
+public class ShowResults extends AppCompatActivity {
 
     private Expression current_expression;
     private MathView latex_query;
@@ -51,7 +48,7 @@ public class ShowResults extends AppCompatActivity  {
 
     private FormulaListAdapter symbolicSolutionAdapter;
     private ImageView expand_symbolic_solutions;
-    private RecyclerView  lista_symbolic_solutions;
+    private RecyclerView lista_symbolic_solutions;
     private TextView no_symbolic_solutions;
 
 
@@ -122,10 +119,8 @@ public class ShowResults extends AppCompatActivity  {
         execution_time.setText(current_expression.getExecution_time());
 
 
-
-
         //If there are integral
-        if(current_expression != null && current_expression.getIntegral() != null){
+        if (current_expression != null && current_expression.getIntegral() != null) {
             integralAdapter = new FormulaListAdapter(this, current_expression.getIntegral());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -137,7 +132,7 @@ public class ShowResults extends AppCompatActivity  {
         }
 
         //If there are partial_derivatives
-        if(current_expression != null && current_expression.getPartial_derivatives() != null){
+        if (current_expression != null && current_expression.getPartial_derivatives() != null) {
             partialDerivativesAdapter = new FormulaListAdapter(this, current_expression.getPartial_derivatives());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -149,7 +144,7 @@ public class ShowResults extends AppCompatActivity  {
         }
 
         //If there are limits
-        if(current_expression != null && current_expression.getLimits() != null){
+        if (current_expression != null && current_expression.getLimits() != null) {
             limitAdapter = new FormulaListAdapter(this, current_expression.getLimits());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -161,7 +156,7 @@ public class ShowResults extends AppCompatActivity  {
         }
 
         //If there are symbolic solutions
-        if(current_expression != null && current_expression.getSymbolic_solutions() != null){
+        if (current_expression != null && current_expression.getSymbolic_solutions() != null) {
             symbolicSolutionAdapter = new FormulaListAdapter(this, current_expression.getSymbolic_solutions());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -173,7 +168,7 @@ public class ShowResults extends AppCompatActivity  {
         }
 
         //If there are solutions
-        if(current_expression !=  null && current_expression.getSolutions() != null){
+        if (current_expression != null && current_expression.getSolutions() != null) {
             solutionsAdapter = new FormulaListAdapter(this, current_expression.getSolutions());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -185,7 +180,7 @@ public class ShowResults extends AppCompatActivity  {
         }
 
         // If there are plots!
-        if(current_expression != null && current_expression.getPlots() != null){
+        if (current_expression != null && current_expression.getPlots() != null) {
             plotListAdapter = new PlotListAdapter(this, current_expression.getPlots());
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
             layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -200,19 +195,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_integral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(integral_expanded){
-                    if(current_expression.getIntegral() != null && current_expression.getIntegral().size()>0){
+                if (integral_expanded) {
+                    if (current_expression.getIntegral() != null && current_expression.getIntegral().size() > 0) {
                         lista_integral.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_integral.setVisibility(View.GONE);
                     }
                     integral_expanded = false;
                     expand_integral.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getIntegral()!= null && current_expression.getIntegral().size() > 0){
+                } else {
+                    if (current_expression.getIntegral() != null && current_expression.getIntegral().size() > 0) {
                         lista_integral.setVisibility(View.VISIBLE);
                         Log.d("Integral", "There are integral =  " + current_expression.getIntegral().size());
-                    }else{
+                    } else {
                         no_integral.setVisibility(View.VISIBLE);
                         Log.d("Integral", "There are not integral");
                     }
@@ -226,19 +221,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_partial_derivatives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(partial_derivative_expanded){
-                    if(current_expression.getPartial_derivatives() != null && current_expression.getPartial_derivatives().size()>0){
+                if (partial_derivative_expanded) {
+                    if (current_expression.getPartial_derivatives() != null && current_expression.getPartial_derivatives().size() > 0) {
                         lista_partial_derivatives.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_partial_derivatives.setVisibility(View.GONE);
                     }
                     partial_derivative_expanded = false;
                     expand_partial_derivatives.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getPartial_derivatives()!= null && current_expression.getPartial_derivatives().size() > 0){
+                } else {
+                    if (current_expression.getPartial_derivatives() != null && current_expression.getPartial_derivatives().size() > 0) {
                         lista_partial_derivatives.setVisibility(View.VISIBLE);
                         Log.d("Partial Derivatives", "There are partial derivatives =  " + current_expression.getPartial_derivatives().size());
-                    }else{
+                    } else {
                         no_partial_derivatives.setVisibility(View.VISIBLE);
                         Log.d("Partial Derivatives", "There are not partial derivatives");
                     }
@@ -251,19 +246,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_limits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(limit_expanded){
-                    if(current_expression.getLimits() != null && current_expression.getLimits().size()>0){
+                if (limit_expanded) {
+                    if (current_expression.getLimits() != null && current_expression.getLimits().size() > 0) {
                         lista_limits.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_limits.setVisibility(View.GONE);
                     }
                     limit_expanded = false;
                     expand_limits.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getLimits()!= null && current_expression.getLimits().size() > 0){
+                } else {
+                    if (current_expression.getLimits() != null && current_expression.getLimits().size() > 0) {
                         lista_limits.setVisibility(View.VISIBLE);
                         Log.d("Limits", "There are limits =  " + current_expression.getLimits().size());
-                    }else{
+                    } else {
                         no_limits.setVisibility(View.VISIBLE);
                         Log.d("Limits", "There are not limits");
                     }
@@ -276,19 +271,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_symbolic_solutions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(symbolic_solution_expanded){
-                    if(current_expression.getSymbolic_solutions() != null && current_expression.getSymbolic_solutions().size()>0){
+                if (symbolic_solution_expanded) {
+                    if (current_expression.getSymbolic_solutions() != null && current_expression.getSymbolic_solutions().size() > 0) {
                         lista_symbolic_solutions.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_symbolic_solutions.setVisibility(View.GONE);
                     }
                     symbolic_solution_expanded = false;
                     expand_symbolic_solutions.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getSymbolic_solutions()!= null && current_expression.getSymbolic_solutions().size() > 0){
+                } else {
+                    if (current_expression.getSymbolic_solutions() != null && current_expression.getSymbolic_solutions().size() > 0) {
                         lista_symbolic_solutions.setVisibility(View.VISIBLE);
                         Log.d("Symbolic Solutions", "There are symb solutions =  " + current_expression.getSymbolic_solutions().size());
-                    }else{
+                    } else {
                         no_symbolic_solutions.setVisibility(View.VISIBLE);
                         Log.d("Symbolic Solutions", "There are not symb solutions");
                     }
@@ -301,19 +296,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_solutions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(solution_expanded){
-                    if(current_expression.getSolutions() != null && current_expression.getSolutions().size()>0){
+                if (solution_expanded) {
+                    if (current_expression.getSolutions() != null && current_expression.getSolutions().size() > 0) {
                         lista_solutions.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_solution.setVisibility(View.GONE);
                     }
                     solution_expanded = false;
                     expand_solutions.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getSolutions()!= null && current_expression.getSolutions().size() > 0){
+                } else {
+                    if (current_expression.getSolutions() != null && current_expression.getSolutions().size() > 0) {
                         lista_solutions.setVisibility(View.VISIBLE);
                         Log.d("Solutions", "There are solutions =  " + current_expression.getSolutions().size());
-                    }else{
+                    } else {
                         no_solution.setVisibility(View.VISIBLE);
                         Log.d("Solutions", "There are not solutions");
                     }
@@ -326,19 +321,19 @@ public class ShowResults extends AppCompatActivity  {
         expand_plots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(plot_expanded){
-                    if(current_expression.getPlots() != null && current_expression.getPlots().size() > 0){
+                if (plot_expanded) {
+                    if (current_expression.getPlots() != null && current_expression.getPlots().size() > 0) {
                         lista_plots.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         no_plots.setVisibility(View.GONE);
                     }
                     plot_expanded = false;
                     expand_plots.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_24dp));
-                }else{
-                    if(current_expression.getPlots() != null && current_expression.getPlots().size() > 0){
+                } else {
+                    if (current_expression.getPlots() != null && current_expression.getPlots().size() > 0) {
                         Log.d("Plot", "There are plot =  " + current_expression.getPlots().size());
                         lista_plots.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         Log.d("Plot", "No plot to show");
                         no_plots.setVisibility(View.VISIBLE);
                     }
@@ -353,7 +348,7 @@ public class ShowResults extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int res_id = item.getItemId();
-        if(res_id == android.R.id.home) {
+        if (res_id == android.R.id.home) {
             super.onBackPressed();
         }
         return true;

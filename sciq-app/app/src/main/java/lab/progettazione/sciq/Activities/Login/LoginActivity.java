@@ -1,7 +1,5 @@
 package lab.progettazione.sciq.Activities.Login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.progettazione.sciq.R;
@@ -40,19 +40,18 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
         no_login = findViewById(R.id.no_login);
 
 
-
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!input_name_login.getText().toString().equals("") && !input_password_login.getText().toString().equals("")){
+                if (!input_name_login.getText().toString().equals("") && !input_password_login.getText().toString().equals("")) {
                     // All the fields are filled
                     String username = input_name_login.getText().toString();
                     String password = input_password_login.getText().toString();
                     JSONObject postLoginParameters = new JSONObject();
-                    try{
+                    try {
                         postLoginParameters.put("username", username);
                         postLoginParameters.put("password", password);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -60,13 +59,13 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
                     loginPostAsyncTask.delegate = LoginActivity.this;
                     loginPostAsyncTask.execute("http://sciq-unimib-dev.herokuapp.com/login", postLoginParameters);
 
-                }else{
-                    if(input_name_login.getText().toString().equals(""))
+                } else {
+                    if (input_name_login.getText().toString().equals(""))
                         input_name_login.setError("Required!");
                     else
                         input_name_login.setError(null);
 
-                    if(input_password_login.getText().toString().equals(""))
+                    if (input_password_login.getText().toString().equals(""))
                         input_password_login.setError("Required!");
                     else
                         input_password_login.setError(null);
@@ -82,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
                 login.clear();
                 login.putBoolean("isLogged", false);
                 login.apply();
-                Intent i  = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(i);
             }
         });
@@ -91,12 +90,12 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
 
     @Override
     public void processFinish(String output) {
-        if(output.equalsIgnoreCase("Connection error!")){
+        if (output.equalsIgnoreCase("Connection error!")) {
             Toast.makeText(this, "Something went wrong, check your connection", Toast.LENGTH_LONG).show();
-        }else{
-            try{
+        } else {
+            try {
                 JSONObject login_response = new JSONObject(output);
-                if(login_response.has("access_token")){
+                if (login_response.has("access_token")) {
                     String tkn = login_response.getString("access_token");
 
                     //Todo encrypt preferences
@@ -109,24 +108,23 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
                     SharedPreferences isLogged = getSharedPreferences("Logged", 0);
                     SharedPreferences.Editor login = isLogged.edit();
                     login.clear();
-                    login.putBoolean("isLogged", true );
+                    login.putBoolean("isLogged", true);
                     login.putLong("lastLogin", new Date().getTime());
                     login.apply();
 
                     input_password_login.setError(null);
                     input_name_login.setError(null);
-                    Intent i  = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), login_response.getString("results"), Toast.LENGTH_LONG).show();
                     input_name_login.setError("Username could be wrong");
                     input_password_login.setError("Password could be wrong");
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
 
 
     }

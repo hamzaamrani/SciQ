@@ -19,7 +19,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
     private ProgressBar progressBar;
 
 
-    public SubmitExpression(Context context, ProgressBar progressBar){
+    public SubmitExpression(Context context, ProgressBar progressBar) {
         this.mContext = context;
         this.progressBar = progressBar;
     }
@@ -36,26 +36,26 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
         String expression = (String) objects[1];
 
         JSONObject postDataParameters = new JSONObject();
-        try{
+        try {
             postDataParameters.put("symbolic_expression", expression);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         String endpoint = "/submit_expression";
         String url = "https://sciq-unimib-dev.herokuapp.com" + endpoint;
-        if(token != null){
+        if (token != null) {
             Log.d("TOKEN", "Token not null");
-            try{
+            try {
                 return RequestHandler.sendPost(url, postDataParameters, token);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return e.toString();
             }
-        }else{
+        } else {
             Log.d("TOKEN", "Token null");
 
-            try{
+            try {
                 return RequestHandler.sendPost(url, postDataParameters, null);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return e.toString();
             }
         }
@@ -67,23 +67,23 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
         System.out.print("Returned " + s);
         progressBar.setVisibility(View.GONE);
         boolean success;
-        if(s.equalsIgnoreCase("Limit exceeded")){
+        if (s.equalsIgnoreCase("Limit exceeded")) {
             delegate.onExpressionFailure("Limit request reached!");
-        }else{
-            try{
+        } else {
+            try {
                 JSONObject response = new JSONObject(s);
-                if(response.has("success")){
+                if (response.has("success")) {
                     success = response.getBoolean("success");
-                    if(success){
+                    if (success) {
                         Expression response_exp = new Expression(response);
                         System.out.println("Success =  " + response_exp.getSuccess());
                         delegate.onExpressionSuccessful(response_exp);
-                    }else
+                    } else
                         delegate.onExpressionFailure("Success false");
-                }else{
+                } else {
                     delegate.onExpressionFailure("Connection error");
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -20,7 +20,7 @@ public class MultiPartHelper {
     // This class has the purpose to provide an utility to perform multipart post
     private static final String NEWLINE = "\r\n";
 
-    private  String boundaryValue;
+    private String boundaryValue;
 
     private HttpURLConnection cn;
 
@@ -37,14 +37,12 @@ public class MultiPartHelper {
      */
     public MultiPartHelper(String requestURL, String charset, String token) throws IOException {
 
-        //crea un delimitatore univoco basato sul timestamp corrente
         boundaryValue = "===" + System.currentTimeMillis() + "===";
         this.charset = charset;
         URL url = new URL(requestURL);
         cn = (HttpURLConnection) url.openConnection();
-        cn.setRequestProperty("Cookie","access_token_cookie="+token);
+        cn.setRequestProperty("Cookie", "access_token_cookie=" + token);
         cn.setUseCaches(false);
-        //indichiamo il metodo POST
         cn.setDoOutput(true);
         cn.setDoInput(true);
         cn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundaryValue);
