@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -16,90 +17,89 @@ public class Expression implements Parcelable {
     private String id;
     private ArrayList<String> plots = new ArrayList<>();
     private ArrayList<String> alternate_forms = new ArrayList<>();
-    private ArrayList<String> solutions  = new ArrayList<>();
+    private ArrayList<String> solutions = new ArrayList<>();
     private ArrayList<String> symbolic_solutions = new ArrayList<>();
     private ArrayList<String> limits = new ArrayList<>();
     private ArrayList<String> partial_derivatives = new ArrayList<>();
     private ArrayList<String> integral = new ArrayList<>();
 
-    public Expression(JSONObject expression) throws Exception{
+    public Expression(JSONObject expression) throws Exception {
 
-        if(expression.has("success"))
+        if (expression.has("success"))
             this.success = expression.getBoolean("success");
         else
             this.success = null;
 
-        if(expression.has("query"))
+        if (expression.has("query"))
             this.query = expression.getString("query");
         else
             this.query = null;
 
-        if(expression.has("_id"))
+        if (expression.has("_id"))
             this.id = expression.getString("_id");
         else
             this.id = null;
 
 
-        if(expression.has("execution_time"))
+        if (expression.has("execution_time"))
             this.execution_time = expression.getString("execution_time");
 
-        if(expression.has("plots")){
+        if (expression.has("plots")) {
             JSONArray lista_plot = expression.getJSONArray("plots");
-            for(int i = 0 ; i < lista_plot.length(); i ++){
+            for (int i = 0; i < lista_plot.length(); i++) {
                 this.plots.add(lista_plot.getString(i));
             }
             System.out.println("Size of the plots is  = " + this.plots.size());
-        }
-        else
+        } else
             this.plots = null;
 
-        if(expression.has("alternate_forms")){
+        if (expression.has("alternate_forms")) {
             JSONArray alternate = expression.getJSONArray("alternate_forms");
-            for(int i = 0 ; i < alternate.length(); i ++){
+            for (int i = 0; i < alternate.length(); i++) {
                 this.alternate_forms.add(alternate.getString(i));
             }
-        }else
+        } else
             this.alternate_forms = null;
 
-        if(expression.has("solutions")){
+        if (expression.has("solutions")) {
             JSONArray solutions_list = expression.getJSONArray("solutions");
-            for(int i = 0 ; i < solutions_list.length(); i ++){
+            for (int i = 0; i < solutions_list.length(); i++) {
                 this.solutions.add(solutions_list.getString(i));
             }
-        }else{
+        } else {
             this.solutions = null;
         }
 
-        if(expression.has("symbolic_solutions")){
+        if (expression.has("symbolic_solutions")) {
             JSONArray symbolics = new JSONArray();
-            for(int i = 0 ; i < symbolics.length(); i ++){
+            for (int i = 0; i < symbolics.length(); i++) {
                 this.symbolic_solutions.add(symbolics.getString(i));
             }
-        }else
+        } else
             this.symbolic_solutions = null;
 
-        if(expression.has("limits")){
+        if (expression.has("limits")) {
             JSONArray limits = new JSONArray();
-            for(int i  = 0; i < limits.length(); i ++){
+            for (int i = 0; i < limits.length(); i++) {
                 this.limits.add(limits.getString(i));
             }
-        }else
+        } else
             this.limits = null;
 
-        if(expression.has("partial_derivatives")){
+        if (expression.has("partial_derivatives")) {
             JSONArray partial_derivatives = new JSONArray();
-            for(int i  = 0 ; i < partial_derivatives.length(); i++){
+            for (int i = 0; i < partial_derivatives.length(); i++) {
                 this.partial_derivatives.add(partial_derivatives.getString(i));
             }
-        }else
+        } else
             this.partial_derivatives = null;
 
-        if(expression.has("integral")){
+        if (expression.has("integral")) {
             JSONArray integrals = new JSONArray();
-            for(int i  = 0 ; i < integrals.length(); i ++){
+            for (int i = 0; i < integrals.length(); i++) {
                 this.integral.add(integrals.getString(i));
             }
-        }else
+        } else
             this.integral = null;
 
 
@@ -173,7 +173,9 @@ public class Expression implements Parcelable {
         return integral;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
     @Override
     public int describeContents() {

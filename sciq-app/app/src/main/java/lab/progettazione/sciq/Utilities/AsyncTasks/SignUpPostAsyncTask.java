@@ -4,10 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.json.JSONObject;
+
 import lab.progettazione.sciq.Utilities.API.RequestHandler;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
-
-import org.json.JSONObject;
 
 public class SignUpPostAsyncTask extends AsyncTask<Object, String, String> {
 

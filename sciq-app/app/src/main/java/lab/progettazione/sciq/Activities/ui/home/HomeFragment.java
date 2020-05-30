@@ -1,12 +1,10 @@
 package lab.progettazione.sciq.Activities.ui.home;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -45,7 +42,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import lab.progettazione.sciq.Activities.Login.SignupActivity;
-import lab.progettazione.sciq.Activities.ui.MainActivity;
 import lab.progettazione.sciq.Activities.ui.ShowResults;
 import lab.progettazione.sciq.Model.Expression;
 import lab.progettazione.sciq.Utilities.AsyncTasks.SendImage;
@@ -54,19 +50,19 @@ import lab.progettazione.sciq.Utilities.Interfaces.ExpressionInterface;
 import lab.progettazione.sciq.Utilities.Interfaces.ReturnString;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 import static java.lang.String.valueOf;
 
 
 public class HomeFragment extends Fragment implements ExpressionInterface, PickiTCallbacks, ReturnString {
 
-    private static final int CAMERA_REQUEST =100;
+    private static final int CAMERA_REQUEST = 100;
     private static final int PICK_FROM_GALLERY = 42;
     private PickiT pickiT;
     private HomeViewModel homeViewModel;
     private SubmitExpression submitExpression;
     private SharedUtils check = new SharedUtils();
     private static String asciiMath_delimiter = "`";
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -105,14 +101,14 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
             public void onClick(View v) {
                 submitExpression = new SubmitExpression(getContext(), progressBar);
                 submitExpression.setDelegate(HomeFragment.this);
-                if(expression_input.getText().length() > 0){
+                if (expression_input.getText().length() > 0) {
                     expression_input.setError(null);
-                    if(check.userLogged(getContext())){
+                    if (check.userLogged(getContext())) {
                         submitExpression.execute(check.getToken(getContext()), expression_input.getText().toString().trim());
-                    }else{
+                    } else {
                         submitExpression.execute(null, expression_input.getText().toString().trim());
                     }
-                }else
+                } else
                     expression_input.setError("Type some kind of expression to be evaluated!");
             }
         });
@@ -148,27 +144,26 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
     }
 
 
-
     @Override
     public void onExpressionSuccessful(Expression expression) {
         Log.d("submit_expression", "Request successful");
         System.out.println(expression.toString());
-        Intent i  = new Intent(getContext(), ShowResults.class);
+        Intent i = new Intent(getContext(), ShowResults.class);
         i.putExtra("Expression", expression);
         startActivity(i);
     }
 
     @Override
     public void onExpressionFailure(String error) {
-        if(error.equalsIgnoreCase("Limit request reached!")){
+        if (error.equalsIgnoreCase("Limit request reached!")) {
             new AlertDialog.Builder(getContext())
                     .setTitle("Limit request reached!")
                     .setMessage("Sign up or login to perform unlimited requests!")
                     .setPositiveButton("Ok, let's do it", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent i  = new Intent(getContext(), SignupActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            Intent i = new Intent(getContext(), SignupActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
                             getActivity().finish();
                         }
@@ -184,8 +179,8 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
 
     public void openFolder() {
         String[] mimeTypes =
-                {"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx"application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
-                        "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+                {"application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx"application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+                        "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
                         "text/plain",
                         "application/pdf",
                         "application/zip",
@@ -201,17 +196,17 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 100:
                     Uri tempUri = null;
-                    try{
+                    try {
                         Bitmap bp = (Bitmap) data.getExtras().get("data");
                         tempUri = getImageUri(getContext(), bp);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if(tempUri != null){
+                    if (tempUri != null) {
                         //case_camera = true;
                         pickiT.getPath(tempUri, Build.VERSION.SDK_INT);
                     }
@@ -223,20 +218,20 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
                     String filename;
                     int i;
                     String current_path;
-                    if(null != data){ // checking empty selection
-                        if(null != data.getClipData()) { // checking multiple selection or not
-                            for(i = 0; i < data.getClipData().getItemCount(); i++) {
+                    if (null != data) { // checking empty selection
+                        if (null != data.getClipData()) { // checking multiple selection or not
+                            for (i = 0; i < data.getClipData().getItemCount(); i++) {
                                 uri = data.getClipData().getItemAt(i).getUri();
                                 pickiT.getPath(uri, Build.VERSION.SDK_INT);
                             }
-                        }else{ // single selection
+                        } else { // single selection
                             uri = data.getData();
                             //System.out.println(uri);
-                            if(uri!= null){
+                            if (uri != null) {
                                 pickiT.getPath(uri, Build.VERSION.SDK_INT);
                             }
                         }
-                    }else
+                    } else
                         Toast.makeText(getContext(), "Something went wrong getting file!", Toast.LENGTH_LONG).show();
                     break;
             }
@@ -279,22 +274,22 @@ public class HomeFragment extends Fragment implements ExpressionInterface, Picki
     @Override
     public void processFinish(String output) {
         Boolean success;
-        try{
+        try {
             JSONObject response = new JSONObject(output);
-            if(response.has("success")){
+            if (response.has("success")) {
                 success = response.getBoolean("success");
-                if(success){
+                if (success) {
                     Expression response_exp = new Expression(response);
                     System.out.println("Success =  " + response_exp.getSuccess());
                     Intent i = new Intent(getContext(), ShowResults.class);
                     i.putExtra("Expression", response_exp);
                     startActivity(i);
-                }else
+                } else
                     Toast.makeText(getContext(), "OPS, I didn't found an expression, please retry!", Toast.LENGTH_LONG).show();
-            }else{
+            } else {
                 Toast.makeText(getContext(), "Connection error", Toast.LENGTH_LONG).show();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

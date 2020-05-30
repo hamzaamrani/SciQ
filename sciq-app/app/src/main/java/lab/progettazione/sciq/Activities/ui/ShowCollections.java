@@ -1,15 +1,15 @@
 package lab.progettazione.sciq.Activities.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.flexbox.AlignItems;
 import com.google.android.flexbox.FlexDirection;
@@ -37,8 +37,11 @@ public class ShowCollections extends AppCompatActivity implements ReturnString, 
     private SharedUtils check = new SharedUtils();
     private String token;
     private ArrayList<Collection> collection_list = new ArrayList<>();
-    private CollectionAdapter collectionAdapter;
     private RecyclerView lista_collections;
+    private SwipeRefreshLayout pullToRefresh;
+    private CollectionAdapter collectionAdapter;
+    ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,32 +52,50 @@ public class ShowCollections extends AppCompatActivity implements ReturnString, 
         getSupportActionBar().setTitle("My collections");
 
         lista_collections = findViewById(R.id.lista_collections);
-
+        pullToRefresh = findViewById(R.id.refresh_layout);
         token = check.getToken(this);
         getCollections = new GetCollections(this);
         getCollections.setDelegate(this);
         String endpoint = "collections";
         getCollections.execute(token, "https://sciq-unimib-dev.herokuapp.com/" + endpoint);
 
+
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                pullToRefresh.setRefreshing(true);
+                collection_list.clear();
+
+
+                getCollections = new GetCollections(ShowCollections.this);
+                getCollections.setDelegate(ShowCollections.this);
+                String endpoint = "collections";
+                getCollections.execute(token, "https://sciq-unimib-dev.herokuapp.com/" + endpoint);
+            }
+        });
+
     }
 
     @Override
     public void processFinish(String output) {
+        pullToRefresh.setRefreshing(false);
         Log.d("Collections", output);
-        try{
+        try {
             JSONObject response = new JSONObject(output);
-            if(response.has("collections")){
+            if (response.has("collections")) {
                 JSONArray list_collections = response.getJSONArray("collections");
-                for(int i = 0 ; i < list_collections.length(); i ++){
+                for (int i = 0; i < list_collections.length(); i++) {
                     JSONObject collection = list_collections.getJSONObject(i);
                     Collection current_collection = new Collection(collection);
                     System.out.println();
                     collection_list.add(current_collection);
                 }
             }
-        }catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         collectionAdapter = new CollectionAdapter(ShowCollections.this, collection_list, this::onClickViewExpression);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
@@ -90,7 +111,7 @@ public class ShowCollections extends AppCompatActivity implements ReturnString, 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int res_id = item.getItemId();
-        if(res_id == android.R.id.home) {
+        if (res_id == android.R.id.home) {
             super.onBackPressed();
         }
         return true;

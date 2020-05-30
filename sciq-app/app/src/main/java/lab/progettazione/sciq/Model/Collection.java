@@ -19,12 +19,12 @@ public class Collection implements Parcelable {
         this.nome = collection_item.getString("name");
         this.info = collection_item.getString("info");
         JSONArray expressions = collection_item.getJSONArray("expressions");
-        if(expressions.length() > 0){
-            for(int i = 0 ; i < expressions.length(); i ++){
+        if (expressions.length() > 0) {
+            for (int i = 0; i < expressions.length(); i++) {
                 Expression current_expression = new Expression(expressions.getJSONObject(i));
                 this.lista_expression.add(current_expression);
             }
-        }else{
+        } else {
             this.lista_expression = null;
         }
     }

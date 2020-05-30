@@ -21,7 +21,7 @@ public class PlotListAdapter extends RecyclerView.Adapter<PlotListAdapter.MyView
     private Context mContext;
     private ArrayList<String> plots;
 
-    public PlotListAdapter(Context mContext, ArrayList<String> plotList){
+    public PlotListAdapter(Context mContext, ArrayList<String> plotList) {
         this.mContext = mContext;
         this.plots = plotList;
 
@@ -37,10 +37,10 @@ public class PlotListAdapter extends RecyclerView.Adapter<PlotListAdapter.MyView
     }
 
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView plot_image;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             plot_image = itemView.findViewById(R.id.plot_image_view);
         }

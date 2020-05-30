@@ -19,7 +19,7 @@ public class FormulaListAdapter extends RecyclerView.Adapter<FormulaListAdapter.
     private Context mContext;
     private ArrayList<String> mathMlList;
 
-    public FormulaListAdapter(Context context, ArrayList<String> expressionList){
+    public FormulaListAdapter(Context context, ArrayList<String> expressionList) {
         this.mContext = context;
         this.mathMlList = expressionList;
     }
@@ -34,10 +34,10 @@ public class FormulaListAdapter extends RecyclerView.Adapter<FormulaListAdapter.
         return new MyViewHolder(view);
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         MathView mathView;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             mathView = itemView.findViewById(R.id.formula_view);
         }

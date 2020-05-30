@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#4caf50</color>
     <color name="colorPrimaryDark">#388e3c</color>
-    <color name="darkerPrimary">#1b5e20</color>
     <color name="colorAccent">#64dd17</color>
     <color name="backgroundColor">#ffffff</color>
     <color name="cliccato">#4AB302</color>

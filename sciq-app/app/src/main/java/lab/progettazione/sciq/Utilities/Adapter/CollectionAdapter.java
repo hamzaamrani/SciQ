@@ -29,15 +29,15 @@ import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
 import static java.lang.String.valueOf;
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.MyViewHolder>  implements ExpressionAdapter.ExpressionDeleted, ReturnString {
+public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.MyViewHolder> implements ReturnString {
     private Context mContext;
     private ArrayList<Collection> collectionList;
     private ExpressionAdapter.ExpressionItemListener listener;
-    private ExpressionAdapter.ExpressionDeleted deleted;
-    private ExpressionAdapter expressionAdapter;
     private SharedUtils check;
+    ExpressionAdapter expressionAdapter;
 
-    public CollectionAdapter(Context context, ArrayList<Collection> collectionList, ExpressionAdapter.ExpressionItemListener listener){
+
+    public CollectionAdapter(Context context, ArrayList<Collection> collectionList, ExpressionAdapter.ExpressionItemListener listener) {
         this.mContext = context;
         this.collectionList = collectionList;
         this.listener = listener;
@@ -53,9 +53,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
     }
 
 
-
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView title_collection;
         private TextView collection_count;
         private TextView collection_info;
@@ -63,7 +61,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
         private LinearLayout if_expression;
         private RecyclerView expression_list;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
 
             title_collection = itemView.findViewById(R.id.title_collection);
@@ -74,6 +72,14 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
             expanded = false;
         }
 
+        public RecyclerView getExpression_list() {
+            return expression_list;
+        }
+
+        public void setExpression_list(RecyclerView expression_list) {
+            this.expression_list = expression_list;
+        }
+
         public void setExpanded(Boolean expanded) {
             this.expanded = expanded;
         }
@@ -82,9 +88,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
             return expanded;
         }
 
-        public RecyclerView getExpression_list() {
-            return expression_list;
-        }
     }
 
     @Override
@@ -97,14 +100,32 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
         String title = collectionList.get(position).getNome();
         holder.title_collection.setText(title.toUpperCase());
         holder.collection_info.setText(collectionList.get(position).getInfo());
-        if(collectionList.get(position).getLista_expression() != null){
+        if (collectionList.get(position).getLista_expression() != null) {
             holder.collection_count.setText(valueOf(collectionList.get(position).getLista_expression().size()));
-        }else{
+        } else {
             holder.collection_count.setText(valueOf(0));
         }
 
-        if(collectionList.get(position).getLista_expression() != null && collectionList.get(position).getLista_expression().size() > 0){
-            expressionAdapter = new ExpressionAdapter(mContext, collectionList.get(position).getLista_expression(), listener, this::onDeleteExpression);
+        if (collectionList.get(position).getLista_expression() != null && collectionList.get(position).getLista_expression().size() > 0) {
+            expressionAdapter = new ExpressionAdapter(mContext, collectionList.get(position).getLista_expression(), listener, new ExpressionAdapter.ExpressionDeleted() {
+                @Override
+                public void onDeleteExpression(View v, int expr_pos, Expression expression, Collection collection) {
+                    System.out.println("Clicked on collection =  " + collectionList.get(position).getNome() + " that is equals to " + collection.getNome());
+                    System.out.println("Clicked on Expression = " + collectionList.get(position).getLista_expression().get(expr_pos).getQuery() + " that is equals to " + expression.getQuery());
+                    notifyItemChanged(position);
+                    JSONObject postData = new JSONObject();
+                    try {
+                        postData.put("id_expr", expression.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    check = new SharedUtils();
+                    DeleteExpression deleteExpression = new DeleteExpression(mContext);
+                    deleteExpression.setDelegate(CollectionAdapter.this);
+                    deleteExpression.execute("https://sciq-unimib-dev.herokuapp.com/delete_expression", check.getToken(mContext), postData);
+
+                }
+            }, collectionList.get(position));
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(mContext);
             layoutManager.setFlexDirection(FlexDirection.ROW);
             layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
@@ -118,42 +139,24 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
         holder.title_collection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(collectionList.get(position).getLista_expression() != null && collectionList.get(position).getLista_expression().size() > 0){
+                if (collectionList.get(position).getLista_expression() != null && collectionList.get(position).getLista_expression().size() > 0) {
                     System.out.println("Premuto, ci sono expression, expanded = " + holder.getExpanded());
-                    if(!holder.getExpanded()){
+                    if (!holder.getExpanded()) {
                         holder.setExpanded(true);
                         holder.if_expression.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         holder.setExpanded(false);
                         holder.if_expression.setVisibility(View.GONE);
                     }
-                }else
+                } else
                     System.out.println("Premuto, non ci sono expression");
-
             }
         });
     }
 
-    @Override
-    public void onDeleteExpression(View v, int position, Expression expression) {
-
-        collectionList.get(position).getLista_expression().remove(position);
-        expressionAdapter.notifyDataSetChanged();
-        JSONObject postData = new JSONObject();
-        try{
-            postData.put("id_expr" , expression.getId());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        check = new SharedUtils();
-        DeleteExpression deleteExpression = new DeleteExpression(mContext);
-        deleteExpression.setDelegate(CollectionAdapter.this);
-        deleteExpression.execute("https://sciq-unimib-dev.herokuapp.com/delete_expression", check.getToken(mContext), postData);
-    }
 
     @Override
     public void processFinish(String output) {
-        System.out.println(output);
+        System.out.println("Fine delete " + output);
     }
 }
