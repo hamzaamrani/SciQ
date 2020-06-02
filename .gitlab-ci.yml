@@ -36,17 +36,17 @@ build-webapp:
     # - sprint2
     - master
 
-build-android-env:
-  stage: build
-  before_script:
-    - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
-    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
-  services:
-      - docker:dind
-  script:
-    - docker pull $DOCKER_ANDROID_ENV_IMAGE || true
-    - docker build --cache-from $DOCKER_ANDROID_ENV_IMAGE -t $DOCKER_ANDROID_ENV_IMAGE sciq-app/
-    - docker push $DOCKER_ANDROID_ENV_IMAGE
+# build-android-env:
+#   stage: build
+#   before_script:
+#     - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
+#     - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+#   services:
+#       - docker:dind
+#   script:
+#     - docker pull $DOCKER_ANDROID_ENV_IMAGE || true
+#     - docker build --cache-from $DOCKER_ANDROID_ENV_IMAGE -t $DOCKER_ANDROID_ENV_IMAGE sciq-app/
+#     - docker push $DOCKER_ANDROID_ENV_IMAGE
 
 build-test-env:
   stage: build
@@ -138,6 +138,7 @@ lintDebug:
   stage: deploy
   script:
     - cd sciq-app
+    - chmod +x ./gradlew
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
 assembleDebug:
@@ -145,6 +146,7 @@ assembleDebug:
   stage: deploy
   script:
     - cd sciq-app
+    - chmod +x ./gradlew
     - ./gradlew assembleDebug
   artifacts:
     paths:
