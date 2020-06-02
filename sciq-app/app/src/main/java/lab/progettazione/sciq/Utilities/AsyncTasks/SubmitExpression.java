@@ -42,7 +42,7 @@ public class SubmitExpression extends AsyncTask<Object, String, String> {
             e.printStackTrace();
         }
         String endpoint = "/submit_expression";
-        String url = "https://sciq-unimib-dev.herokuapp.com" + endpoint;
+        String url = "https://sciq-unimib.herokuapp.com" + endpoint;
         if (token != null) {
             Log.d("TOKEN", "Token not null");
             try {

@@ -1,6 +1,10 @@
 package lab.progettazione.sciq.Activities.ui.dashboard;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.progettazione.sciq.R;
 
+import lab.progettazione.sciq.Activities.Login.SignupActivity;
+import lab.progettazione.sciq.Activities.ui.MainActivity;
 import lab.progettazione.sciq.Activities.ui.ShowCollections;
 import lab.progettazione.sciq.Utilities.Utils.SharedUtils;
 
@@ -52,7 +58,15 @@ public class DashboardFragment extends Fragment {
         my_applications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Work in progress")
+                        .setMessage("This function will be available soon")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                            }
+                        }).show();
             }
         });
 
@@ -67,7 +81,15 @@ public class DashboardFragment extends Fragment {
         community.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Work in progress")
+                        .setMessage("This function will be available soon")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                            }
+                        }).show();
             }
         });
 

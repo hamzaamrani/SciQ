@@ -67,7 +67,7 @@ public class SignupActivity extends AppCompatActivity implements ReturnString {
                         has_signup = true;
                         signupAsynctask = new SignUpPostAsyncTask(SignupActivity.this);
                         signupAsynctask.delegate = SignupActivity.this;
-                        signupAsynctask.execute("http://sciq-unimib-dev.herokuapp.com/signup", postDataParams);
+                        signupAsynctask.execute("http://sciq-unimib.herokuapp.com/signup", postDataParams);
                     }
                 } else {
                     if (password_1_signup.getText().toString().equals(""))
@@ -133,7 +133,7 @@ public class SignupActivity extends AppCompatActivity implements ReturnString {
 
                                 loginPostAsyncTask = new LoginPostAsyncTask(SignupActivity.this);
                                 loginPostAsyncTask.delegate = SignupActivity.this;
-                                loginPostAsyncTask.execute("http://sciq-unimib-dev.herokuapp.com/login", postLoginParameters);
+                                loginPostAsyncTask.execute("http://sciq-unimib.herokuapp.com/login", postLoginParameters);
 
                             }
                         })

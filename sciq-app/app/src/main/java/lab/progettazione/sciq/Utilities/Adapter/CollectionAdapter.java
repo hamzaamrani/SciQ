@@ -122,7 +122,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
                     check = new SharedUtils();
                     DeleteExpression deleteExpression = new DeleteExpression(mContext);
                     deleteExpression.setDelegate(CollectionAdapter.this);
-                    deleteExpression.execute("https://sciq-unimib-dev.herokuapp.com/delete_expression", check.getToken(mContext), postData);
+                    deleteExpression.execute("https://sciq-unimib.herokuapp.com/delete_expression", check.getToken(mContext), postData);
 
                 }
             }, collectionList.get(position));

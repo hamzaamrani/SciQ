@@ -36,7 +36,7 @@ public class SendImage extends AsyncTask<Object, String, String> {
         try {
             paths = (ArrayList<String>) objects[0];
             token = paths.get(0);
-            MultiPartHelper multiPartHelper = new MultiPartHelper("https://sciq-unimib-dev.herokuapp.com/sendfile", "UTF-8", token);
+            MultiPartHelper multiPartHelper = new MultiPartHelper("https://sciq-unimib.herokuapp.com/sendfile", "UTF-8", token);
             multiPartHelper.setFilePart("file2upload", new File(paths.get(1)));
             List<String> response = multiPartHelper.getResponse();
             return response.get(0);
