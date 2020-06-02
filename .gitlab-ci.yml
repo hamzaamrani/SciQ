@@ -137,12 +137,14 @@ lintDebug:
   image: $DOCKER_ANDROID_ENV_IMAGE
   stage: deploy
   script:
+    - cd sciq-app
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
 assembleDebug:
   image: $DOCKER_ANDROID_ENV_IMAGE
   stage: deploy
   script:
+    - cd sciq-app
     - ./gradlew assembleDebug
   artifacts:
     paths:
