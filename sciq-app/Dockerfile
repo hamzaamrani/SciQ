@@ -1,7 +1,9 @@
 FROM openjdk:8-jdk
 
+RUN ls -al
 COPY . sciq-app
 RUN cd sciq-app
+RUN ls -al
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
