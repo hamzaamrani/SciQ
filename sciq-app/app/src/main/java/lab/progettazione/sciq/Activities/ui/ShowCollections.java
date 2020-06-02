@@ -57,7 +57,7 @@ public class ShowCollections extends AppCompatActivity implements ReturnString, 
         getCollections = new GetCollections(this);
         getCollections.setDelegate(this);
         String endpoint = "collections";
-        getCollections.execute(token, "https://sciq-unimib-dev.herokuapp.com/" + endpoint);
+        getCollections.execute(token, "https://sciq-unimib.herokuapp.com/" + endpoint);
 
 
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -71,7 +71,7 @@ public class ShowCollections extends AppCompatActivity implements ReturnString, 
                 getCollections = new GetCollections(ShowCollections.this);
                 getCollections.setDelegate(ShowCollections.this);
                 String endpoint = "collections";
-                getCollections.execute(token, "https://sciq-unimib-dev.herokuapp.com/" + endpoint);
+                getCollections.execute(token, "https://sciq-unimib.herokuapp.com/" + endpoint);
             }
         });
 

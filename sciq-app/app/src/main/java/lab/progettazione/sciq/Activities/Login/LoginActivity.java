@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements ReturnString {
 
                     loginPostAsyncTask = new LoginPostAsyncTask(LoginActivity.this);
                     loginPostAsyncTask.delegate = LoginActivity.this;
-                    loginPostAsyncTask.execute("http://sciq-unimib-dev.herokuapp.com/login", postLoginParameters);
+                    loginPostAsyncTask.execute("http://sciq-unimib.herokuapp.com/login", postLoginParameters);
 
                 } else {
                     if (input_name_login.getText().toString().equals(""))

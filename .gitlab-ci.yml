@@ -44,6 +44,7 @@ build-test-env:
   only:
     # - sprint2
     - master
+
     
 test-db:
   stage: test
@@ -55,6 +56,7 @@ test-db:
     - sprint2
     - master
 
+
 test-parser:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
@@ -64,6 +66,7 @@ test-parser:
   only:
     # - sprint2
     - master
+
 
 test-api-wolfram:
   stage: test
@@ -75,6 +78,7 @@ test-api-wolfram:
     # - sprint2
     - master
 
+
 test-services:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
@@ -84,6 +88,7 @@ test-services:
   only:
     # - sprint2
     - master
+
 
 deploy-prod:
   stage: deploy
