@@ -15,7 +15,13 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DEV_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/test-env:latest
+  DOCKER_ANDROID_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/android-env:latest
   DOCKER_DRIVER: overlay2
+  # ANDROID_COMPILE_SDK: "29"
+  # ANDROID_BUILD_TOOLS: "29.0.2"
+  # ANDROID_SDK_TOOLS:   "6514223"
+
+# BUILD STAGE
 
 build-webapp:
   stage: build
@@ -29,6 +35,18 @@ build-webapp:
   only:
     # - sprint2
     - master
+
+build-android-env:
+  stage: build
+  before_script:
+    - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+  services:
+      - docker:dind
+  script:
+    - docker pull $DOCKER_ANDROID_ENV_IMAGE || true
+    - docker build --cache-from $DOCKER_ANDROID_ENV_IMAGE -t $DOCKER_ANDROID_ENV_IMAGE sciq-app/
+    - docker push $DOCKER_ANDROID_ENV_IMAGE
 
 build-test-env:
   stage: build
@@ -44,8 +62,9 @@ build-test-env:
   only:
     # - sprint2
     - master
+  
+# TEST STAGE
 
-    
 test-db:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
@@ -56,7 +75,6 @@ test-db:
     - sprint2
     - master
 
-
 test-parser:
   stage: test
   image: $DOCKER_DEV_ENV_IMAGE
@@ -64,7 +82,6 @@ test-parser:
     - echo 'test parser'
     - python3 -m unittest discover tests.parser -v
   only:
-    # - sprint2
     - master
 
 
@@ -89,6 +106,7 @@ test-services:
     # - sprint2
     - master
 
+# DEPLOY STAGE
 
 deploy-prod:
   stage: deploy
@@ -114,3 +132,20 @@ deploy-dev:
   only:
       - sprint2
       - master
+
+lintDebug:
+  image: $DOCKER_ANDROID_ENV_IMAGE
+  stage: deploy
+  script:
+    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
+
+assembleDebug:
+  image: $DOCKER_ANDROID_ENV_IMAGE
+  stage: deploy
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+    - app/build/outputs/
+      
+      
