@@ -9,7 +9,7 @@ RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;28.0.2" >/dev/null
 RUN export ANDROID_HOME=$PWD/android-sdk-linux
 RUN export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-RUN chmod +x ./gradle
+RUN chmod +x ./gradlew
 # temporarily disable checking for EPIPE error and use yes to accept all licenses
 RUN set +o pipefail
 RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
