@@ -1,6 +1,6 @@
 FROM openjdk:8-jdk
 
-COPY sciq-app .
+COPY . sciq-app
 RUN cd sciq-app
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
