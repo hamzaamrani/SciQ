@@ -2,7 +2,7 @@ FROM openjdk:8-jdk
 
 RUN ls -al
 COPY . sciq-app
-WORKDIR sciq-app
+WORKDIR /sciq-app
 RUN ls -al
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
