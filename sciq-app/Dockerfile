@@ -13,3 +13,4 @@ RUN export ANDROID_HOME=$PWD/android-sdk-linux
 RUN export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
 RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
 RUN sed -i "s@sdk.dir=.*@sdk.dir=$ANDROID_HOME@1" app/local.properties
+RUN cp app/local.properties .
