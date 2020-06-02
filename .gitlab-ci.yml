@@ -29,6 +29,7 @@ build-webapp:
   only:
     # - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
 
 build-test-env:
   stage: build
@@ -44,6 +45,8 @@ build-test-env:
   only:
     # - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
+
     
 test-db:
   stage: test
@@ -54,6 +57,8 @@ test-db:
   only:
     - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
+
 
 test-parser:
   stage: test
@@ -64,6 +69,8 @@ test-parser:
   only:
     # - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
+
 
 test-api-wolfram:
   stage: test
@@ -74,6 +81,8 @@ test-api-wolfram:
   only:
     # - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
+
 
 test-services:
   stage: test
@@ -84,6 +93,8 @@ test-services:
   only:
     # - sprint2
     - master
+    - hotfix-pick-image-and-capture-image-bug
+
 
 deploy-prod:
   stage: deploy
