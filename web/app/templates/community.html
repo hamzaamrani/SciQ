@@ -22,26 +22,34 @@
     <script src="https://cdn.jsdelivr.net/remarkable/1.7.1/remarkable.min.js"></script>
 
     <style>
-        .custom{
+        .custom {
             width: 160px !important;
         }
-        .btn-success{
+
+        .btn-success {
             background-color: #6ab446;
         }
+
         .sidebar {
             margin: 0 0 0 0;
-            padding-left: 2rem;
-            top: 10rem !important; /*set it according to height of nav bar*/
+            padding-bottom: 2rem;
+            top: 10rem !important;
+            /*set it according to height of nav bar*/
         }
-        .filterbar{
-            top: 10rem !important; /*set it according to height of nav bar*/
+
+        .filterbar {
+            top: 10rem !important;
+            /*set it according to height of nav bar*/
         }
-        .main_post{
+
+        .main_post {
             margin-bottom: 5rem;
             margin-top: 10rem;
         }
+
         .text_post {
-            display: block;/* or inline-block */
+            display: block;
+            /* or inline-block */
             text-overflow: clip;
             word-wrap: break-word;
             overflow: hidden;
@@ -50,12 +58,13 @@
             line-height: 1.8em;
         }
 
-        .text_post p{
+        .text_post p {
             margin-bottom: 0;
         }
+
         .form-group.required .control-label:after {
-            content:"*";
-            color:red;
+            content: "*";
+            color: red;
         }
     </style>
     <script>
@@ -64,41 +73,43 @@
             var md = new Remarkable();
 
             var elements = document.getElementsByClassName("text_post");
-            for(var i=0; i<elements.length; i++) {
+            for (var i = 0; i < elements.length; i++) {
                 tex = elements[i].innerHTML;
                 mark = md.render(tex);
                 elements[i].innerHTML = mark;
             }
 
-            var question = new SimpleMDE({  element: document.getElementById("question"), 
-                                            spellChecker: false});
+            var question = new SimpleMDE({
+                element: document.getElementById("question"),
+                spellChecker: false
+            });
 
             $("#modalNewPost").on("hidden.bs.modal", function () {
-                    $(this).find(".invalid-feedback").hide(); // Remove from DOM.
-                    question.value(" ");
-                    document.getElementById("title").value = "";
+                $(this).find(".invalid-feedback").hide(); // Remove from DOM.
+                question.value(" ");
+                document.getElementById("title").value = "";
             });
 
             $("#share_question").on("click", function (event) {
                 console.log('click on share');
 
                 var title = $("#title").val();
-                var text  = question.value();
+                var text = question.value();
                 var topic = $("#topic option:selected").text();
 
-                if (title.trim() == "" && text.trim() == ""){   
-                    document.getElementById('title_form').style.display="inline";
-                    document.getElementById('question_form').style.display="inline";
+                if (title.trim() == "" && text.trim() == "") {
+                    document.getElementById('title_form').style.display = "inline";
+                    document.getElementById('question_form').style.display = "inline";
                 }
-                else if (title.trim() == ""){   
-                    document.getElementById('title_form').style.display="inline";
-                    document.getElementById('question_form').style.display="none";
+                else if (title.trim() == "") {
+                    document.getElementById('title_form').style.display = "inline";
+                    document.getElementById('question_form').style.display = "none";
                 }
-                else if (text.trim() == ""){   
-                    document.getElementById('question_form').style.display="inline";
-                    document.getElementById('title_form').style.display="none";
+                else if (text.trim() == "") {
+                    document.getElementById('question_form').style.display = "inline";
+                    document.getElementById('title_form').style.display = "none";
                 }
-                else{                
+                else {
                     $.ajax({
                         type: "POST",
                         url: '/post',
@@ -109,7 +120,7 @@
                             window.location = '/posts'
                         },
                         statusCode: {
-                            401: function(xhr) {
+                            401: function (xhr) {
                                 $('#modalNewPost').modal('hide');
                                 $('#login_required').show();
                             }
@@ -118,17 +129,17 @@
                 }
             });
 
-            $("#button_filter").on("click", function(event){
+            $("#button_filter").on("click", function (event) {
                 var topic = $("#topic_filter").children("option:selected").val();
 
-                document.querySelectorAll(`.${topic}`).forEach(function(el) {
+                document.querySelectorAll(`.${topic}`).forEach(function (el) {
                     el.style.display = 'block';
                 });
 
-                $(".card:not('."+ topic +"')").hide();
+                $(".card:not('." + topic + "')").hide();
 
             });
-            $("#button_disable_filter").on("click", function(event){
+            $("#button_disable_filter").on("click", function (event) {
                 $(".card").show();
             });
         });
@@ -164,63 +175,101 @@
         </div>
 
         <div class="row justify-content-center">
-            <div class='col-2 align-self-start sticky-top sidebar'>
-                <div class="row">
-                    <button type="button" class="btn btn-success custom" data-toggle="modal" data-target="#modalNewPost">New Question</button>
-                </div>  
-                <div class="row">
-                    <button type="button" class="btn btn-light custom" id='myQuestion_button' onclick="window.location.href = '/posts/user';">My Question</button>
+            <div class="col-3">
+                <div class="align-self-start sticky-top sidebar">
+                    <div>
+                        <button type="button" class="btn btn-success custom" data-toggle="modal"
+                            data-target="#modalNewPost">New Question</button>
+                        <button type="button" class="btn btn-light custom" id="myQuestion_button"
+                            onclick="window.location.href = '/posts/user';">My Question</button>
+                    </div>
+
+                </div>
+                <div class="align-self-start sticky-top sidebar">
+                    <div class="form-group">
+                        <label>Filter by topic</label>
+                        <select class="form-control" id="topic_filter">
+                            <option value="Integral">Integral</option>
+                            <option value="Derivates">Derivates</option>
+                            <option value="Limit">Limit</option>
+                            <option vlaue="General">General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary custom" id="button_filter">Apply filter</button>
+                        <button type="button" class="btn btn-light custom" id="button_disable_filter">Disable
+                            filter</button>
+                    </div>
                 </div>
             </div>
-            <div class='col-6'>            
+            <div class='col-8'>
+                {% if posts|length > 0 %}
                 {% for post in posts %}
-                    <div class="card border-light mb-1 {{post.topic}}" style="border: none;">
-                        <div class="card-header container-fluid">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <a href="/post/{{post.id}}" class="card-link" style="color: #000000;">
-                                        <h3>{{ post.title }}</h3>
-                                    </a>
-                                </div>
+                <div class="card border-light mb-1 {{post.topic}}" style="border: none;">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="/post/{{post.id}}" class="card-link" style="color: #000000;">
+                                    <h3>{{ post.title }}</h3>
+                                </a>
                             </div>
-                        </div>
-                        <div class="card-body text-left">  
-                            <div class=row>
-                                <div class="col-md-10">
-                                    <p class="card-text text_post">{{post.text}}</p>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-top: 2rem;">
-                                <div class="col-md-2 float-left">
-                                    <button type="button" class="btn btn-outline-info btn-sm" disabled>{{post.topic}}</button>
-                                </div>
-                                <div class="col-md-3 offset-md-7">
-                                    <p class="float-md-right">asked by: <span style="color: cornflowerblue;">{{post.author}}</span></p>
-                                </div>
-                            </div>
-                            <hr>
                         </div>
                     </div>
+                    <div class="card-body text-left">
+                        <div class=row>
+                            <div class="col-md-10">
+                                <p class="card-text text_post">{{post.text}}</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 2rem;">
+                            <div class="col-md-2 float-left">
+                                <button type="button" class="btn btn-outline-info btn-sm"
+                                    disabled>{{post.topic}}</button>
+                            </div>
+                            <div class="col-md-3 offset-md-7">
+                                <p class="float-md-right">asked by: <span
+                                        style="color: cornflowerblue;">{{post.author}}</span></p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
                 {% endfor %}
-            </div>
-            <div class="col-2 align-self-start sticky-top filterbar">
-                <div class="form-group">
-                    <label>Filter by topic</label>
-                    <select class="form-control" id="topic_filter">
-                        <option value='Integral'>Integral</option>
-                        <option value='Derivates'>Derivates</option>
-                        <option value='Limit'>Limit</option>
-                        <option vlaue='General'>General</option>
-                    </select>
-                </div>  
-                <button type="button" class="btn btn-primary" id="button_filter">Apply filter</button>
-                <button type="button" class="btn btn-light" id="button_disable_filter">Disable filter</button>
+                {% else %}
+                <div class="card border-light mb-1" style="border: none;">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>There is no question yet</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body text-left">
+                        <div class=row>
+                            <div class="col-md-10">
+                                <p class="card-text text_post">Share your first question with our community!</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 2rem;">
+                            <div class="col-md-2 float-left">
+                                <button type="button" class="btn btn-outline-info btn-sm" disabled>Meta</button>
+                            </div>
+                            <div class="col-md-3 offset-md-7">
+                                <p class="float-md-right">Happy sharing by: <span style="color: cornflowerblue;">SciQ Dev
+                                        Team</span></p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Modal New Post-->
-    <div class="modal fade" id="modalNewPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalNewPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -246,7 +295,7 @@
                                 <option>Limit</option>
                             </select>
                         </div>
-                            <div class="form-group required">
+                        <div class="form-group required">
                             <label class="control-label">Question</label>
                             <div class="invalid-feedback" id="question_form" style="display: none;">
                                 Please insert a question.
@@ -262,7 +311,7 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 </body>
 
 </html>

@@ -24,15 +24,20 @@
         .custom {
             width: 160px !important;
         }
+
         .sidebar {
             margin: 0 0 0 0;
-            padding-left: 2rem;
-            top: 10rem !important; /*set it according to height of nav bar*/
+            padding-bottom: 2rem;
+            top: 10rem !important;
+            /*set it according to height of nav bar*/
         }
-        .filterbar{
-            top: 10rem !important; /*set it according to height of nav bar*/
+
+        .filterbar {
+            top: 10rem !important;
+            /*set it according to height of nav bar*/
         }
-        .main_post{
+
+        .main_post {
             margin-bottom: 5rem;
             margin-top: 10rem;
         }
@@ -40,9 +45,9 @@
     <script>
         $(document).ready(function () {
             var md = new Remarkable();
-            var elements = document.getElementsByClassName("text_post");     
-            var id = "";       
-            for(var i=0; i<elements.length; i++) {
+            var elements = document.getElementsByClassName("text_post");
+            var id = "";
+            for (var i = 0; i < elements.length; i++) {
                 tex = elements[i].innerHTML;
                 mark = md.render(tex);
                 elements[i].innerHTML = mark;
@@ -64,25 +69,25 @@
                 });
             });
 
-            $("#button_filter").on("click", function(event){
+            $("#button_filter").on("click", function (event) {
                 console.log('click on filter');
                 var topic = $("#topic_filter").children("option:selected").val();
                 console.log('topic choose is ' + topic);
 
-                document.querySelectorAll(`.${topic}`).forEach(function(el) {
+                document.querySelectorAll(`.${topic}`).forEach(function (el) {
                     el.style.display = 'block';
                 });
 
-                $(".card:not('."+ topic +"')").hide();
+                $(".card:not('." + topic + "')").hide();
 
             });
 
-            $("#button_disable_filter").on("click", function(event){
+            $("#button_disable_filter").on("click", function (event) {
                 $(".card").show();
             });
         });
 
-        function delete_collection(event){
+        function delete_collection(event) {
             event = event || window.event; // IE
             var target = event.target || event.srcElement; // IE
             var id = target.id;
@@ -92,7 +97,7 @@
                 url: "/post",
                 contentType: 'application/json;charset=UTF-8',
                 data: JSON.stringify({ 'id': id }),
-                success: function(){
+                success: function () {
                     window.location.reload();
                 }
             });
@@ -117,23 +122,39 @@
     </nav>
 
     <div class='container-fluid main_post'>
-        <div class="row">
-            <div class='col-10'>            
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <div class="align-self-start sticky-top sidebar">
+                    <div class="form-group">
+                        <label>Filter by topic</label>
+                        <select class="form-control" id="topic_filter">
+                            <option value="Integral">Integral</option>
+                            <option value="Derivates">Derivates</option>
+                            <option value="Limit">Limit</option>
+                            <option vlaue="General">General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary custom" id="button_filter">Apply filter</button>
+                        <button type="button" class="btn btn-light custom" id="button_disable_filter">Disable
+                            filter</button>
+                    </div>
+                </div>
+            </div>
+            <div class='col-8'>
+                {% if posts|length > 0 %}
                 {% for post in posts %}
                 <div class="card border-light mb-1 {{post.topic}}" style="border: none;">
                     <div class="card-header container-fluid">
                         <div class="row">
-                            <div class="col-md-9">
+                            <div class="col-md-12">
                                 <a href="/post/{{post.id}}" class="card-link" style="color: #000000;">
                                     <h3>{{ post.title }}</h3>
                                 </a>
                             </div>
-                            <div class="col-md-3 text-right">
-                                <button id="{{ post.id }}" type="button" class="btn btn-danger" onclick="delete_collection(event)">Delete</button>
-                            </div>
                         </div>
                     </div>
-                    <div class="card-body text-left">  
+                    <div class="card-body text-left">
                         <div class=row>
                             <div class="col-md-10">
                                 <p class="card-text text_post">{{post.text}}</p>
@@ -141,26 +162,47 @@
                         </div>
                         <div class="row" style="margin-top: 2rem;">
                             <div class="col-md-2 float-left">
-                                <button type="button" class="btn btn-outline-info btn-sm" disabled>{{post.topic}}</button>
+                                <button type="button" class="btn btn-outline-info btn-sm"
+                                    disabled>{{post.topic}}</button>
+                            </div>
+                            <div class="col-md-3 offset-md-7">
+                                <p class="float-md-right">asked by: <span
+                                        style="color: cornflowerblue;">{{post.author}}</span></p>
                             </div>
                         </div>
                         <hr>
                     </div>
                 </div>
                 {% endfor %}
-            </div>
-            <div class="col-2 align-self-start sticky-top filterbar">
-                <div class="form-group">
-                    <label>Filter by topic</label>
-                    <select class="form-control" id="topic_filter">
-                        <option value='Integral'>Integral</option>
-                        <option value='Derivates'>Derivates</option>
-                        <option value='Limit'>Limit</option>
-                        <option vlaue='General'>General</option>
-                    </select>
-                </div>  
-                <button type="button" class="btn btn-primary" id="button_filter">Apply filter</button>
-                <button type="button" class="btn btn-light" id="button_disable_filter">Disable filter</button>
+                {% else %}
+                <div class="card border-light mb-1" style="border: none;">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>There is no question yet</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body text-left">
+                        <div class=row>
+                            <div class="col-md-10">
+                                <p class="card-text text_post">Share your first question with our community!</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 2rem;">
+                            <div class="col-md-2 float-left">
+                                <button type="button" class="btn btn-outline-info btn-sm" disabled>Meta</button>
+                            </div>
+                            <div class="col-md-3 offset-md-7">
+                                <p class="float-md-right">Happy sharing by: <span style="color: cornflowerblue;">SciQ
+                                        Dev
+                                        Team</span></p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
