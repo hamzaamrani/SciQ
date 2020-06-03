@@ -105,11 +105,9 @@ deploy-dev:
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
       - sprint2
-      
-# deploy-android:
-#   stage: deploy
-#   image: $DOCKER_ANDROID_ENV_IMAGE
-#   script:
-#     - cd sciq-app
-#     - upload_to_gdrive --folder sciq --file ./app/build/outputs/
-      
+
+deploy-apk:
+  stage: deploy
+  image: $DOCKER_ANDROID_ENV_IMAGE
+  script:
+    - 
