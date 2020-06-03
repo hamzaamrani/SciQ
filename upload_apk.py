@@ -1,10 +1,24 @@
 import dropbox
+import os
+import re
 import sys
 
 
-def upload(file, oauth2_access_token):
+def upload(file, apks_dir, oauth2_access_token):
+    max_version = "0.0"
+    for apk in os.listdir(apks_dir):
+        match = re.search(r"(\d+(\.\d)*)", apk)
+        if match is not None:
+            version = match.group(1)
+            if float(version) > float(max_version):
+                max_version = version
+    new_version = os.path.join(apks_dir, "sciq_v." + max_version + ".apk")
+    os.rename(
+        os.path.join(apks_dir, file),
+        os.path.join(apks_dir, "sciq_v." + max_version + ".apk"),
+    )
     dbx = dropbox.Dropbox(oauth2_access_token=oauth2_access_token)
-    dbx.files_upload(open(file, "rb").read(), "/" + file)
+    dbx.files_upload(open(new_version, "rb").read(), "/" + new_version)
 
 
 if __name__ == "__main__":
