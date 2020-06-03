@@ -13,7 +13,7 @@ def upload(file, apks_dir, oauth2_access_token):
             if float(version) > float(max_version):
                 max_version = version
     new_version = os.path.join(
-        apks_dir, "sciq_v." + (float(max_version) + 0.1) + ".apk"
+        apks_dir, "sciq_v." + str(float(max_version) + 0.1) + ".apk"
     )
     os.rename(
         os.path.join(apks_dir, file),
