@@ -12,12 +12,14 @@ def upload(file, apks_dir, oauth2_access_token):
             version = match.group(1)
             if float(version) > float(max_version):
                 max_version = version
+    new_file = "sciq_v." + str(float(max_version) + 0.1) + ".apk"
     new_version = os.path.join(
-        apks_dir, "sciq_v." + str(float(max_version) + 0.1) + ".apk"
+        apks_dir, new_file
     )
     os.rename(file, new_version)
+    print(new_version)
     dbx = dropbox.Dropbox(oauth2_access_token=oauth2_access_token)
-    dbx.files_upload(open(new_version, "rb").read(), "/" + new_version)
+    dbx.files_upload(open(new_version, "rb").read(), "/" + new_file)
 
 
 if __name__ == "__main__":
