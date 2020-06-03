@@ -108,7 +108,7 @@
                 </div>
                 <div class="col-3">
                     {% if collections_names is not none %}
-                        {% if (response_obj.success) and (response_obj._id is not defined) %}
+                        {% if ((response_obj.success) and (response_obj._id is not defined)) or not response_obj.success %}
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#saveModal"
                             id="saveButton">
                             Save Expression
