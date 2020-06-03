@@ -15,10 +15,7 @@ def upload(file, apks_dir, oauth2_access_token):
     new_version = os.path.join(
         apks_dir, "sciq_v." + str(float(max_version) + 0.1) + ".apk"
     )
-    os.rename(
-        os.path.join(apks_dir, file),
-        os.path.join(apks_dir, "sciq_v." + new_version + ".apk"),
-    )
+    os.rename(file, new_version)
     dbx = dropbox.Dropbox(oauth2_access_token=oauth2_access_token)
     dbx.files_upload(open(new_version, "rb").read(), "/" + new_version)
 
