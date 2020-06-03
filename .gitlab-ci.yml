@@ -34,6 +34,12 @@ build-android-env:
     - docker pull $DOCKER_ANDROID_ENV_IMAGE || true
     - docker build --cache-from $DOCKER_ANDROID_ENV_IMAGE -t $DOCKER_ANDROID_ENV_IMAGE sciq-app/
     - docker push $DOCKER_ANDROID_ENV_IMAGE
+    - docker create -it --name dummy $DOCKER_ANDROID_ENV_IMAGE bash
+    - docker cp dummy:/sciq-app/app/build/outputs/apk/debug/app-debug.apk $CI_PROJECT_DIR/sciq-apk
+    - mv $CI_PROJECT_DIR/sciq-apk/app-debug.apk sciq_v.$(ls -v | grep -Eo "[0-9]+(.[0-9])*" | sort -rn | head -n 1 | awk '{ SUM = 0.1; SUM += $1} END { print SUM }').apk
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/sciq-apk/$(ls -v | grep -E "[0-9]+(.[0-9])*" | sort -rn | head -n 1)
 
 build-test-env:
   stage: build
@@ -108,6 +114,10 @@ deploy-dev:
 
 deploy-apk:
   stage: deploy
-  image: $DOCKER_ANDROID_ENV_IMAGE
+  image: python3
+  services:
+    - $DOCKER_ANDROID_ENV_IMAGE
+  dependencies:
+    - build-android-env
   script:
-    - 
+    - python3 upload_apk $CI_PROJECT_DIR/sciq-apk/$(ls -v | grep -E "[0-9]+(.[0-9])*" | sort -rn | head -n 1) $DROPBOX_API_TOKEN
