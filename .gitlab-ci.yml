@@ -33,6 +33,7 @@ build-webapp:
 
 build-test-env:
   stage: build
+  image: docker
   before_script:
     - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
     # - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
