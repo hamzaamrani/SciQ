@@ -117,4 +117,5 @@ deploy-apk:
   dependencies:
     - build-android-env
   script:
+    - pip3 install dropbox
     - python3 upload_apk.py $CI_PROJECT_DIR/sciq-apk/app-debug.apk $CI_PROJECT_DIR/sciq-apk $DROPBOX_API_TOKEN
