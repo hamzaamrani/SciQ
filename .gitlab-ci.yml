@@ -1,11 +1,11 @@
 # Use a fixed version as latest tag doesn't exist
 # https://hub.docker.com/r/docker/compose/tags
-image:
-  name: docker:latest
-  entrypoint: ["sh", "-c"]
+# image:
+#   name: docker:latest
+#   entrypoint: ["sh", "-c"]
 
-services:
-  - docker:dind
+# services:
+#   - docker:dind
 
 stages:
   - build
@@ -25,10 +25,11 @@ variables:
 
 build-webapp:
   stage: build
-  services:
-    - docker:dind
-  before_script:
-    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make && pip install docker-compose
+  image: docker/compose
+  # services:
+  #   - docker:dind
+  # before_script:
+  #   - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make && pip install docker-compose
   script:
     - echo 'build webapp'
     - docker-compose build
@@ -38,9 +39,10 @@ build-webapp:
 
 build-android-env:
   stage: build
+  image: docker
   before_script:
     - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
-    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+    # - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
   services:
       - docker:dind
   script:
@@ -50,9 +52,10 @@ build-android-env:
 
 build-test-env:
   stage: build
+  image: docker
   before_script:
     - echo $CI_DEPLOY_PASSWORD | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
-    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+    # - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
   services:
       - docker:dind
   script:
