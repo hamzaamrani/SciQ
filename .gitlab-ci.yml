@@ -113,9 +113,7 @@ deploy-dev:
 
 deploy-apk:
   stage: deploy
-  image: python3
-  services:
-    - $DOCKER_ANDROID_ENV_IMAGE
+  image: python:3.7
   dependencies:
     - build-android-env
   script:
