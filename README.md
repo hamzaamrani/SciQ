@@ -4,7 +4,7 @@ Our project aim to develop an application that allow the recognition and further
 The insertion of the formulas could happen through the use of a predefined text-area or through the uploading of an image containing a formula.
 The resolution of the formulas happens through the usege of Wolphram|Alpha's API.  
   
-You can view the full documentation at https://sciq.readthedocs.io/en/sprint2/index.html
+You can view the full documentation at https://sciq.readthedocs.io/en/latest/index.html
 
 ## High-level pipeline
 
