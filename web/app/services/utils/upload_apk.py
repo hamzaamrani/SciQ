@@ -14,7 +14,9 @@ def get_max_version(apk, max_version):
     return max_version
 
 
-def upload(file, apks_dir, oauth2_access_token):
+def upload(root_dir, oauth2_access_token):
+    file = os.path.join(root_dir, "sciq-apk", "app-debug.apk")
+    apks_dir = os.path.join(root_dir, "sciq-apk")
     dbx = dropbox.Dropbox(oauth2_access_token=oauth2_access_token)
     max_version = "0.0"
     # Get max version from filesystem
@@ -31,11 +33,11 @@ def upload(file, apks_dir, oauth2_access_token):
     download_url = dbx.sharing_create_shared_link("/" + new_file).url
     # Make url directly downlodable
     download_url = download_url[:-1] + "1"
-    with open("apk_build.env", "x") as f:
+    with open(os.path.join(root_dir, "apk_build.env"), "x") as f:
         f.write("DROPBOX_DOWNLOAD_URL=" + download_url)
         f.flush()
         f.close()
 
 
 if __name__ == "__main__":
-    upload(sys.argv[1], sys.argv[2], sys.argv[3])
+    upload(sys.argv[1], sys.argv[2])
