@@ -96,14 +96,14 @@ deploy-prod:
     - gem install dpl
     - pip3 install dropbox
   script:
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hamzi27/sciq.git &> /dev/null
+    - git clone --single-branch --branch $CI_COMMIT_REF_NAME https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hamzi27/sciq.git &> /dev/null
     - cd sciq
     - python3 ./web/app/services/utils/upload_apk.py . $CI_PROJECT_DIR $DROPBOX_API_TOKEN
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add ./web/app/templates/index.html
     - git commit -m '[skip ci] commit from CI runner'
-    - git push http://${GITLAB_USER_ID}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:master
+    - git push https://${GITLAB_USER_ID}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:$CI_COMMIT_REF_NAME
     - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
     - master
@@ -114,13 +114,20 @@ deploy-dev:
   dependencies:
     - build-android-env
   before_script:
-      - apt-get update -qy
-      - apt-get install -y ruby-dev
-      - apt-get install -y python3.7 python3-pip
-      - gem install dpl
-      - pip3 install dropbox
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - apt-get install -y python3.7 python3-pip
+    - gem install dpl
+    - pip3 install dropbox
   script:
-    - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
+    - git clone --single-branch --branch $CI_COMMIT_REF_NAME https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hamzi27/sciq.git &> /dev/null
+    - cd sciq
+    - python3 ./web/app/services/utils/upload_apk.py . $CI_PROJECT_DIR $DROPBOX_API_TOKEN
+    - git config --global user.name "${GITLAB_USER_NAME}"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+    - git add ./web/app/templates/index.html
+    - git commit -m '[skip ci] commit from CI runner'
+    - git push https://${GITLAB_USER_ID}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:$CI_COMMIT_REF_NAME
     - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
     - sprint2

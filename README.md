@@ -6,6 +6,10 @@ The resolution of the formulas happens through the usege of Wolphram|Alpha's API
   
 You can view the full documentation at https://sciq.readthedocs.io/en/latest/index.html
 
+## How to reach us
+
+You can use our system at https://sciq-unimib.herokuapp.com/ or you can download our latest Android APK from __DROPBOX_DOWNLOAD_URL__
+
 ## High-level pipeline
 
 <div align="center">

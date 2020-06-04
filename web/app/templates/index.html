@@ -38,6 +38,10 @@
             object-fit: cover;
             object-position: center;
         }
+
+        .android_logo:hover {
+            cursor: pointer;
+        }
     </style>
     <script>
         $(window).on('resize load', function () {
@@ -45,6 +49,9 @@
                 "height": "calc(100vh - " + $("nav").css("height") + ")"
             });
         });
+        $(".android_logo").click(function () {
+            window.location.href = "__DROPBOX_DOWNLOAD_URL__"
+        })
     </script>
 </head>
 
@@ -225,10 +232,9 @@
     </div>
     <div class="container text-center" id="android">
         <h2>Run our system on your phone</h2>
-        <div class="row text-center">
-            <div class="col-sm-4">
-                <img id="icon" src="/images/android_logo.jpg">
-                <h4><a href="__DROPBOX_DOWNLOAD_URL__">DOWNLOAD APK</a></h4>
+        <div class="row">
+            <div class="col-sm-4 mx-auto android_logo">
+                <img id="icon" src="/images/android_logo.png">
             </div>
         </div>
     </div>

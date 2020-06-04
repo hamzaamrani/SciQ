@@ -47,6 +47,19 @@ def upload(root_dir, ci_project_dir, oauth2_access_token):
         f.write(index)
         f.close()
 
+    with open(
+        os.path.join(root_dir, "README.md"), "r+"
+    ) as f:
+        readme = f.read()
+        readme = re.sub(
+            r"__DROPBOX_DOWNLOAD_URL__|https://www.dropbox.com/s/.*?\?dl=1",
+            download_url,
+            readme,
+        )
+        f.seek(0)
+        f.write(readme)
+        f.close()
+
 
 if __name__ == "__main__":
     upload(sys.argv[1], sys.argv[2], sys.argv[3])
