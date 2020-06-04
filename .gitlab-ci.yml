@@ -92,7 +92,7 @@ deploy-prod:
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
-      - apt-get install python3.7 python3-pip
+      - apt-get install -y python3.7 python3-pip
       - gem install dpl
       - pip3 install dropbox
   script:
