@@ -96,14 +96,14 @@ deploy-prod:
     - gem install dpl
     - pip3 install dropbox
   script:
-    - git clone https://gitlab-ci-token:${GITLAB_ACCESS_TOKEN}@gitlab.com/${GITLAB_USER_NAME}/sciq.git &> /dev/null
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hamzi27/sciq.git &> /dev/null
     - cd sciq
     - python3 ./web/app/services/utils/upload_apk.py . $DROPBOX_API_TOKEN
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add ./web/app/templates/index.html
     - git commit -m '[skip ci] commit from CI runner'
-    - git push http://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/${GITLAB_USER_NAME}/sciq.git HEAD:master
+    - git push http://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:master
     - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
     - master
