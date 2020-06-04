@@ -15,7 +15,7 @@ You can use our system at https://sciq-unimib.herokuapp.com/ or you can download
 <div align="center">
   <img src="docs/source/_static/images/sciq-gitlab-docker-cicd.png">
 </div>
-## Web App
+
 The web application is reachable at : [SciQ](https://sciq-unimib.herokuapp.com/)
 
 Our pipeline is developed with a Dev-Ops centered methodology, in which we make sure that our application has passed routine and building tests before being used from the community.  
