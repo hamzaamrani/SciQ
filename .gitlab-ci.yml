@@ -102,8 +102,8 @@ deploy-apk:
 deploy-prod:
   stage: deploy
   image: ruby:latest
-  dependencies:
-    - deploy-apk
+  needs:
+    - job: deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
@@ -117,8 +117,8 @@ deploy-prod:
 deploy-dev:
   stage: deploy
   image: ruby:latest
-  dependencies:
-    - deploy-apk
+  needs:
+    - job: deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
