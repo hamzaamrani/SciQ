@@ -4,13 +4,8 @@ stages:
   - deploy
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
   DOCKER_DEV_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/test-env:latest
   DOCKER_ANDROID_ENV_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/env/android-env:latest
-  DOCKER_DRIVER: overlay2
-  ANDROID_COMPILE_SDK: "29"
-  ANDROID_BUILD_TOOLS: "29.0.2"
-  ANDROID_SDK_TOOLS:   "6514223"
 
 # BUILD STAGE
 
@@ -74,15 +69,6 @@ test-services:
     - python3 -m unittest discover tests.services -v
 
 # DEPLOY STAGE
-
-# deploy-apk:
-#   stage: deploy
-#   image: python:3.7
-#   dependencies:
-#     - build-android-env
-#   script:
-#     - pip3 install dropbox
-#     - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
 
 deploy-prod:
   stage: deploy
