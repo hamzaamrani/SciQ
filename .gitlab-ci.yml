@@ -87,6 +87,8 @@ test-services:
 deploy-prod:
   stage: deploy
   image: ruby:latest
+  dependencies:
+    - build-android-env
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
@@ -102,6 +104,8 @@ deploy-prod:
 deploy-dev:
   stage: deploy
   image: ruby:latest
+  dependencies:
+    - build-android-env
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
