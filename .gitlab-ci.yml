@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - deploy-apk
   - deploy
 
 variables:
@@ -88,7 +89,7 @@ test-services:
 # DEPLOY STAGE
 
 deploy-apk:
-  stage: deploy
+  stage: deploy-apk
   image: python:3.7
   dependencies:
     - build-android-env
@@ -102,8 +103,8 @@ deploy-apk:
 deploy-prod:
   stage: deploy
   image: ruby:latest
-  needs:
-    - job: deploy-apk
+  dependencies:
+    - deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
@@ -117,8 +118,8 @@ deploy-prod:
 deploy-dev:
   stage: deploy
   image: ruby:latest
-  needs:
-    - job: deploy-apk
+  dependencies:
+    - deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
