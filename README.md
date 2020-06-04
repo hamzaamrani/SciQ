@@ -8,7 +8,7 @@ You can view the full documentation at https://sciq.readthedocs.io/en/latest/ind
 
 ## How to reach us
 
-You can use our system at https://sciq-unimib.herokuapp.com/ or you can download our latest Android APK from https://www.dropbox.com/s/9yjd0rf2d0ps8b3/sciq_v.2.3.apk?dl=1
+You can use our system at https://sciq-unimib.herokuapp.com/ or you can download our latest Android APK from https://www.dropbox.com/s/htia3lp2xhef9gq/sciq_v.2.4.apk?dl=1
 
 ## High-level pipeline
 
