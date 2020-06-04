@@ -102,6 +102,7 @@ deploy-prod:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add ./web/app/templates/index.html
+    - git add ./README.md
     - git commit -m '[skip ci] commit from CI runner'
     - git push https://${GITLAB_USER_ID}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:$CI_COMMIT_REF_NAME
     - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
@@ -126,6 +127,7 @@ deploy-dev:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add ./web/app/templates/index.html
+    - git add ./README.md
     - git commit -m '[skip ci] commit from CI runner'
     - git push https://${GITLAB_USER_ID}:${GITLAB_ACCESS_TOKEN}@gitlab.com/hamzi27/sciq.git HEAD:$CI_COMMIT_REF_NAME
     - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
