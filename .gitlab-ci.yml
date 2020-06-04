@@ -1,7 +1,6 @@
 stages:
   - build
   - test
-  - deploy-apk
   - deploy
 
 variables:
@@ -14,15 +13,6 @@ variables:
   ANDROID_SDK_TOOLS:   "6514223"
 
 # BUILD STAGE
-
-build-webapp:
-  stage: build
-  image: docker/compose
-  script:
-    - echo 'build webapp'
-    - docker-compose build
-  only:
-    - sprint2
 
 build-android-env:
   stage: build
@@ -86,29 +76,22 @@ test-services:
 # DEPLOY STAGE
 
 deploy-apk:
-  stage: deploy-apk
+  stage: deploy
   image: python:3.7
   dependencies:
     - build-android-env
   script:
     - pip3 install dropbox
     - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/apk_download_url.sh
 
 deploy-prod:
   stage: deploy
   image: ruby:latest
-  dependencies:
-    - deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
   script:
-      - source $CI_PROJECT_DIR/apk_download_url.sh
-      - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" $CI_PROJECT_DIR/web/app/templates/index.html
       - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
     - master
@@ -116,15 +99,11 @@ deploy-prod:
 deploy-dev:
   stage: deploy
   image: ruby:latest
-  dependencies:
-    - deploy-apk
   before_script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
   script:
-      - source $CI_PROJECT_DIR/apk_download_url.sh
-      - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" $CI_PROJECT_DIR/web/app/templates/index.html
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
       - sprint2
