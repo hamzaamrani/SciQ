@@ -32,11 +32,11 @@ def upload(root_dir, oauth2_access_token):
     dbx.files_upload(open(new_file_full_path, "rb").read(), "/" + new_file)
     download_url = dbx.sharing_create_shared_link("/" + new_file).url
     # Make url directly downlodable
-    download_url = download_url[:-1] + "1"
-    with open(os.path.join(root_dir, "apk_build.env"), "x") as f:
-        f.write("DROPBOX_DOWNLOAD_URL=" + download_url)
-        f.flush()
-        f.close()
+    print(download_url[:-1] + "1")
+    # with open(os.path.join(root_dir, "apk_build.env"), "x") as f:
+    #     f.write("DROPBOX_DOWNLOAD_URL=" + download_url)
+    #     f.flush()
+    #     f.close()
 
 
 if __name__ == "__main__":

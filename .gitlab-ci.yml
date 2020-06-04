@@ -95,10 +95,10 @@ deploy-apk:
     - build-android-env
   script:
     - pip3 install dropbox
-    - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
+    - echo "DROPBOX_DOWNLOAD_URL=$(python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN)" >> apk_build.env
   artifacts:
     reports:
-      dotenv: $CI_PROJECT_DIR/apk_build.env
+      dotenv: apk_build.env
 
 deploy-prod:
   stage: deploy
