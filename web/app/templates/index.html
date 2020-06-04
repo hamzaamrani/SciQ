@@ -49,9 +49,11 @@
                 "height": "calc(100vh - " + $("nav").css("height") + ")"
             });
         });
-        $(".android_logo").click(function () {
-            window.location.href = "__DROPBOX_DOWNLOAD_URL__"
-        })
+        $(document).ready(function () {
+            $(".android_logo").click(function () {
+                window.location.href = "__DROPBOX_DOWNLOAD_URL__"
+            });
+        });
     </script>
 </head>
 
