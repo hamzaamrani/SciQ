@@ -87,30 +87,6 @@ test-services:
 
 # DEPLOY STAGE
 
-deploy-prod:
-  stage: deploy
-  image: ruby:latest
-  before_script:
-      - apt-get update -qy
-      - apt-get install -y ruby-dev
-      - gem install dpl
-  script:
-      - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
-  only:
-    - master
-
-deploy-dev:
-  stage: deploy
-  image: ruby:latest
-  before_script:
-      - apt-get update -qy
-      - apt-get install -y ruby-dev
-      - gem install dpl
-  script:
-      - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
-  only:
-      - sprint2
-
 deploy-apk:
   stage: deploy
   image: python:3.7
@@ -118,4 +94,37 @@ deploy-apk:
     - build-android-env
   script:
     - pip3 install dropbox
-    - python3 upload_apk.py $CI_PROJECT_DIR/sciq-apk/app-debug.apk $CI_PROJECT_DIR/sciq-apk $DROPBOX_API_TOKEN
+    - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR/sciq-apk/app-debug.apk $CI_PROJECT_DIR/sciq-apk $DROPBOX_API_TOKEN
+  artifacts:
+    reports:
+      dotenv: apk_build.env
+
+deploy-prod:
+  stage: deploy
+  image: ruby:latest
+  dependencies:
+    - deploy-apk
+  before_script:
+      - apt-get update -qy
+      - apt-get install -y ruby-dev
+      - gem install dpl
+  script:
+      - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" web/app/templates/index.html
+      - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
+  only:
+    - master
+
+deploy-dev:
+  stage: deploy
+  image: ruby:latest
+  dependencies:
+    - deploy-apk
+  before_script:
+      - apt-get update -qy
+      - apt-get install -y ruby-dev
+      - gem install dpl
+  script:
+      - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" web/app/templates/index.html
+      - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
+  only:
+      - sprint2
