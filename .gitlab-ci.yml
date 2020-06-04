@@ -98,7 +98,7 @@ deploy-prod:
   script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hamzi27/sciq.git &> /dev/null
     - cd sciq
-    - python3 ./web/app/services/utils/upload_apk.py . $DROPBOX_API_TOKEN
+    - python3 ./web/app/services/utils/upload_apk.py . $CI_PROJECT_DIR $DROPBOX_API_TOKEN
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add ./web/app/templates/index.html

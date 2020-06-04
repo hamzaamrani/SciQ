@@ -2,6 +2,7 @@ from decimal import Decimal
 import dropbox
 import os
 import re
+import shutil
 import sys
 
 
@@ -14,8 +15,8 @@ def get_max_version(apk, max_version):
     return max_version
 
 
-def upload(root_dir, oauth2_access_token):
-    file = os.path.join(root_dir, "sciq-apk", "app-debug.apk")
+def upload(root_dir, ci_project_dir, oauth2_access_token):
+    file = os.path.join(ci_project_dir, "sciq-apk", "app-debug.apk")
     apks_dir = os.path.join(root_dir, "sciq-apk")
     dbx = dropbox.Dropbox(oauth2_access_token=oauth2_access_token)
     max_version = "0.0"
@@ -28,7 +29,7 @@ def upload(root_dir, oauth2_access_token):
         max_version = get_max_version(apk, max_version)
     new_file = "sciq_v." + str(Decimal(max_version) + Decimal("0.1")) + ".apk"
     new_file_full_path = os.path.join(apks_dir, new_file)
-    os.rename(file, new_file_full_path)
+    shutil.move(file, new_file_full_path)
     dbx.files_upload(open(new_file_full_path, "rb").read(), "/" + new_file)
     download_url = dbx.sharing_create_shared_link("/" + new_file).url
     # Make url directly downlodable
@@ -48,4 +49,4 @@ def upload(root_dir, oauth2_access_token):
 
 
 if __name__ == "__main__":
-    upload(sys.argv[1], sys.argv[2])
+    upload(sys.argv[1], sys.argv[2], sys.argv[3])
