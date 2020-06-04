@@ -95,10 +95,10 @@ deploy-apk:
     - build-android-env
   script:
     - pip3 install dropbox
-    - echo "DROPBOX_DOWNLOAD_URL=$(python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN)" >> apk_build.env
+    - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
   artifacts:
-    reports:
-      dotenv: apk_build.env
+    paths:
+      - $CI_PROJECT_DIR/apk_download_url.sh
 
 deploy-prod:
   stage: deploy
@@ -110,6 +110,7 @@ deploy-prod:
       - apt-get install -y ruby-dev
       - gem install dpl
   script:
+      - source $CI_PROJECT_DIR/apk_download_url.sh
       - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" $CI_PROJECT_DIR/web/app/templates/index.html
       - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY
   only:
@@ -125,6 +126,7 @@ deploy-dev:
       - apt-get install -y ruby-dev
       - gem install dpl
   script:
+      - source $CI_PROJECT_DIR/apk_download_url.sh
       - sed -i "s@__DROPBOX_DOWNLOAD_URL__@$DROPBOX_DOWNLOAD_URL@1" $CI_PROJECT_DIR/web/app/templates/index.html
       - dpl --provider=heroku --app=sciq-unimib-dev --api-key=$HEROKU_SECRET_KEY
   only:
