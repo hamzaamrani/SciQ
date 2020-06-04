@@ -101,6 +101,7 @@ deploy-prod:
   script:
     - git checkout -B $CI_COMMIT_REF_NAME
     - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
+    - git add $CI_PROJECT_DIR/web/app/templates/index.html
     - git commit -m '[skip ci] commit from CI runner'
     - git push --follow-tags origin $CI_COMMIT_REF_NAME
     - dpl --provider=heroku --app=sciq-unimib --api-key=$HEROKU_SECRET_KEY

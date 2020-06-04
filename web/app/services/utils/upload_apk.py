@@ -37,7 +37,11 @@ def upload(root_dir, oauth2_access_token):
         os.path.join(root_dir, "web", "app", "templates", "index.html"), "r+"
     ) as f:
         index = f.read()
-        index = re.sub(r"__DROPBOX_DOWNLOAD_URL__", download_url, index)
+        index = re.sub(
+            r"__DROPBOX_DOWNLOAD_URL__|https://www.dropbox.com/s/.*?\?dl=1",
+            download_url,
+            index,
+        )
         f.seek(0)
         f.write(index)
         f.close()
