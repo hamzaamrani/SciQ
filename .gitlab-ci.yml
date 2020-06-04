@@ -90,14 +90,14 @@ deploy-prod:
   dependencies:
     - build-android-env
   before_script:
-      - apt-get update -qy
-      - apt-get install -y ruby-dev
-      - apt-get install -y python3.7 python3-pip
-      - gem install dpl
-      - pip3 install dropbox
-      - git remote set-url origin https://belerico:$GITLAB_ACCESS_TOKEN@gitlab.com/$CI_PROJECT_NAME.git
-      - git config --global user.email $GITLAB_USER_EMAIL
-      - git config --global user.name $GITLAB_USER_ID
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - apt-get install -y python3.7 python3-pip
+    - gem install dpl
+    - pip3 install dropbox
+    - git remote set-url origin https://belerico:$GITLAB_ACCESS_TOKEN@gitlab.com/$CI_PROJECT_NAME.git
+    - git config --global user.email $GITLAB_USER_EMAIL
+    - git config --global user.name $GITLAB_USER_ID
   script:
     - git checkout -B $CI_COMMIT_REF_NAME
     - python3 $CI_PROJECT_DIR/web/app/services/utils/upload_apk.py $CI_PROJECT_DIR $DROPBOX_API_TOKEN
