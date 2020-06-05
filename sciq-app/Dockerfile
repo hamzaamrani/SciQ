@@ -4,7 +4,7 @@ COPY . sciq-app
 WORKDIR /sciq-app
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip
 RUN unzip -d android-sdk-linux android-sdk.zip
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-29" >/dev/null
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
